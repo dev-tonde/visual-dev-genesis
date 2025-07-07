@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import ThemeToggle from '@/components/ThemeToggle';
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -66,6 +67,7 @@ const Navigation = () => {
                 />
               </motion.button>
             ))}
+            <ThemeToggle />
             <Button
               onClick={() => scrollToSection('contact')}
               className="gradient-primary hover:scale-105 transition-transform"
@@ -75,7 +77,8 @@ const Navigation = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center space-x-2">
+            <ThemeToggle />
             <Button
               variant="ghost"
               size="sm"

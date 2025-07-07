@@ -1,15 +1,19 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { ExternalLink, Github } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { ExternalLink, Github, Star, GitFork, Calendar, Loader2 } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { useGitHubRepos } from '@/hooks/useGitHubRepos';
+import { getLanguageColor } from '@/lib/github';
 
 const Projects = () => {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
   });
+
+  const { repos, loading, error } = useGitHubRepos();
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -33,48 +37,53 @@ const Projects = () => {
     }
   };
 
-  // Sample projects - replace with your actual projects
-  const projects = [
+  // Fallback projects for when GitHub data is loading or unavailable
+  const fallbackProjects = [
     {
-      title: "E-Commerce Platform",
-      description: "A full-stack e-commerce solution with modern UI/UX, payment integration, and admin dashboard.",
-      image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop",
-      technologies: ["React", "Next.js", "TypeScript", "Stripe", "Tailwind CSS"],
-      github: "https://github.com/username/ecommerce",
-      live: "https://ecommerce-demo.com",
-      featured: true
+      id: 1,
+      name: 'E-Commerce Platform',
+      description: 'A full-stack e-commerce solution built with React, Node.js, and MongoDB. Features include user authentication, payment processing, and admin dashboard.',
+      html_url: 'https://github.com',
+      homepage: 'https://example.com',
+      language: 'TypeScript',
+      stargazers_count: 124,
+      forks_count: 15,
+      topics: ['react', 'nodejs', 'mongodb', 'stripe'],
+      updated_at: new Date().toISOString(),
+      created_at: new Date().toISOString(),
+      fork: false
     },
     {
-      title: "Task Management App",
-      description: "A collaborative task management application with real-time updates and team features.",
-      image: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=600&h=400&fit=crop",
-      technologies: ["React", "Firebase", "Material-UI", "TypeScript"],
-      github: "https://github.com/username/task-manager",
-      live: "https://task-manager-demo.com",
-      featured: true
+      id: 2,
+      name: 'Task Management App',
+      description: 'A collaborative task management application with real-time updates, drag-and-drop functionality, and team collaboration features.',
+      html_url: 'https://github.com',
+      homepage: 'https://example.com',
+      language: 'JavaScript',
+      stargazers_count: 89,
+      forks_count: 12,
+      topics: ['nextjs', 'typescript', 'prisma', 'socketio'],
+      updated_at: new Date().toISOString(),
+      created_at: new Date().toISOString(),
+      fork: false
     },
     {
-      title: "Weather Dashboard",
-      description: "An interactive weather dashboard with beautiful visualizations and forecasting.",
-      image: "https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?w=600&h=400&fit=crop",
-      technologies: ["React", "Chart.js", "OpenWeather API", "CSS3"],
-      github: "https://github.com/username/weather-app",
-      live: "https://weather-dashboard-demo.com",
-      featured: false
-    },
-    {
-      title: "Portfolio Website",
-      description: "A responsive portfolio website with smooth animations and modern design.",
-      image: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=600&h=400&fit=crop",
-      technologies: ["React", "Framer Motion", "Tailwind CSS", "Vite"],
-      github: "https://github.com/username/portfolio",
-      live: "https://portfolio-demo.com",
-      featured: false
+      id: 3,
+      name: 'Portfolio Website',
+      description: 'A responsive portfolio website showcasing my work and skills. Built with modern web technologies and optimized for performance.',
+      html_url: 'https://github.com',
+      homepage: 'https://example.com',
+      language: 'TypeScript',
+      stargazers_count: 67,
+      forks_count: 8,
+      topics: ['react', 'tailwind', 'framer-motion'],
+      updated_at: new Date().toISOString(),
+      created_at: new Date().toISOString(),
+      fork: false
     }
   ];
 
-  const featuredProjects = projects.filter(p => p.featured);
-  const otherProjects = projects.filter(p => !p.featured);
+  const displayProjects = repos.length > 0 ? repos.slice(0, 6) : fallbackProjects;
 
   return (
     <section id="projects" className="py-20 px-4">
@@ -84,117 +93,123 @@ const Projects = () => {
           variants={containerVariants}
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
+          className="max-w-6xl mx-auto"
         >
           <motion.div variants={itemVariants} className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
               Featured Projects
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Here are some of my recent projects that showcase my skills and passion for development.
+              {loading ? 'Loading my latest projects from GitHub...' : 
+               error ? 'Here are some of my featured projects:' :
+               'Here are my latest projects from GitHub showcasing my skills and passion for creating amazing digital experiences.'}
             </p>
           </motion.div>
 
-          {/* Featured Projects */}
-          <div className="grid lg:grid-cols-2 gap-8 mb-16">
-            {featuredProjects.map((project, index) => (
-              <motion.div
-                key={project.title}
-                variants={itemVariants}
-                whileHover={{ y: -5 }}
-                className="transition-transform"
-              >
-                <Card className="glass border-0 overflow-hidden group">
-                  <div className="relative overflow-hidden">
-                    <img 
-                      src={project.image} 
-                      alt={project.title}
-                      className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  </div>
-                  
-                  <CardHeader>
-                    <CardTitle className="text-xl">{project.title}</CardTitle>
-                    <CardDescription className="text-muted-foreground">
-                      {project.description}
-                    </CardDescription>
-                  </CardHeader>
-                  
-                  <CardContent>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {project.technologies.map((tech) => (
-                        <Badge key={tech} variant="secondary" className="glass">
-                          {tech}
-                        </Badge>
-                      ))}
-                    </div>
-                    
-                    <div className="flex gap-3">
-                      <Button asChild size="sm" className="gradient-primary">
-                        <a href={project.live} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="w-4 h-4 mr-2" />
-                          Live Demo
-                        </a>
-                      </Button>
-                      <Button asChild variant="outline" size="sm" className="glass">
-                        <a href={project.github} target="_blank" rel="noopener noreferrer">
-                          <Github className="w-4 h-4 mr-2" />
-                          Code
-                        </a>
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Other Projects */}
-          <motion.div variants={itemVariants}>
-            <h3 className="text-2xl font-semibold mb-8 text-center">Other Projects</h3>
-            <div className="grid md:grid-cols-2 gap-6">
-              {otherProjects.map((project, index) => (
+          {loading ? (
+            <div className="flex justify-center items-center py-20">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {displayProjects.map((project, index) => (
                 <motion.div
-                  key={project.title}
+                  key={project.id}
                   variants={itemVariants}
-                  whileHover={{ scale: 1.02 }}
-                  className="transition-transform"
+                  whileHover={{ y: -5, scale: 1.02 }}
+                  className="group"
                 >
-                  <Card className="glass border-0 h-full">
+                  <Card className="glass border-0 h-full overflow-hidden hover:shadow-2xl transition-all duration-300">
                     <CardHeader>
-                      <CardTitle className="text-lg">{project.title}</CardTitle>
-                      <CardDescription>{project.description}</CardDescription>
-                    </CardHeader>
-                    
-                    <CardContent>
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {project.technologies.map((tech) => (
-                          <Badge key={tech} variant="outline" className="text-xs">
-                            {tech}
-                          </Badge>
-                        ))}
+                      <div className="flex items-center justify-between mb-2">
+                        <CardTitle className="text-xl group-hover:text-primary transition-colors">
+                          {project.name}
+                        </CardTitle>
+                        <div className="flex items-center space-x-3 text-muted-foreground">
+                          {project.stargazers_count > 0 && (
+                            <div className="flex items-center space-x-1">
+                              <Star className="w-4 h-4" />
+                              <span className="text-sm">{project.stargazers_count}</span>
+                            </div>
+                          )}
+                          {project.forks_count > 0 && (
+                            <div className="flex items-center space-x-1">
+                              <GitFork className="w-4 h-4" />
+                              <span className="text-sm">{project.forks_count}</span>
+                            </div>
+                          )}
+                        </div>
                       </div>
                       
-                      <div className="flex gap-2">
-                        <Button asChild size="sm" variant="outline" className="glass">
-                          <a href={project.live} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="w-3 h-3 mr-1" />
-                            Demo
-                          </a>
-                        </Button>
-                        <Button asChild size="sm" variant="outline" className="glass">
-                          <a href={project.github} target="_blank" rel="noopener noreferrer">
-                            <Github className="w-3 h-3 mr-1" />
+                      {project.language && (
+                        <div className="flex items-center space-x-2 mb-3">
+                          <div 
+                            className="w-3 h-3 rounded-full" 
+                            style={{ backgroundColor: getLanguageColor(project.language) }}
+                          />
+                          <span className="text-sm text-muted-foreground">{project.language}</span>
+                          <div className="flex items-center space-x-1 text-muted-foreground ml-auto">
+                            <Calendar className="w-3 h-3" />
+                            <span className="text-xs">
+                              {new Date(project.updated_at).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                    </CardHeader>
+                    
+                    <CardContent className="space-y-4">
+                      <p className="text-muted-foreground text-sm leading-relaxed">
+                        {project.description || 'No description available.'}
+                      </p>
+                      
+                      {project.topics && project.topics.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                          {project.topics.slice(0, 6).map((topic) => (
+                            <Badge key={topic} variant="secondary" className="text-xs">
+                              {topic}
+                            </Badge>
+                          ))}
+                          {project.topics.length > 6 && (
+                            <Badge variant="outline" className="text-xs">
+                              +{project.topics.length - 6} more
+                            </Badge>
+                          )}
+                        </div>
+                      )}
+                      
+                      <div className="flex space-x-3 pt-4">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="flex-1 glass hover:bg-primary/10"
+                          asChild
+                        >
+                          <a href={project.html_url} target="_blank" rel="noopener noreferrer">
+                            <Github className="w-4 h-4 mr-2" />
                             Code
                           </a>
                         </Button>
+                        
+                        {project.homepage && (
+                          <Button
+                            size="sm"
+                            className="flex-1 gradient-primary"
+                            asChild
+                          >
+                            <a href={project.homepage} target="_blank" rel="noopener noreferrer">
+                              <ExternalLink className="w-4 h-4 mr-2" />
+                              Live Demo
+                            </a>
+                          </Button>
+                        )}
                       </div>
                     </CardContent>
                   </Card>
                 </motion.div>
               ))}
             </div>
-          </motion.div>
+          )}
         </motion.div>
       </div>
     </section>

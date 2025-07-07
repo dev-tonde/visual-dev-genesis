@@ -6,9 +6,9 @@
 
 @layer base {
   :root {
-    /* Dark theme optimized for developer portfolio */
-    --background: 222 47% 4%;
-    --foreground: 210 40% 95%;
+    /* Light theme */
+    --background: 0 0% 100%;
+    --foreground: 222 84% 4.9%;
     
     /* Tech-inspired color palette */
     --tech-primary: 270 60% 60%;
@@ -18,16 +18,56 @@
     /* Gradients for modern effects */
     --gradient-primary: linear-gradient(135deg, hsl(270 60% 60%), hsl(210 80% 55%));
     --gradient-secondary: linear-gradient(135deg, hsl(280 70% 70%), hsl(270 60% 60%));
-    --gradient-bg: linear-gradient(135deg, hsl(222 47% 4%), hsl(222 47% 6%));
+    --gradient-bg: linear-gradient(135deg, hsl(0 0% 100%), hsl(0 0% 98%));
     
     /* Glass effects */
-    --glass-bg: hsla(210, 40%, 95%, 0.05);
-    --glass-border: hsla(210, 40%, 95%, 0.1);
+    --glass-bg: hsla(0, 0%, 100%, 0.8);
+    --glass-border: hsla(0, 0%, 0%, 0.1);
     
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --animation-float: float 6s ease-in-out infinite;
     --animation-glow: glow 2s ease-in-out infinite alternate;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 84% 4.9%;
+
+    --primary: 270 60% 60%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 80% 55%;
+    --secondary-foreground: 222 47% 4%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 280 70% 70%;
+    --accent-foreground: 222 47% 4%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    /* Dark theme optimized for developer portfolio */
+    --background: 222 47% 4%;
+    --foreground: 210 40% 95%;
+    
+    /* Gradients for dark mode */
+    --gradient-bg: linear-gradient(135deg, hsl(222 47% 4%), hsl(222 47% 6%));
+    
+    /* Glass effects for dark mode */
+    --glass-bg: hsla(210, 40%, 95%, 0.05);
+    --glass-border: hsla(210, 40%, 95%, 0.1);
 
     --card: 222 47% 6%;
     --card-foreground: 210 40% 95%;
