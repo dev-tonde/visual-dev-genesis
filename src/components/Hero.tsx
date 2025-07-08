@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
-import { ArrowDown, Github, Linkedin, Mail } from 'lucide-react';
+import { ArrowDown, Github, Linkedin, Mail, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import DynamicGreeting from './DynamicGreeting';
 import heroBg from '@/assets/hero-bg.jpg';
 
 const Hero = () => {
@@ -79,7 +80,7 @@ const Hero = () => {
           variants={itemVariants}
         >
           <h1 className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-4">
-            Frontend Developer
+            <DynamicGreeting />, I'm Tonderai
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto">
             Crafting beautiful, interactive web experiences with modern technologies
@@ -96,6 +97,21 @@ const Hero = () => {
             onClick={() => scrollToSection('projects')}
           >
             View My Work
+          </Button>
+          
+          <Button 
+            variant="outline" 
+            size="lg"
+            className="glass hover:bg-primary/10 transition-smooth"
+            onClick={() => {
+              const link = document.createElement('a');
+              link.href = '/cv.pdf';
+              link.download = 'Tonderai_CV.pdf';
+              link.click();
+            }}
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Download CV
           </Button>
           
           <Button 

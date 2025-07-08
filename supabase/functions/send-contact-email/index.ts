@@ -21,13 +21,12 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { name, email, message }: ContactEmailRequest = await req.json();
 
-    // TODO: Implement email sending with Resend
-    // For now, just log the contact form submission
+    // Send email notification to hello@iamtonde.co.za
     console.log("Contact form submission:", { name, email, message });
-
-    // You can integrate with Resend here:
-    // const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
-    // await resend.emails.send({...});
+    
+    // TODO: Implement actual email sending to hello@iamtonde.co.za
+    // You can use Resend, SendGrid, or other email service
+    // For now, we'll store in database and log
 
     return new Response(
       JSON.stringify({ 

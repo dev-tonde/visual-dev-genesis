@@ -119,7 +119,7 @@ const Projects = () => {
                   whileHover={{ y: -5, scale: 1.02 }}
                   className="group"
                 >
-                  <Card className="glass border-0 h-full overflow-hidden hover:shadow-2xl transition-all duration-300">
+                  <Card className="glass border-0 h-full overflow-hidden hover:shadow-2xl transition-all duration-300 tilt-hover magnetic-button">
                     <CardHeader>
                       <div className="flex items-center justify-between mb-2">
                         <CardTitle className="text-xl group-hover:text-primary transition-colors">

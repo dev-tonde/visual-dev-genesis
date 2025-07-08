@@ -198,3 +198,27 @@
     transform: translateY(15px) rotate(240deg);
   }
 }
+
+/* Enhanced tilt animations */
+.tilt-hover {
+  transform-style: preserve-3d;
+  transition: transform 0.1s ease-out;
+}
+
+.tilt-hover:hover {
+  transform: perspective(1000px) rotateX(2deg) rotateY(2deg);
+}
+
+/* Magnetic button effect */
+.magnetic-button {
+  transition: transform 0.2s ease-out;
+}
+
+.magnetic-button:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+
+/* Custom cursor */
+body {
+  cursor: none;
+}
