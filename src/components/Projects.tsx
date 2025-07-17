@@ -1,11 +1,14 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { ExternalLink, Github, Star, GitFork, Calendar, Loader2 } from 'lucide-react';
+import { ExternalLink, Github, Star, GitFork, Calendar } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useGitHubRepos } from '@/hooks/useGitHubRepos';
 import { getLanguageColor } from '@/lib/github';
+import ProjectFilter from '@/components/ProjectFilter';
+import ProjectSkeleton from '@/components/ProjectSkeleton';
+import { useState, useMemo } from 'react';
 
 const Projects = () => {
   const [ref, inView] = useInView({
@@ -14,6 +17,7 @@ const Projects = () => {
   });
 
   const { repos, loading, error } = useGitHubRepos();
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -83,7 +87,36 @@ const Projects = () => {
     }
   ];
 
-  const displayProjects = repos.length > 0 ? repos.slice(0, 6) : fallbackProjects;
+  const allProjects = repos.length > 0 ? repos.slice(0, 6) : fallbackProjects;
+  
+  // Get all available technologies for filtering
+  const availableTechs = useMemo(() => {
+    const techs = new Set<string>();
+    allProjects.forEach(project => {
+      if (project.topics) {
+        project.topics.forEach(topic => techs.add(topic));
+      }
+      if (project.language) {
+        techs.add(project.language.toLowerCase());
+      }
+    });
+    return Array.from(techs).sort();
+  }, [allProjects]);
+
+  // Filter projects based on selected filters
+  const displayProjects = useMemo(() => {
+    if (selectedFilters.length === 0) return allProjects;
+    
+    return allProjects.filter(project => {
+      const projectTechs = [
+        ...(project.topics || []),
+        ...(project.language ? [project.language.toLowerCase()] : [])
+      ];
+      return selectedFilters.some(filter => 
+        projectTechs.some(tech => tech.toLowerCase().includes(filter.toLowerCase()))
+      );
+    });
+  }, [allProjects, selectedFilters]);
 
   return (
     <section id="projects" className="py-20 px-4">
@@ -106,9 +139,19 @@ const Projects = () => {
             </p>
           </motion.div>
 
+          {!loading && availableTechs.length > 0 && (
+            <ProjectFilter
+              selectedFilters={selectedFilters}
+              onFilterChange={setSelectedFilters}
+              availableTechs={availableTechs}
+            />
+          )}
+
           {loading ? (
-            <div className="flex justify-center items-center py-20">
-              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[...Array(6)].map((_, index) => (
+                <ProjectSkeleton key={index} />
+              ))}
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
