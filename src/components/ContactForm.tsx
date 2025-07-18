@@ -12,6 +12,7 @@ import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
+
 const contactFormSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters').max(50, 'Name must be less than 50 characters'),
   email: z.string().email('Please enter a valid email address'),
@@ -44,7 +45,11 @@ const ContactForm = ({ variants }: ContactFormProps) => {
       // Save to database
       const { error: dbError } = await supabase
         .from('contact_submissions')
-        .insert([data]);
+        .insert({
+          name: data.name,
+          email: data.email,
+          message: data.message
+        });
 
       if (dbError) throw dbError;
 
