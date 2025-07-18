@@ -147,19 +147,19 @@ const ContactForm = ({ variants }: ContactFormProps) => {
               
               <Button 
                 type="submit" 
-                className="w-full gradient-primary hover:scale-105 transition-transform focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                className="w-full gradient-primary focus:ring-2 focus:ring-primary focus:ring-offset-2"
                 size="lg"
                 disabled={isSubmitting}
                 aria-label={isSubmitting ? "Sending message..." : "Send message"}
               >
                 {isSubmitting ? (
                   <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin icon-primary" />
                     Sending...
                   </>
                 ) : (
                   <>
-                    <Send className="w-4 h-4 mr-2" />
+                    <Send className="w-4 h-4 mr-2 icon-primary" />
                     Send Message
                   </>
                 )}

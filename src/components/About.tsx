@@ -120,7 +120,7 @@ const About = () => {
                       <CardContent className="p-4">
                         <div className="flex items-start space-x-3">
                           <div className="p-2 rounded-lg bg-primary/10">
-                            <highlight.icon className="w-5 h-5 text-primary" />
+                            <highlight.icon className="w-5 h-5 icon-primary" />
                           </div>
                           <div>
                             <h4 className="font-semibold mb-1">{highlight.title}</h4>

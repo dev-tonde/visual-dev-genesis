@@ -113,8 +113,18 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
-  /* Dark theme is default - no separate dark class needed */
-}
+    /* Icon theme-aware colors */
+    --icon-primary: 270 60% 60%;
+    --icon-secondary: 210 80% 55%;
+    --icon-muted: 215 16% 47%;
+    --icon-accent: 280 70% 70%;
+
+    /* Light theme icon colors */
+    --icon-primary: 270 60% 50%;
+    --icon-secondary: 210 80% 45%;
+    --icon-muted: 215 16% 40%;
+    --icon-accent: 280 70% 60%;
+  }
 
 @layer base {
   * {
@@ -218,7 +228,34 @@
   transform: translateY(-2px) scale(1.02);
 }
 
-/* Custom cursor */
+  /* Icon utilities */
+  .icon-primary {
+    color: hsl(var(--icon-primary));
+  }
+  
+  .icon-secondary {
+    color: hsl(var(--icon-secondary));
+  }
+  
+  .icon-muted {
+    color: hsl(var(--icon-muted));
+  }
+  
+  .icon-accent {
+    color: hsl(var(--icon-accent));
+  }
+
+  /* Lazy loading optimization */
+  .lazy-image {
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  
+  .lazy-image.loaded {
+    opacity: 1;
+  }
+
+  /* Custom cursor */
 body {
   cursor: none;
 }

@@ -1,4 +1,11 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /private/
 
+# Crawl-delay for better server performance
+Crawl-delay: 1
+
+# Sitemap location
 Sitemap: https://iamtonde.co.za/sitemap.xml

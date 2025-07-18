@@ -64,7 +64,7 @@ const ContactInfo = ({ variants }: ContactInfoProps) => {
               aria-label={`Contact via ${info.title}: ${info.value}`}
             >
               <div className="p-3 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                <info.icon className="w-5 h-5 text-primary" />
+                <info.icon className="w-5 h-5 icon-primary" />
               </div>
               <div>
                 <p className="font-medium">{info.title}</p>
@@ -89,7 +89,7 @@ const ContactInfo = ({ variants }: ContactInfoProps) => {
               whileTap={{ scale: 0.95 }}
               aria-label={`Visit my ${social.name} profile`}
             >
-              <social.icon className="w-6 h-6" />
+              <social.icon className="w-6 h-6 icon-primary" />
             </motion.a>
           ))}
         </div>

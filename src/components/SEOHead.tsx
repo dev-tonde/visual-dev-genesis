@@ -8,8 +8,8 @@ interface SEOHeadProps {
 }
 
 const SEOHead = ({ 
-  title = "Tonderai - Full Stack Developer & UI/UX Designer",
-  description = "Passionate full-stack developer specializing in React, TypeScript, and modern web technologies. Creating exceptional digital experiences with clean code and beautiful design.",
+  title = "Tonderai - Full-Stack Developer & UI/UX Designer",
+  description = "Experienced full-stack developer specializing in React, TypeScript, Node.js, and modern web technologies. Available for freelance projects and consulting.",
   url = "https://iamtonde.co.za",
   image = "/og-image.jpg"
 }: SEOHeadProps) => {
@@ -42,33 +42,44 @@ const SEOHead = ({
 
   return (
     <Helmet>
-      {/* Basic meta tags */}
+      {/* Primary Meta Tags */}
       <title>{title}</title>
+      <meta name="title" content={title} />
       <meta name="description" content={description} />
-      <meta name="keywords" content="Full Stack Developer, React, TypeScript, Next.js, UI/UX Design, Web Development, Tonderai" />
+      <meta name="keywords" content="full-stack developer, React developer, TypeScript, Node.js, UI/UX design, web development, freelance developer, South Africa developer" />
       <meta name="author" content="Tonderai" />
-      
-      {/* Open Graph */}
-      <meta property="og:type" content="website" />
-      <meta property="og:title" content={title} />
-      <meta property="og:description" content={description} />
-      <meta property="og:url" content={url} />
-      <meta property="og:image" content={image} />
-      <meta property="og:site_name" content="Tonderai Portfolio" />
-      
-      {/* Twitter Card */}
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={title} />
-      <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={image} />
-      
-      {/* Additional meta tags */}
       <meta name="robots" content="index, follow" />
       <meta name="language" content="English" />
-      <meta name="revisit-after" content="7 days" />
       
       {/* Canonical URL */}
       <link rel="canonical" href={url} />
+      
+      {/* Open Graph / Facebook */}
+      <meta property="og:type" content="website" />
+      <meta property="og:url" content={url} />
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={description} />
+      <meta property="og:image" content={`${url}${image}`} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:site_name" content="Tonderai Portfolio" />
+      <meta property="og:locale" content="en_US" />
+      
+      {/* Twitter */}
+      <meta property="twitter:card" content="summary_large_image" />
+      <meta property="twitter:url" content={url} />
+      <meta property="twitter:title" content={title} />
+      <meta property="twitter:description" content={description} />
+      <meta property="twitter:image" content={`${url}${image}`} />
+      <meta property="twitter:creator" content="@yourtwitterhandle" />
+      
+      {/* Additional SEO Meta Tags */}
+      <meta name="theme-color" content="#8B5CF6" />
+      <meta name="color-scheme" content="dark light" />
+      
+      {/* Performance hints */}
+      <link rel="dns-prefetch" href="//api.github.com" />
+      <link rel="dns-prefetch" href="//supabase.co" />
       
       {/* Structured Data */}
       <script type="application/ld+json">
