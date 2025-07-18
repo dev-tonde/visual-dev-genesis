@@ -147,9 +147,10 @@ const ContactForm = ({ variants }: ContactFormProps) => {
               
               <Button 
                 type="submit" 
-                className="w-full gradient-primary hover:scale-105 transition-transform"
+                className="w-full gradient-primary hover:scale-105 transition-transform focus:ring-2 focus:ring-primary focus:ring-offset-2"
                 size="lg"
                 disabled={isSubmitting}
+                aria-label={isSubmitting ? "Sending message..." : "Send message"}
               >
                 {isSubmitting ? (
                   <>

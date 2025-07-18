@@ -59,8 +59,9 @@ const ContactInfo = ({ variants }: ContactInfoProps) => {
               href={info.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center space-x-4 p-4 glass rounded-lg hover:bg-primary/10 transition-all duration-300 group"
+              className="flex items-center space-x-4 p-4 glass rounded-lg hover:bg-primary/10 transition-all duration-300 group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               whileHover={{ x: 5 }}
+              aria-label={`Contact via ${info.title}: ${info.value}`}
             >
               <div className="p-3 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
                 <info.icon className="w-5 h-5 text-primary" />
@@ -83,9 +84,10 @@ const ContactInfo = ({ variants }: ContactInfoProps) => {
               href={social.url}
               target="_blank"
               rel="noopener noreferrer"
-              className={`p-4 glass rounded-lg ${social.color} transition-all duration-300 group`}
+              className={`p-4 glass rounded-lg ${social.color} transition-all duration-300 group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2`}
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
+              aria-label={`Visit my ${social.name} profile`}
             >
               <social.icon className="w-6 h-6" />
             </motion.a>

@@ -46,8 +46,12 @@ const Navigation = () => {
             className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent cursor-pointer"
             onClick={() => scrollToSection('hero')}
             whileHover={{ scale: 1.05 }}
+            role="button"
+            aria-label="Go to home section"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === 'Enter' && scrollToSection('hero')}
           >
-            Portfolio
+            Tonderai
           </motion.div>
 
           {/* Desktop Menu */}
@@ -56,8 +60,9 @@ const Navigation = () => {
               <motion.button
                 key={item.name}
                 onClick={() => scrollToSection(item.id)}
-                className="text-foreground hover:text-primary transition-colors relative"
+                className="text-foreground hover:text-primary transition-colors relative focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md px-2 py-1"
                 whileHover={{ scale: 1.05 }}
+                aria-label={`Navigate to ${item.name} section`}
               >
                 {item.name}
                 <motion.div
@@ -70,7 +75,8 @@ const Navigation = () => {
             <ThemeToggle />
             <Button
               onClick={() => scrollToSection('contact')}
-              className="gradient-primary hover:scale-105 transition-transform"
+              className="gradient-primary hover:scale-105 transition-transform focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              aria-label="Navigate to contact section"
             >
               Hire Me
             </Button>
@@ -84,6 +90,8 @@ const Navigation = () => {
               size="sm"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="glass"
+              aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-expanded={isMobileMenuOpen}
             >
               {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
@@ -105,7 +113,8 @@ const Navigation = () => {
               <button
                 key={item.name}
                 onClick={() => scrollToSection(item.id)}
-                className="block w-full text-left text-foreground hover:text-primary transition-colors py-2"
+                className="block w-full text-left text-foreground hover:text-primary transition-colors py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md"
+                aria-label={`Navigate to ${item.name} section`}
               >
                 {item.name}
               </button>

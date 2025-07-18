@@ -14,7 +14,7 @@ export interface GitHubRepo {
   fork: boolean;
 }
 
-const GITHUB_USERNAME = 'your-username'; // TODO: Replace with your GitHub username
+const GITHUB_USERNAME = 'tonderai'; // Replace with your GitHub username
 const GITHUB_TOKEN = ''; // Optional: Add your GitHub token for higher rate limits
 
 export const fetchGitHubRepos = async (): Promise<GitHubRepo[]> => {
