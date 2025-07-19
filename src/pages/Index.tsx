@@ -34,7 +34,7 @@ const Index = () => {
         <footer className="py-8 px-4 border-t border-primary/20">
           <div className="container mx-auto text-center">
             <p className="text-muted-foreground">
-              © 2024 Tonderai. Built with React, TypeScript, Tailwind CSS, and Framer Motion.
+              © {new Date().getFullYear()} Tonderai. Built with React, TypeScript, Tailwind CSS, and Framer Motion.
             </p>
           </div>
         </footer>
