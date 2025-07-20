@@ -5,11 +5,13 @@ import Contact from '@/components/Contact';
 import Navigation from '@/components/Navigation';
 import Testimonials from '@/components/Testimonials';
 import SEOHead from '@/components/SEOHead';
+import StructuredData from '@/components/StructuredData';
 
 const Index = () => {
   return (
     <>
       <SEOHead />
+      <StructuredData />
       <div className="min-h-screen bg-background text-foreground custom-scrollbar">
         <Navigation />
         <main>
