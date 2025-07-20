@@ -591,6 +591,47 @@ export type Database = {
         }
         Relationships: []
       }
+      invites: {
+        Row: {
+          accepted: boolean | null
+          created_at: string | null
+          email: string
+          expires_at: string | null
+          id: string
+          invited_by: string
+          role: string
+          token: string
+        }
+        Insert: {
+          accepted?: boolean | null
+          created_at?: string | null
+          email: string
+          expires_at?: string | null
+          id?: string
+          invited_by: string
+          role: string
+          token: string
+        }
+        Update: {
+          accepted?: boolean | null
+          created_at?: string | null
+          email?: string
+          expires_at?: string | null
+          id?: string
+          invited_by?: string
+          role?: string
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invites_invited_by_fkey"
+            columns: ["invited_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       medications: {
         Row: {
           created_at: string | null
@@ -823,6 +864,44 @@ export type Database = {
         }
         Relationships: []
       }
+      subscriptions: {
+        Row: {
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          status: string | null
+          tier: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          status?: string | null
+          tier: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          status?: string | null
+          tier?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       support_tickets: {
         Row: {
           assigned_to: string | null
@@ -930,8 +1009,11 @@ export type Database = {
           email: string
           full_name: string
           id: string
+          is_verified: boolean | null
+          linked_to: string | null
           phone: string | null
           role: Database["public"]["Enums"]["user_role"]
+          tier: string | null
           updated_at: string | null
         }
         Insert: {
@@ -939,8 +1021,11 @@ export type Database = {
           email: string
           full_name: string
           id?: string
+          is_verified?: boolean | null
+          linked_to?: string | null
           phone?: string | null
           role?: Database["public"]["Enums"]["user_role"]
+          tier?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -948,11 +1033,22 @@ export type Database = {
           email?: string
           full_name?: string
           id?: string
+          is_verified?: boolean | null
+          linked_to?: string | null
           phone?: string | null
           role?: Database["public"]["Enums"]["user_role"]
+          tier?: string | null
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "users_linked_to_fkey"
+            columns: ["linked_to"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       vitals: {
         Row: {
@@ -1000,7 +1096,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_current_user_role: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
     }
     Enums: {
       user_role: "patient" | "caregiver" | "family" | "admin"

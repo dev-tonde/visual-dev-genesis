@@ -3,10 +3,14 @@ import { motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ThemeToggle from '@/components/ThemeToggle';
+import UserMenu from '@/components/UserMenu';
+import { useAuth } from '@/components/AuthProvider';
+import { Link } from 'react-router-dom';
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -73,6 +77,13 @@ const Navigation = () => {
               </motion.button>
             ))}
             <ThemeToggle />
+            {user ? (
+              <UserMenu />
+            ) : (
+              <Link to="/auth">
+                <Button variant="outline">Sign In</Button>
+              </Link>
+            )}
             <Button
               onClick={() => scrollToSection('contact')}
               className="gradient-primary hover:scale-105 transition-transform focus:ring-2 focus:ring-primary focus:ring-offset-2"
@@ -118,7 +129,16 @@ const Navigation = () => {
               >
                 {item.name}
               </button>
-            ))}
+              ))}
+            {user ? (
+              <div className="py-2">
+                <UserMenu />
+              </div>
+            ) : (
+              <Link to="/auth" className="block">
+                <Button variant="outline" className="w-full">Sign In</Button>
+              </Link>
+            )}
             <Button
               onClick={() => scrollToSection('contact')}
               className="w-full gradient-primary mt-4"

@@ -15,6 +15,38 @@ interface ContactEmailRequest {
   message: string;
 }
 
+// Input validation and sanitization functions
+const sanitizeInput = (input: string): string => {
+  return input
+    .replace(/[<>]/g, '') // Remove potential HTML tags
+    .replace(/javascript:/gi, '') // Remove javascript: protocol
+    .replace(/on\w+=/gi, '') // Remove event handlers
+    .trim();
+};
+
+const validateEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+const validateInput = (data: ContactEmailRequest): { isValid: boolean; errors: string[] } => {
+  const errors: string[] = [];
+  
+  if (!data.name || data.name.length < 2 || data.name.length > 100) {
+    errors.push('Name must be between 2 and 100 characters');
+  }
+  
+  if (!data.email || !validateEmail(data.email)) {
+    errors.push('Valid email address is required');
+  }
+  
+  if (!data.message || data.message.length < 10 || data.message.length > 2000) {
+    errors.push('Message must be between 10 and 2000 characters');
+  }
+  
+  return { isValid: errors.length === 0, errors };
+};
+
 const handler = async (req: Request): Promise<Response> => {
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
@@ -22,7 +54,28 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { name, email, message }: ContactEmailRequest = await req.json();
+    const rawData: ContactEmailRequest = await req.json();
+    
+    // Validate input
+    const { isValid, errors } = validateInput(rawData);
+    if (!isValid) {
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: "Invalid input data",
+          details: errors 
+        }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+    
+    // Sanitize inputs
+    const name = sanitizeInput(rawData.name);
+    const email = sanitizeInput(rawData.email);
+    const message = sanitizeInput(rawData.message);
 
     console.log("Processing contact form submission:", { name, email });
 
@@ -87,8 +140,8 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(
       JSON.stringify({ 
         success: false, 
-        error: "Failed to send message. Please try again.",
-        details: error.message 
+        error: "Failed to send message. Please try again."
+        // Removed details to prevent information disclosure
       }),
       {
         status: 500,
