@@ -9,9 +9,7 @@ import CommandPalette from "@/components/CommandPalette";
 import MouseFollower from "@/components/MouseFollower";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { useAnalytics } from "@/hooks/useAnalytics";
-import { AuthProvider } from "@/components/AuthProvider";
 import Index from "./pages/Index";
-import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -21,7 +19,6 @@ const AppContent = () => {
   return (
     <Routes>
       <Route path="/" element={<Index />} />
-      <Route path="/auth" element={<Auth />} />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />
     </Routes>
@@ -34,15 +31,13 @@ const App = () => (
       <ThemeProvider>
         <TooltipProvider>
           <ErrorBoundary>
-            <AuthProvider>
-              <Toaster />
-              <Sonner />
-              <CommandPalette />
-              <MouseFollower />
-              <BrowserRouter>
-                <AppContent />
-              </BrowserRouter>
-            </AuthProvider>
+            <Toaster />
+            <Sonner />
+            <CommandPalette />
+            <MouseFollower />
+            <BrowserRouter>
+              <AppContent />
+            </BrowserRouter>
           </ErrorBoundary>
         </TooltipProvider>
       </ThemeProvider>
