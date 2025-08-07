@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { ExternalLink, Github, Star, GitFork, Calendar } from 'lucide-react';
+import { ExternalLink, Github, Star, GitFork, Calendar, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,8 @@ import { useGitHubRepos } from '@/hooks/useGitHubRepos';
 import { getLanguageColor } from '@/lib/github';
 import ProjectFilter from '@/components/ProjectFilter';
 import ProjectSkeleton from '@/components/ProjectSkeleton';
+import LoadingSpinner from '@/components/LoadingSpinner';
+import RetryButton from '@/components/RetryButton';
 import { useState, useMemo } from 'react';
 
 const Projects = () => {
@@ -153,6 +155,17 @@ const Projects = () => {
                 <ProjectSkeleton key={index} />
               ))}
             </div>
+          ) : error ? (
+            <motion.div 
+              className="text-center py-12"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <AlertCircle className="w-12 h-12 text-destructive mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-2">Failed to load projects</h3>
+              <p className="text-muted-foreground mb-6">{error}</p>
+              <RetryButton onRetry={() => window.location.reload()} />
+            </motion.div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {displayProjects.map((project, index) => (

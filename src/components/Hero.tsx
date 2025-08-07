@@ -129,32 +129,35 @@ const Hero = () => {
           variants={itemVariants}
         >
           <motion.a
-            href="https://github.com"
+            href="https://github.com/tonderai"
             target="_blank"
             rel="noopener noreferrer"
             className="p-3 glass rounded-full hover:bg-primary/10 transition-smooth"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
+            aria-label="GitHub Profile"
           >
             <Github className="w-6 h-6" />
           </motion.a>
           
           <motion.a
-            href="https://linkedin.com"
+            href="https://linkedin.com/in/tonderai"
             target="_blank"
             rel="noopener noreferrer"
             className="p-3 glass rounded-full hover:bg-primary/10 transition-smooth"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
+            aria-label="LinkedIn Profile"
           >
             <Linkedin className="w-6 h-6" />
           </motion.a>
           
           <motion.a
-            href="mailto:contact@example.com"
+            href="mailto:hello@iamtonde.co.za"
             className="p-3 glass rounded-full hover:bg-primary/10 transition-smooth"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
+            aria-label="Send Email"
           >
             <Mail className="w-6 h-6" />
           </motion.a>

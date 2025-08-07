@@ -8,6 +8,8 @@ import { HelmetProvider } from 'react-helmet-async';
 import CommandPalette from "@/components/CommandPalette";
 import MouseFollower from "@/components/MouseFollower";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import PerformanceOptimizer from "@/components/PerformanceOptimizer";
+import Analytics from "@/components/Analytics";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -17,11 +19,15 @@ const queryClient = new QueryClient();
 const AppContent = () => {
   useAnalytics();
   return (
-    <Routes>
-      <Route path="/" element={<Index />} />
-      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <>
+      <PerformanceOptimizer />
+      <Analytics />
+      <Routes>
+        <Route path="/" element={<Index />} />
+        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </>
   );
 };
 
