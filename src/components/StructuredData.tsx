@@ -26,8 +26,8 @@ const StructuredData = () => {
       "Software Engineering"
     ],
     "sameAs": [
-      "https://github.com/tonderai",
-      "https://linkedin.com/in/tonderai"
+      "https://github.com/dev-tonde",
+      "https://www.linkedin.com/in/tonderai-matanga/"
     ],
     "contactPoint": {
       "@type": "ContactPoint",

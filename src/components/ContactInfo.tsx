@@ -16,13 +16,13 @@ const ContactInfo = ({ variants }: ContactInfoProps) => {
     {
       icon: Phone,
       title: 'Phone',
-      value: '+27 (0) 123 456 789',
-      link: 'tel:+27123456789'
+      value: '+27 (0)81 432 1220',
+      link: 'tel:+27814321220'
     },
     {
       icon: MapPin,
       title: 'Location',
-      value: 'Johannesburg, South Africa',
+      value: 'Johannesburg and Cape Town, South Africa',
       link: 'https://maps.google.com/?q=Johannesburg,South+Africa'
     }
   ];
@@ -31,13 +31,13 @@ const ContactInfo = ({ variants }: ContactInfoProps) => {
     {
       icon: Github,
       name: 'GitHub',
-      url: 'https://github.com/tonderai',
+      url: 'https://github.com/dev-tonde',
       color: 'hover:text-gray-300'
     },
     {
       icon: Linkedin,
       name: 'LinkedIn',
-      url: 'https://linkedin.com/in/tonderai',
+      url: 'https://www.linkedin.com/in/tonderai-matanga/',
       color: 'hover:text-blue-400'
     },
     {

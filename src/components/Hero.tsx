@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { ArrowDown, Github, Linkedin, Mail, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import DynamicGreeting from './DynamicGreeting';
-import heroBg from '@/assets/hero-bg.jpg';
+import heroBg from '@/assets/programmer-hero-bg.jpg';
 
 const Hero = () => {
   const containerVariants = {
@@ -129,7 +129,7 @@ const Hero = () => {
           variants={itemVariants}
         >
           <motion.a
-            href="https://github.com/tonderai"
+            href="https://github.com/dev-tonde"
             target="_blank"
             rel="noopener noreferrer"
             className="p-3 glass rounded-full hover:bg-primary/10 transition-smooth"
@@ -141,7 +141,7 @@ const Hero = () => {
           </motion.a>
           
           <motion.a
-            href="https://linkedin.com/in/tonderai"
+            href="https://www.linkedin.com/in/tonderai-matanga/"
             target="_blank"
             rel="noopener noreferrer"
             className="p-3 glass rounded-full hover:bg-primary/10 transition-smooth"
