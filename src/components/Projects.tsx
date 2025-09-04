@@ -172,10 +172,10 @@ const Projects = () => {
                 <motion.div
                   key={project.id}
                   variants={itemVariants}
-                  whileHover={{ y: -5, scale: 1.02 }}
-                  className="group"
+                  whileHover={{ y: -5, scale: 1.02, rotateY: 2 }}
+                  className="group hover-lift"
                 >
-                  <Card className="glass border-0 h-full overflow-hidden hover:shadow-2xl transition-all duration-300 tilt-hover magnetic-button">
+                  <Card className="glass-vibrant border-0 h-full overflow-hidden hover:shadow-2xl transition-all duration-500 hover-glow relative">
                     <CardHeader>
                       <div className="flex items-center justify-between mb-2">
                         <CardTitle className="text-xl group-hover:text-primary transition-colors">
@@ -234,31 +234,29 @@ const Projects = () => {
                         </div>
                       )}
                       
-                      <div className="flex space-x-3 pt-4">
+                      <div className="flex gap-2 pt-4">
                         <Button
                           size="sm"
                           variant="outline"
-                          className="flex-1 glass hover:bg-primary/10"
+                          className="flex-1 hover-lift"
                           asChild
                         >
-                          <a href={project.html_url} target="_blank" rel="noopener noreferrer">
+                          <a href={project.html_url || `https://github.com/dev-tonde/${project.name}`} target="_blank" rel="noopener noreferrer">
                             <Github className="w-4 h-4 mr-2" />
                             Code
                           </a>
                         </Button>
                         
-                        {project.homepage && (
-                          <Button
-                            size="sm"
-                            className="flex-1 gradient-primary"
-                            asChild
-                          >
-                            <a href={project.homepage} target="_blank" rel="noopener noreferrer">
-                              <ExternalLink className="w-4 h-4 mr-2" />
-                              Live Demo
-                            </a>
-                          </Button>
-                        )}
+                        <Button
+                          size="sm"
+                          className="flex-1 hover-lift gradient-primary"
+                          asChild
+                        >
+                          <a href={project.homepage || `https://${project.name.toLowerCase()}.dev-tonde.com`} target="_blank" rel="noopener noreferrer">
+                            <ExternalLink className="w-4 h-4 mr-2" />
+                            Live Demo
+                          </a>
+                        </Button>
                       </div>
                     </CardContent>
                   </Card>

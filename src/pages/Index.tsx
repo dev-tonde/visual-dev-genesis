@@ -6,13 +6,17 @@ import Navigation from '@/components/Navigation';
 import Testimonials from '@/components/Testimonials';
 import SEOHead from '@/components/SEOHead';
 import StructuredData from '@/components/StructuredData';
+import InteractiveBackground from '@/components/InteractiveBackground';
+import FloatingElements from '@/components/FloatingElements';
 
 const Index = () => {
   return (
     <>
       <SEOHead />
       <StructuredData />
-      <div className="min-h-screen bg-background text-foreground custom-scrollbar">
+      <InteractiveBackground />
+      <FloatingElements />
+      <div className="min-h-screen bg-background text-foreground custom-scrollbar relative z-20">
         <Navigation />
         <main>
           <section id="hero">
