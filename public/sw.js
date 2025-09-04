@@ -1,10 +1,10 @@
 // Service Worker for caching and performance optimization
-const CACHE_NAME = 'tonderai-portfolio-v1';
+const CACHE_NAME = 'tonderai-portfolio-v2';
 const urlsToCache = [
   '/',
+  '/manifest.json',
   '/assets/hero-bg.jpg',
-  '/cv.pdf',
-  'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap'
+  '/assets/programmer-hero-bg.jpg'
 ];
 
 self.addEventListener('install', (event) => {

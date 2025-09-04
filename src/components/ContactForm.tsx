@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Send, Loader2 } from 'lucide-react';
+import { Send, Loader2, CheckCircle, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -31,12 +31,17 @@ const ContactForm = ({ variants }: ContactFormProps) => {
 
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema),
+    mode: 'onChange', // Enable real-time validation
     defaultValues: {
       name: '',
       email: '',
       message: ''
     }
   });
+
+  // Real-time validation states
+  const watchedValues = form.watch();
+  const { errors, isValid } = form.formState;
 
   const onSubmit = async (data: ContactFormData) => {
     setIsSubmitting(true);
@@ -94,15 +99,29 @@ const ContactForm = ({ variants }: ContactFormProps) => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel className="flex items-center gap-2">
+                      Name
+                      {watchedValues.name && !errors.name && (
+                        <CheckCircle className="w-4 h-4 text-green-500" />
+                      )}
+                      {errors.name && (
+                        <XCircle className="w-4 h-4 text-red-500" />
+                      )}
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Your Name"
-                        className="glass border-0"
+                        className={`glass border-0 transition-all duration-300 ${
+                          watchedValues.name && !errors.name 
+                            ? 'ring-2 ring-green-500/30 bg-green-500/5' 
+                            : errors.name 
+                              ? 'ring-2 ring-red-500/30 bg-red-500/5'
+                              : ''
+                        }`}
                         {...field}
                       />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="text-xs mt-1" />
                   </FormItem>
                 )}
               />
@@ -112,16 +131,30 @@ const ContactForm = ({ variants }: ContactFormProps) => {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel className="flex items-center gap-2">
+                      Email
+                      {watchedValues.email && !errors.email && (
+                        <CheckCircle className="w-4 h-4 text-green-500" />
+                      )}
+                      {errors.email && (
+                        <XCircle className="w-4 h-4 text-red-500" />
+                      )}
+                    </FormLabel>
                     <FormControl>
                       <Input
                         type="email"
                         placeholder="your.email@example.com"
-                        className="glass border-0"
+                        className={`glass border-0 transition-all duration-300 ${
+                          watchedValues.email && !errors.email 
+                            ? 'ring-2 ring-green-500/30 bg-green-500/5' 
+                            : errors.email 
+                              ? 'ring-2 ring-red-500/30 bg-red-500/5'
+                              : ''
+                        }`}
                         {...field}
                       />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="text-xs mt-1" />
                   </FormItem>
                 )}
               />
@@ -131,16 +164,33 @@ const ContactForm = ({ variants }: ContactFormProps) => {
                 name="message"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Message</FormLabel>
+                    <FormLabel className="flex items-center gap-2">
+                      Message
+                      {watchedValues.message && !errors.message && (
+                        <CheckCircle className="w-4 h-4 text-green-500" />
+                      )}
+                      {errors.message && (
+                        <XCircle className="w-4 h-4 text-red-500" />
+                      )}
+                    </FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="Tell me about your project..."
                         rows={5}
-                        className="glass border-0 resize-none"
+                        className={`glass border-0 resize-none transition-all duration-300 ${
+                          watchedValues.message && !errors.message 
+                            ? 'ring-2 ring-green-500/30 bg-green-500/5' 
+                            : errors.message 
+                              ? 'ring-2 ring-red-500/30 bg-red-500/5'
+                              : ''
+                        }`}
                         {...field}
                       />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="text-xs mt-1" />
+                    <div className="text-xs text-muted-foreground mt-1">
+                      {watchedValues.message?.length || 0}/1000 characters
+                    </div>
                   </FormItem>
                 )}
               />

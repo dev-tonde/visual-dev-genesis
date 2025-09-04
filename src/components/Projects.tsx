@@ -11,6 +11,7 @@ import ProjectSkeleton from '@/components/ProjectSkeleton';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import RetryButton from '@/components/RetryButton';
 import { useState, useMemo } from 'react';
+import ProjectSearch from '@/components/ProjectSearch';
 
 const Projects = () => {
   const [ref, inView] = useInView({
@@ -20,6 +21,7 @@ const Projects = () => {
 
   const { repos, loading, error } = useGitHubRepos();
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -105,20 +107,45 @@ const Projects = () => {
     return Array.from(techs).sort();
   }, [allProjects]);
 
-  // Filter projects based on selected filters
+  // Filter projects based on search term and selected filters
   const displayProjects = useMemo(() => {
-    if (selectedFilters.length === 0) return allProjects;
-    
-    return allProjects.filter(project => {
-      const projectTechs = [
-        ...(project.topics || []),
-        ...(project.language ? [project.language.toLowerCase()] : [])
-      ];
-      return selectedFilters.some(filter => 
-        projectTechs.some(tech => tech.toLowerCase().includes(filter.toLowerCase()))
+    let filtered = allProjects;
+
+    // Filter by search term
+    if (searchTerm) {
+      filtered = filtered.filter(project => 
+        project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (project.description && project.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (project.topics && project.topics.some(topic => 
+          topic.toLowerCase().includes(searchTerm.toLowerCase())
+        )) ||
+        (project.language && project.language.toLowerCase().includes(searchTerm.toLowerCase()))
       );
-    });
-  }, [allProjects, selectedFilters]);
+    }
+
+    // Filter by selected tags
+    if (selectedFilters.length > 0) {
+      filtered = filtered.filter(project => {
+        const projectTechs = [
+          ...(project.topics || []),
+          ...(project.language ? [project.language.toLowerCase()] : [])
+        ];
+        return selectedFilters.some(filter => 
+          projectTechs.some(tech => tech.toLowerCase().includes(filter.toLowerCase()))
+        );
+      });
+    }
+
+    return filtered;
+  }, [allProjects, selectedFilters, searchTerm]);
+
+  const handleTagToggle = (tag: string) => {
+    setSelectedFilters(prev => 
+      prev.includes(tag) 
+        ? prev.filter(t => t !== tag)
+        : [...prev, tag]
+    );
+  };
 
   return (
     <section id="projects" className="py-20 px-4">
@@ -142,10 +169,13 @@ const Projects = () => {
           </motion.div>
 
           {!loading && availableTechs.length > 0 && (
-            <ProjectFilter
-              selectedFilters={selectedFilters}
-              onFilterChange={setSelectedFilters}
-              availableTechs={availableTechs}
+            <ProjectSearch
+              searchTerm={searchTerm}
+              onSearchChange={setSearchTerm}
+              selectedTags={selectedFilters}
+              onTagToggle={handleTagToggle}
+              availableTags={availableTechs}
+              resultsCount={displayProjects.length}
             />
           )}
 

@@ -2,6 +2,8 @@ import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { Code, Palette, Zap, Users } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import SkillsVisualization from '@/components/SkillsVisualization';
+import AnimatedStats from '@/components/AnimatedStats';
 
 const About = () => {
   const [ref, inView] = useInView({
@@ -144,6 +146,12 @@ const About = () => {
               Every project is an opportunity to push boundaries and create something amazing."
             </p>
           </motion.div>
+
+          {/* Interactive Skills Visualization */}
+          <SkillsVisualization />
+
+          {/* Animated Statistics */}
+          <AnimatedStats />
         </motion.div>
       </div>
     </section>
