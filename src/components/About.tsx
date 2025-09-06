@@ -33,14 +33,6 @@ const About = () => {
     }
   };
 
-  const skills = [
-    { name: 'React', level: 95 },
-    { name: 'TypeScript', level: 90 },
-    { name: 'Next.js', level: 85 },
-    { name: 'Tailwind CSS', level: 92 },
-    { name: 'Framer Motion', level: 88 },
-    { name: 'Node.js', level: 80 },
-  ];
 
   const highlights = [
     {
@@ -85,57 +77,33 @@ const About = () => {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-12 mb-16">
-            <motion.div variants={itemVariants}>
-              <h3 className="text-2xl font-semibold mb-6 text-primary">Technical Skills</h3>
-              <div className="space-y-4">
-                {skills.map((skill, index) => (
-                  <div key={skill.name}>
-                    <div className="flex justify-between mb-2">
-                      <span className="text-sm font-medium">{skill.name}</span>
-                      <span className="text-sm text-muted-foreground">{skill.level}%</span>
-                    </div>
-                    <div className="w-full bg-muted rounded-full h-2">
-                      <motion.div
-                        className="h-2 rounded-full gradient-primary"
-                        initial={{ width: 0 }}
-                        animate={inView ? { width: `${skill.level}%` } : { width: 0 }}
-                        transition={{ duration: 1, delay: index * 0.1 }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-
-            <motion.div variants={itemVariants}>
-              <h3 className="text-2xl font-semibold mb-6 text-primary">What I Do</h3>
-              <div className="grid gap-4">
-                {highlights.map((highlight, index) => (
-                  <motion.div
-                    key={highlight.title}
-                    variants={itemVariants}
-                    whileHover={{ scale: 1.02 }}
-                    className="transition-transform"
-                  >
-                    <Card className="glass border-0">
-                      <CardContent className="p-4">
-                        <div className="flex items-start space-x-3">
-                          <div className="p-2 rounded-lg bg-primary/10">
-                            <highlight.icon className="w-5 h-5 icon-primary" />
-                          </div>
-                          <div>
-                            <h4 className="font-semibold mb-1">{highlight.title}</h4>
-                            <p className="text-sm text-muted-foreground">{highlight.description}</p>
-                          </div>
+          <motion.div variants={itemVariants}>
+            <h3 className="text-2xl font-semibold mb-6 text-primary">What I Do</h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              {highlights.map((highlight, index) => (
+                <motion.div
+                  key={highlight.title}
+                  variants={itemVariants}
+                  whileHover={{ scale: 1.02 }}
+                  className="transition-transform"
+                >
+                  <Card className="glass border-0">
+                    <CardContent className="p-4">
+                      <div className="flex items-start space-x-3">
+                        <div className="p-2 rounded-lg bg-primary/10">
+                          <highlight.icon className="w-5 h-5 icon-primary" />
                         </div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          </div>
+                        <div>
+                          <h4 className="font-semibold mb-1">{highlight.title}</h4>
+                          <p className="text-sm text-muted-foreground">{highlight.description}</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
 
           <motion.div
             variants={itemVariants}

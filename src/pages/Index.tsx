@@ -8,7 +8,7 @@ import SEOHead from '@/components/SEOHead';
 import StructuredData from '@/components/StructuredData';
 import InteractiveBackground from '@/components/InteractiveBackground';
 import FloatingElements from '@/components/FloatingElements';
-import ProjectCaseStudies from '@/components/ProjectCaseStudies';
+
 import Certifications from '@/components/Certifications';
 
 const Index = () => {
@@ -31,7 +31,7 @@ const Index = () => {
             <Projects />
           </section>
           <section id="case-studies">
-            <ProjectCaseStudies />
+            
           </section>
           <section id="certifications">
             <Certifications />
