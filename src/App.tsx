@@ -9,6 +9,8 @@ import CommandPalette from "@/components/CommandPalette";
 import MouseFollower from "@/components/MouseFollower";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import PerformanceOptimizer from "@/components/PerformanceOptimizer";
+import PerformanceMonitor from "@/components/PerformanceMonitor";
+import AccessibilityEnhancer from "@/components/AccessibilityEnhancer";
 import Analytics from "@/components/Analytics";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import Index from "./pages/Index";
@@ -21,6 +23,8 @@ const AppContent = () => {
   return (
     <>
       <PerformanceOptimizer />
+      <PerformanceMonitor />
+      <AccessibilityEnhancer />
       <Analytics />
       <Routes>
         <Route path="/" element={<Index />} />

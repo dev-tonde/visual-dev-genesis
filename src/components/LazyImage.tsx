@@ -37,16 +37,24 @@ const LazyImage = ({ src, alt, className = '', placeholder }: LazyImageProps) =>
           src={src}
           alt={alt}
           loading="lazy"
+          decoding="async"
           onLoad={() => setIsLoaded(true)}
           className={`w-full h-full object-cover ${className}`}
           style={{
             filter: isLoaded ? 'none' : 'blur(4px)',
             transition: 'filter 0.3s ease-in-out',
           }}
+          // SEO and Accessibility enhancements
+          role="img"
+          aria-label={alt}
+          itemProp="image"
         />
       )}
       {!isLoaded && placeholder && (
-        <div className="absolute inset-0 bg-muted animate-pulse flex items-center justify-center">
+        <div 
+          className="absolute inset-0 bg-muted animate-pulse flex items-center justify-center"
+          aria-hidden="true"
+        >
           <span className="text-muted-foreground text-sm">{placeholder}</span>
         </div>
       )}
