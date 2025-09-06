@@ -318,7 +318,7 @@ const Certifications = () => {
             </TabsList>
 
             <TabsContent value="ai" className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid md:grid-cols-3 lg:grid-cols-3 gap-6">
                 {certifications.ai.map((cert) => (
                   <CertificationCard key={cert.id} cert={cert} />
                 ))}
@@ -326,7 +326,7 @@ const Certifications = () => {
             </TabsContent>
 
             <TabsContent value="development" className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid md:grid-cols-3 lg:grid-cols-3 gap-6">
                 {certifications.development.map((cert) => (
                   <CertificationCard key={cert.id} cert={cert} />
                 ))}
@@ -334,7 +334,7 @@ const Certifications = () => {
             </TabsContent>
 
             <TabsContent value="frontend" className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid md:grid-cols-3 lg:grid-cols-3 gap-6">
                 {certifications.frontend.map((cert) => (
                   <CertificationCard key={cert.id} cert={cert} />
                 ))}

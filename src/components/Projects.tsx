@@ -93,14 +93,20 @@ const Projects = () => {
 
   const allProjects = repos.length > 0 ? repos.slice(0, 6) : fallbackProjects;
   
-  // Get all available technologies for filtering
+  // Get frontend technologies for filtering
   const availableTechs = useMemo(() => {
     const techs = new Set<string>();
+    const frontendTechs = ['react', 'vue', 'angular', 'typescript', 'javascript', 'html', 'css', 'tailwind', 'sass', 'bootstrap', 'nextjs', 'nuxt', 'gatsby', 'svelte', 'framer-motion'];
+    
     allProjects.forEach(project => {
       if (project.topics) {
-        project.topics.forEach(topic => techs.add(topic));
+        project.topics.forEach(topic => {
+          if (frontendTechs.includes(topic.toLowerCase())) {
+            techs.add(topic);
+          }
+        });
       }
-      if (project.language) {
+      if (project.language && frontendTechs.includes(project.language.toLowerCase())) {
         techs.add(project.language.toLowerCase());
       }
     });
@@ -282,7 +288,7 @@ const Projects = () => {
                           className="flex-1 hover-lift gradient-primary"
                           asChild
                         >
-                          <a href={project.homepage || `https://${project.name.toLowerCase()}.dev-tonde.com`} target="_blank" rel="noopener noreferrer">
+                          <a href={project.homepage || `https://${project.name.toLowerCase()}.dev-tonde.dev`} target="_blank" rel="noopener noreferrer">
                             <ExternalLink className="w-4 h-4 mr-2" />
                             Live Demo
                           </a>

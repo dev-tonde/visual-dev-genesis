@@ -111,101 +111,49 @@ const Testimonials = () => {
             </p>
           </motion.div>
 
-          {/* Carousel Container */}
-          <div className="relative max-w-4xl mx-auto">
-            <div className="overflow-hidden">
-              <motion.div 
-                className="flex transition-transform duration-500 ease-in-out"
-                style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+          {/* Grid Layout */}
+          <div className="grid md:grid-cols-3 gap-6">
+            {testimonials.map((testimonial, index) => (
+              <motion.div
+                key={testimonial.name}
+                variants={itemVariants}
+                whileHover={{ y: -5, scale: 1.02 }}
+                className="group"
               >
-                {testimonials.map((testimonial, index) => (
-                  <motion.div
-                    key={testimonial.name}
-                    className="w-full flex-shrink-0 px-4"
-                    variants={itemVariants}
-                  >
-                    <Card className="glass-vibrant border-0 relative overflow-hidden hover-glow transition-all duration-500 mx-auto max-w-2xl">
-                      <CardContent className="p-8 text-center">
-                        <div className="flex justify-center mb-6">
-                          <div className="flex space-x-1">
-                            {[...Array(testimonial.rating)].map((_, i) => (
-                              <Star key={i} className="w-5 h-5 fill-current text-yellow-400" />
-                            ))}
-                          </div>
-                        </div>
-                        
-                        <Quote className="w-12 h-12 text-primary/30 mx-auto mb-6" />
-                        
-                        <p className="text-lg text-muted-foreground mb-8 italic leading-relaxed">
-                          "{testimonial.content}"
+                <Card className="glass-vibrant border-0 relative overflow-hidden hover-glow transition-all duration-500 h-full">
+                  <CardContent className="p-6 text-center h-full flex flex-col">
+                    <div className="flex justify-center mb-4">
+                      <div className="flex space-x-1">
+                        {[...Array(testimonial.rating)].map((_, i) => (
+                          <Star key={i} className="w-4 h-4 fill-current text-yellow-400" />
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <Quote className="w-8 h-8 text-primary/30 mx-auto mb-4" />
+                    
+                    <p className="text-sm text-muted-foreground mb-6 italic leading-relaxed flex-grow">
+                      "{testimonial.content}"
+                    </p>
+                    
+                    <div className="flex items-center justify-center space-x-3">
+                      <Avatar className="ring-2 ring-primary/20 w-12 h-12">
+                        <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
+                        <AvatarFallback className="bg-primary/10">
+                          {testimonial.name.split(' ').map(n => n[0]).join('')}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="text-left">
+                        <h4 className="font-semibold text-sm">{testimonial.name}</h4>
+                        <p className="text-xs text-muted-foreground">
+                          {testimonial.role} at {testimonial.company}
                         </p>
-                        
-                        <div className="flex items-center justify-center space-x-4">
-                          <Avatar className="ring-2 ring-primary/20 w-16 h-16">
-                            <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
-                            <AvatarFallback className="bg-primary/10 text-lg">
-                              {testimonial.name.split(' ').map(n => n[0]).join('')}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className="text-left">
-                            <h4 className="font-semibold text-lg">{testimonial.name}</h4>
-                            <p className="text-sm text-muted-foreground">
-                              {testimonial.role} at {testimonial.company}
-                            </p>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                ))}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </motion.div>
-            </div>
-
-            {/* Navigation Buttons */}
-            <Button
-              variant="outline"
-              size="icon"
-              className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 glass-vibrant border-0 hover-lift"
-              onClick={prevTestimonial}
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </Button>
-            
-            <Button
-              variant="outline"
-              size="icon"
-              className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 glass-vibrant border-0 hover-lift"
-              onClick={nextTestimonial}
-            >
-              <ChevronRight className="w-4 h-4" />
-            </Button>
-
-            {/* Dots Indicator */}
-            <div className="flex justify-center space-x-2 mt-8">
-              {testimonials.map((_, index) => (
-                <button
-                  key={index}
-                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                    index === currentIndex 
-                      ? 'bg-primary scale-125' 
-                      : 'bg-muted hover:bg-primary/50'
-                  }`}
-                  onClick={() => goToSlide(index)}
-                />
-              ))}
-            </div>
-
-            {/* Auto-play Toggle */}
-            <div className="text-center mt-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsAutoPlaying(!isAutoPlaying)}
-                className="text-xs text-muted-foreground hover:text-foreground"
-              >
-                {isAutoPlaying ? 'Pause' : 'Resume'} auto-play
-              </Button>
-            </div>
+            ))}
           </div>
         </motion.div>
       </div>

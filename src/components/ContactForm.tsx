@@ -111,12 +111,12 @@ const ContactForm = ({ variants }: ContactFormProps) => {
                     <FormControl>
                       <Input
                         placeholder="Your Name"
-                        className={`glass border-0 transition-all duration-300 ${
+                        className={`glass border-0 shadow-inner transition-all duration-300 ${
                           watchedValues.name && !errors.name 
-                            ? 'ring-2 ring-green-500/30 bg-green-500/5' 
+                            ? 'ring-2 ring-green-500/30 bg-green-500/5 shadow-green-500/20' 
                             : errors.name 
-                              ? 'ring-2 ring-red-500/30 bg-red-500/5'
-                              : ''
+                              ? 'ring-2 ring-red-500/30 bg-red-500/5 shadow-red-500/20'
+                              : 'shadow-muted/20'
                         }`}
                         {...field}
                       />
@@ -144,12 +144,12 @@ const ContactForm = ({ variants }: ContactFormProps) => {
                       <Input
                         type="email"
                         placeholder="your.email@example.com"
-                        className={`glass border-0 transition-all duration-300 ${
+                        className={`glass border-0 shadow-inner transition-all duration-300 ${
                           watchedValues.email && !errors.email 
-                            ? 'ring-2 ring-green-500/30 bg-green-500/5' 
+                            ? 'ring-2 ring-green-500/30 bg-green-500/5 shadow-green-500/20' 
                             : errors.email 
-                              ? 'ring-2 ring-red-500/30 bg-red-500/5'
-                              : ''
+                              ? 'ring-2 ring-red-500/30 bg-red-500/5 shadow-red-500/20'
+                              : 'shadow-muted/20'
                         }`}
                         {...field}
                       />
@@ -177,12 +177,12 @@ const ContactForm = ({ variants }: ContactFormProps) => {
                       <Textarea
                         placeholder="Tell me about your project..."
                         rows={5}
-                        className={`glass border-0 resize-none transition-all duration-300 ${
+                        className={`glass border-0 resize-none shadow-inner transition-all duration-300 ${
                           watchedValues.message && !errors.message 
-                            ? 'ring-2 ring-green-500/30 bg-green-500/5' 
+                            ? 'ring-2 ring-green-500/30 bg-green-500/5 shadow-green-500/20' 
                             : errors.message 
-                              ? 'ring-2 ring-red-500/30 bg-red-500/5'
-                              : ''
+                              ? 'ring-2 ring-red-500/30 bg-red-500/5 shadow-red-500/20'
+                              : 'shadow-muted/20'
                         }`}
                         {...field}
                       />
