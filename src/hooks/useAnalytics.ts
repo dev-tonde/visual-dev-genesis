@@ -1,13 +1,35 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import type { ConsentPreferences } from '@/components/ConsentManager';
 
-// Simple analytics hook for tracking page views
+const CONSENT_KEY = 'user-consent-preferences';
+
+// Simple analytics hook for tracking page views with consent
 export const useAnalytics = () => {
   const location = useLocation();
+  const [hasConsent, setHasConsent] = useState(false);
+
+  useEffect(() => {
+    const checkConsent = () => {
+      const savedConsent = localStorage.getItem(CONSENT_KEY);
+      if (savedConsent) {
+        const consent: ConsentPreferences = JSON.parse(savedConsent);
+        setHasConsent(consent.analytics);
+      }
+    };
+    
+    checkConsent();
+    // Listen for consent changes
+    window.addEventListener('storage', checkConsent);
+    return () => window.removeEventListener('storage', checkConsent);
+  }, []);
 
   useEffect(() => {
     const trackPageView = async () => {
+      // Only track if user has given consent
+      if (!hasConsent) return;
+      
       try {
         // Generate a simple session ID
         const sessionId = sessionStorage.getItem('session_id') || 
@@ -48,10 +70,13 @@ export const useAnalytics = () => {
     // Track after a small delay to avoid blocking initial render
     const timer = setTimeout(trackPageView, 100);
     return () => clearTimeout(timer);
-  }, [location]);
+  }, [location, hasConsent]);
 
   // Function to track custom events
   const trackEvent = async (eventName: string, eventData?: Record<string, any>) => {
+    // Only track if user has given consent
+    if (!hasConsent) return;
+    
     try {
       const sessionId = sessionStorage.getItem('session_id') || crypto.randomUUID?.() || 'anonymous';
       
