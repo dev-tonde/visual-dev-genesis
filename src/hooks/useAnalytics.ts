@@ -5,12 +5,24 @@ import type { ConsentPreferences } from '@/components/ConsentManager';
 
 const CONSENT_KEY = 'user-consent-preferences';
 
-// Simple analytics hook for tracking page views with consent
+// Simple analytics hook for tracking page views with consent and DNT respect
 export const useAnalytics = () => {
   const location = useLocation();
   const [hasConsent, setHasConsent] = useState(false);
+  const [isDNTEnabled, setIsDNTEnabled] = useState(false);
 
   useEffect(() => {
+    // Check Do Not Track setting
+    const dntEnabled = navigator.doNotTrack === "1" || 
+                      navigator.doNotTrack === "yes" ||
+                      (window as any).doNotTrack === "1";
+    setIsDNTEnabled(dntEnabled);
+    
+    if (dntEnabled) {
+      console.log('Analytics disabled: Do Not Track is enabled');
+      return;
+    }
+
     const checkConsent = () => {
       const savedConsent = localStorage.getItem(CONSENT_KEY);
       if (savedConsent) {
@@ -27,8 +39,8 @@ export const useAnalytics = () => {
 
   useEffect(() => {
     const trackPageView = async () => {
-      // Only track if user has given consent
-      if (!hasConsent) return;
+      // Respect DNT and user consent
+      if (isDNTEnabled || !hasConsent) return;
       
       try {
         // Generate a simple session ID
@@ -70,12 +82,12 @@ export const useAnalytics = () => {
     // Track after a small delay to avoid blocking initial render
     const timer = setTimeout(trackPageView, 100);
     return () => clearTimeout(timer);
-  }, [location, hasConsent]);
+  }, [location, hasConsent, isDNTEnabled]);
 
   // Function to track custom events with retry logic
   const trackEvent = async (eventName: string, eventData?: Record<string, any>, retryCount = 0) => {
-    // Only track if user has given consent
-    if (!hasConsent) return;
+    // Respect DNT and user consent
+    if (isDNTEnabled || !hasConsent) return;
     
     const maxRetries = 2;
     

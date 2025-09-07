@@ -62,6 +62,7 @@ const Index = () => {
                 <li><a href="#about" className="hover:text-primary transition-colors">About</a></li>
                 <li><a href="#projects" className="hover:text-primary transition-colors">Projects</a></li>
                 <li><a href="#contact" className="hover:text-primary transition-colors">Contact</a></li>
+                <li><a href="/privacy" className="hover:text-primary transition-colors">Privacy</a></li>
                 <li><a href="/cv.pdf" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">CV</a></li>
               </ul>
             </nav>
