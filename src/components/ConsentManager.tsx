@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { X, Shield, Analytics, Cookie } from "lucide-react";
+import { X, Shield, BarChart, Cookie } from "lucide-react";
 
 interface ConsentManagerProps {
   onConsentChange: (consent: ConsentPreferences) => void;
@@ -104,7 +104,7 @@ export const ConsentManager = ({ onConsentChange }: ConsentManagerProps) => {
               <div className="ml-auto text-xs text-green-600 font-medium">Always Active</div>
             </div>
             <div className="flex items-center gap-3 text-sm">
-              <Analytics className="h-4 w-4 text-muted-foreground" />
+              <BarChart className="h-4 w-4 text-muted-foreground" />
               <div>
                 <div className="font-medium">Analytics</div>
                 <div className="text-xs text-muted-foreground">Help us improve by sharing usage data</div>
