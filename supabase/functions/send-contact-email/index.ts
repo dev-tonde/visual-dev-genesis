@@ -137,14 +137,37 @@ const handler = async (req: Request): Promise<Response> => {
     );
   } catch (error: any) {
     console.error("Error in send-contact-email function:", error);
+    
+    // Standardized error response
+    const errorResponse = {
+      success: false,
+      error: "CONTACT_SEND_FAILED",
+      message: "Unable to send your message at this time. Please try again in a few moments.",
+      code: "E001",
+      retryAfter: 30000 // 30 seconds
+    };
+    
+    // Handle specific error types
+    if (error.message?.includes('rate limit')) {
+      errorResponse.error = "RATE_LIMIT_EXCEEDED";
+      errorResponse.message = "Too many requests. Please wait a moment before trying again.";
+      errorResponse.code = "E002";
+      errorResponse.retryAfter = 60000; // 1 minute
+    } else if (error.message?.includes('network') || error.message?.includes('fetch')) {
+      errorResponse.error = "NETWORK_ERROR";
+      errorResponse.message = "Network connection issue. Please check your internet and try again.";
+      errorResponse.code = "E003";
+    } else if (error.message?.includes('validation')) {
+      errorResponse.error = "VALIDATION_ERROR";
+      errorResponse.message = "Please check your input and try again.";
+      errorResponse.code = "E004";
+      errorResponse.retryAfter = 0;
+    }
+    
     return new Response(
-      JSON.stringify({ 
-        success: false, 
-        error: "Failed to send message. Please try again."
-        // Removed details to prevent information disclosure
-      }),
+      JSON.stringify(errorResponse),
       {
-        status: 500,
+        status: error.message?.includes('validation') ? 400 : 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },
       }
     );

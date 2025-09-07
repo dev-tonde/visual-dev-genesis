@@ -27,6 +27,7 @@ interface ContactFormProps {
 
 const ContactForm = ({ variants }: ContactFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [retryTimeout, setRetryTimeout] = useState<number | null>(null);
   const { toast } = useToast();
 
   const form = useForm<ContactFormData>({
@@ -43,7 +44,7 @@ const ContactForm = ({ variants }: ContactFormProps) => {
   const watchedValues = form.watch();
   const { errors, isValid } = form.formState;
 
-  const onSubmit = async (data: ContactFormData) => {
+  const submitWithRetry = async (data: ContactFormData, retryCount = 0) => {
     setIsSubmitting(true);
 
     try {
@@ -59,12 +60,53 @@ const ContactForm = ({ variants }: ContactFormProps) => {
       if (dbError) throw dbError;
 
       // Call edge function to send email
-      const { error: emailError } = await supabase.functions.invoke('send-contact-email', {
+      const { data: emailResponse, error: emailError } = await supabase.functions.invoke('send-contact-email', {
         body: data
       });
 
       if (emailError) {
-        console.warn('Email sending failed:', emailError);
+        const errorData = emailError.message ? JSON.parse(emailError.message) : emailError;
+        
+        // Handle specific error types with retry logic
+        if (errorData.error === 'RATE_LIMIT_EXCEEDED' && retryCount < 2) {
+          const retryAfter = errorData.retryAfter || 60000;
+          
+          toast({
+            title: "Rate limit exceeded",
+            description: `Too many requests. Retrying in ${Math.ceil(retryAfter / 1000)} seconds...`,
+            variant: "destructive",
+          });
+
+          setRetryTimeout(retryAfter);
+          setTimeout(() => {
+            setRetryTimeout(null);
+            submitWithRetry(data, retryCount + 1);
+          }, retryAfter);
+          
+          return;
+        }
+        
+        if ((errorData.error === 'NETWORK_ERROR' || errorData.error === 'CONTACT_SEND_FAILED') && retryCount < 3) {
+          const delay = Math.pow(2, retryCount) * 1000; // Exponential backoff
+          
+          toast({
+            title: "Connection issue",
+            description: `Retrying in ${delay / 1000} seconds...`,
+            variant: "destructive",
+          });
+
+          setTimeout(() => submitWithRetry(data, retryCount + 1), delay);
+          return;
+        }
+        
+        // Final error handling
+        toast({
+          title: errorData.error === 'VALIDATION_ERROR' ? "Invalid input" : "Failed to send message",
+          description: errorData.message || "Please try again or contact me directly via email.",
+          variant: "destructive",
+        });
+        
+        throw emailError;
       }
 
       toast({
@@ -75,15 +117,20 @@ const ContactForm = ({ variants }: ContactFormProps) => {
       form.reset();
     } catch (error) {
       console.error('Form submission error:', error);
-      toast({
-        title: "Failed to send message",
-        description: "Please try again or contact me directly via email.",
-        variant: "destructive",
-      });
+      
+      if (retryCount === 0) {
+        toast({
+          title: "Failed to send message",
+          description: "Please try again or contact me directly via email.",
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  const onSubmit = (data: ContactFormData) => submitWithRetry(data, 0);
 
   return (
     <motion.div variants={variants}>
@@ -199,13 +246,24 @@ const ContactForm = ({ variants }: ContactFormProps) => {
                 type="submit" 
                 className="w-full gradient-primary focus:ring-2 focus:ring-primary focus:ring-offset-2"
                 size="lg"
-                disabled={isSubmitting}
-                aria-label={isSubmitting ? "Sending message..." : "Send message"}
+                disabled={isSubmitting || !!retryTimeout}
+                aria-label={
+                  isSubmitting 
+                    ? "Sending message..." 
+                    : retryTimeout 
+                      ? `Retrying in ${Math.ceil(retryTimeout / 1000)} seconds...`
+                      : "Send message"
+                }
               >
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin icon-primary" />
                     Sending...
+                  </>
+                ) : retryTimeout ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin icon-primary" />
+                    Retrying in {Math.ceil(retryTimeout / 1000)}s...
                   </>
                 ) : (
                   <>

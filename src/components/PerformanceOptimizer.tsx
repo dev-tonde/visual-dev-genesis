@@ -3,13 +3,20 @@ import { useEffect } from 'react';
 // Performance optimization utilities
 export const usePerformanceOptimizer = () => {
   useEffect(() => {
-    // Preload critical fonts
-    const linkPreload = document.createElement('link');
-    linkPreload.rel = 'preload';
-    linkPreload.as = 'font';
-    linkPreload.type = 'font/woff2';
-    linkPreload.crossOrigin = 'anonymous';
-    document.head.appendChild(linkPreload);
+    // Critical resource hints
+    const hints = [
+      { rel: 'dns-prefetch', href: '//fonts.googleapis.com' },
+      { rel: 'dns-prefetch', href: '//api.github.com' },
+      { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous' }
+    ];
+    
+    hints.forEach(hint => {
+      const link = document.createElement('link');
+      link.rel = hint.rel;
+      link.href = hint.href;
+      if (hint.crossOrigin) link.crossOrigin = hint.crossOrigin;
+      document.head.appendChild(link);
+    });
 
     // Optimize images loading
     const images = document.querySelectorAll('img[data-src]');

@@ -14,10 +14,13 @@ export interface GitHubRepo {
   fork: boolean;
 }
 
-const GITHUB_USERNAME = 'dev-tonde'; // Replace with your GitHub username
-const GITHUB_TOKEN = ''; // Optional: Add your GitHub token for higher rate limits
+const GITHUB_USERNAME = import.meta.env.VITE_GITHUB_USERNAME || 'dev-tonde';
+const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_TOKEN || '';
 
-export const fetchGitHubRepos = async (): Promise<GitHubRepo[]> => {
+export const fetchGitHubRepos = async (retryCount = 0): Promise<GitHubRepo[]> => {
+  const maxRetries = 3;
+  const baseDelay = 1000;
+  
   try {
     const headers: HeadersInit = {
       'Accept': 'application/vnd.github.v3+json',
@@ -31,8 +34,32 @@ export const fetchGitHubRepos = async (): Promise<GitHubRepo[]> => {
       headers,
     });
 
+    if (response.status === 403) {
+      // Rate limit exceeded
+      const resetTime = response.headers.get('X-RateLimit-Reset');
+      const resetDate = resetTime ? new Date(parseInt(resetTime) * 1000) : new Date(Date.now() + 3600000);
+      const waitTime = Math.max(0, resetDate.getTime() - Date.now());
+      
+      console.warn(`GitHub API rate limit exceeded. Reset at ${resetDate.toLocaleTimeString()}`);
+      
+      if (retryCount < maxRetries && waitTime < 300000) { // Don't wait more than 5 minutes
+        await new Promise(resolve => setTimeout(resolve, Math.min(waitTime, 60000)));
+        return fetchGitHubRepos(retryCount + 1);
+      }
+      
+      throw new Error(`GitHub API rate limit exceeded. Try again after ${resetDate.toLocaleTimeString()}`);
+    }
+
+    if (response.status >= 500 && retryCount < maxRetries) {
+      // Server error, retry with exponential backoff
+      const delay = baseDelay * Math.pow(2, retryCount);
+      console.warn(`GitHub API server error (${response.status}). Retrying in ${delay}ms...`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+      return fetchGitHubRepos(retryCount + 1);
+    }
+
     if (!response.ok) {
-      throw new Error(`GitHub API error: ${response.status}`);
+      throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
     }
 
     const repos: GitHubRepo[] = await response.json();
@@ -54,6 +81,15 @@ export const fetchGitHubRepos = async (): Promise<GitHubRepo[]> => {
       });
   } catch (error) {
     console.error('Failed to fetch GitHub repos:', error);
+    
+    if (retryCount < maxRetries && error instanceof Error && error.message.includes('fetch')) {
+      // Network error, retry with exponential backoff
+      const delay = baseDelay * Math.pow(2, retryCount);
+      console.warn(`Network error. Retrying in ${delay}ms...`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+      return fetchGitHubRepos(retryCount + 1);
+    }
+    
     return [];
   }
 };

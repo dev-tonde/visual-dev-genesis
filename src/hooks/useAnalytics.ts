@@ -72,15 +72,17 @@ export const useAnalytics = () => {
     return () => clearTimeout(timer);
   }, [location, hasConsent]);
 
-  // Function to track custom events
-  const trackEvent = async (eventName: string, eventData?: Record<string, any>) => {
+  // Function to track custom events with retry logic
+  const trackEvent = async (eventName: string, eventData?: Record<string, any>, retryCount = 0) => {
     // Only track if user has given consent
     if (!hasConsent) return;
+    
+    const maxRetries = 2;
     
     try {
       const sessionId = sessionStorage.getItem('session_id') || crypto.randomUUID?.() || 'anonymous';
       
-      await supabase.from('user_events').insert({
+      const { error } = await supabase.from('user_events').insert({
         event_name: eventName,
         page_path: location.pathname,
         session_id: sessionId,
@@ -89,8 +91,18 @@ export const useAnalytics = () => {
           timestamp: new Date().toISOString()
         }
       });
+      
+      if (error) throw error;
+      
     } catch (error) {
       console.debug('Event tracking failed:', error);
+      
+      // Retry with exponential backoff for network errors
+      if (retryCount < maxRetries && error instanceof Error && 
+          (error.message.includes('network') || error.message.includes('fetch'))) {
+        const delay = Math.pow(2, retryCount) * 1000;
+        setTimeout(() => trackEvent(eventName, eventData, retryCount + 1), delay);
+      }
     }
   };
 
