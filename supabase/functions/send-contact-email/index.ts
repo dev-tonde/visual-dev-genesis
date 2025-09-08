@@ -1,12 +1,26 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.3';
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
+// Initialize Supabase client with service role key for server-side operations
+const supabaseServiceRole = createClient(
+  Deno.env.get('SUPABASE_URL') ?? '',
+  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+);
+
+// Rate limiting configuration
+const RATE_LIMITS = {
+  PER_IP_HOUR: 5,
+  PER_EMAIL_HOUR: 3,
+} as const;
+
+// Only allow specific origins in production
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Origin": Deno.env.get('CORS_ORIGIN') || "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 interface ContactEmailRequest {
@@ -45,6 +59,33 @@ const validateInput = (data: ContactEmailRequest): { isValid: boolean; errors: s
   }
   
   return { isValid: errors.length === 0, errors };
+// Rate limiting functions
+const checkRateLimit = async (identifier: string, type: 'ip' | 'email'): Promise<boolean> => {
+  const limit = type === 'ip' ? RATE_LIMITS.PER_IP_HOUR : RATE_LIMITS.PER_EMAIL_HOUR;
+  const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+  
+  const { count } = await supabaseServiceRole
+    .from('contact_submissions')
+    .select('*', { count: 'exact', head: true })
+    .eq(type === 'ip' ? 'ip_address' : 'email', identifier)
+    .gte('created_at', oneHourAgo);
+    
+  return (count || 0) < limit;
+};
+
+const logSubmission = async (data: ContactEmailRequest & { ip_address?: string }) => {
+  // Log minimal, non-PII data for monitoring
+  const logData = {
+    name: data.name,
+    email: data.email,
+    message: '[REDACTED]', // Redact user message for privacy
+    ip_address: data.ip_address,
+    status: 'pending'
+  };
+  
+  await supabaseServiceRole
+    .from('contact_submissions')
+    .insert([logData]);
 };
 
 const handler = async (req: Request): Promise<Response> => {
@@ -52,6 +93,11 @@ const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
+
+  // Get client IP for rate limiting
+  const clientIP = req.headers.get('x-forwarded-for') || 
+                   req.headers.get('x-real-ip') || 
+                   'unknown';
 
   try {
     const rawData: ContactEmailRequest = await req.json();
@@ -62,7 +108,8 @@ const handler = async (req: Request): Promise<Response> => {
       return new Response(
         JSON.stringify({ 
           success: false, 
-          error: "Invalid input data",
+          error: "VALIDATION_ERROR",
+          message: "Invalid input data",
           details: errors 
         }),
         {
@@ -77,7 +124,36 @@ const handler = async (req: Request): Promise<Response> => {
     const email = sanitizeInput(rawData.email);
     const message = sanitizeInput(rawData.message);
 
-    console.log("Processing contact form submission:", { name, email });
+    // Check rate limits
+    const [ipRateOk, emailRateOk] = await Promise.all([
+      checkRateLimit(clientIP, 'ip'),
+      checkRateLimit(email, 'email')
+    ]);
+
+    if (!ipRateOk || !emailRateOk) {
+      console.warn(`Rate limit exceeded - IP: ${clientIP}, Email: ${email}`);
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "RATE_LIMIT_EXCEEDED",
+          message: "Too many requests. Please wait before trying again.",
+          retryAfter: 3600000 // 1 hour
+        }),
+        {
+          status: 429,
+          headers: { 
+            "Content-Type": "application/json", 
+            "Retry-After": "3600",
+            ...corsHeaders 
+          },
+        }
+      );
+    }
+
+    // Log submission (minimal data for monitoring)
+    await logSubmission({ name, email, message, ip_address: clientIP });
+
+    console.log("Processing contact form submission from:", { ip: clientIP, email: email.replace(/(.{2}).*(@.*)/, '$1***$2') });
 
     // Send notification email to yourself
     const notificationEmail = await resend.emails.send({
