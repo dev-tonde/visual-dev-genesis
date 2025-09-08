@@ -1,6 +1,6 @@
+import { Suspense } from 'react';
 import Hero from '@/components/Hero';
 import About from '@/components/About';
-import Projects from '@/components/Projects';
 import Contact from '@/components/Contact';
 import Navigation from '@/components/Navigation';
 import Testimonials from '@/components/Testimonials';
@@ -8,8 +8,11 @@ import SEOHead from '@/components/SEOHead';
 import StructuredData from '@/components/StructuredData';
 import InteractiveBackground from '@/components/InteractiveBackground';
 import FloatingElements from '@/components/FloatingElements';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
-import Certifications from '@/components/Certifications';
+// Lazy load heavy components for better performance
+import { ProjectsLazy } from '@/components/Projects.lazy';
+import { CertificationsLazy } from '@/components/Certifications.lazy';
 
 const Index = () => {
   return (
@@ -31,11 +34,15 @@ const Index = () => {
           </section>
           <section id="projects" aria-labelledby="projects-heading">
             <h2 id="projects-heading" className="sr-only">Featured Projects</h2>
-            <Projects />
+            <Suspense fallback={<LoadingSpinner />}>
+              <ProjectsLazy />
+            </Suspense>
           </section>
           <section id="certifications" aria-labelledby="certifications-heading">
             <h2 id="certifications-heading" className="sr-only">Certifications and Achievements</h2>
-            <Certifications />
+            <Suspense fallback={<LoadingSpinner />}>
+              <CertificationsLazy />
+            </Suspense>
           </section>
           <section id="testimonials" aria-labelledby="testimonials-heading">
             <h2 id="testimonials-heading" className="sr-only">Client Testimonials</h2>

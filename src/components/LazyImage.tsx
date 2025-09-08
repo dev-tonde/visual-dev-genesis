@@ -17,7 +17,9 @@ const LazyImage = ({ src, alt, className = '', placeholder }: LazyImageProps) =>
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsInView(true);
-          observer.disconnect();
+          if (imgRef.current) {
+            observer.unobserve(imgRef.current);
+          }
         }
       },
       { threshold: 0.1 }
@@ -27,28 +29,43 @@ const LazyImage = ({ src, alt, className = '', placeholder }: LazyImageProps) =>
       observer.observe(imgRef.current);
     }
 
-    return () => observer.disconnect();
+    return () => {
+      if (imgRef.current) {
+        observer.unobserve(imgRef.current);
+      }
+      observer.disconnect();
+    };
   }, []);
 
   return (
     <div ref={imgRef} className={`lazy-image ${isLoaded ? 'loaded' : ''} ${className}`}>
       {isInView && (
-        <img
-          src={src}
-          alt={alt}
-          loading="lazy"
-          decoding="async"
-          onLoad={() => setIsLoaded(true)}
-          className={`w-full h-full object-cover ${className}`}
-          style={{
-            filter: isLoaded ? 'none' : 'blur(4px)',
-            transition: 'filter 0.3s ease-in-out',
-          }}
-          // SEO and Accessibility enhancements
-          role="img"
-          aria-label={alt}
-          itemProp="image"
-        />
+        <picture>
+          <source 
+            srcSet={`${src.replace(/\.(jpg|jpeg|png)$/i, '.webp')}`} 
+            type="image/webp" 
+          />
+          <source 
+            srcSet={`${src.replace(/\.(jpg|jpeg|png)$/i, '.avif')}`} 
+            type="image/avif" 
+          />
+          <img
+            src={src}
+            alt={alt}
+            loading="lazy"
+            decoding="async"
+            onLoad={() => setIsLoaded(true)}
+            className={`w-full h-full object-cover ${className}`}
+            style={{
+              filter: isLoaded ? 'none' : 'blur(4px)',
+              transition: 'filter 0.3s ease-in-out',
+            }}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            role="img"
+            aria-label={alt}
+            itemProp="image"
+          />
+        </picture>
       )}
       {!isLoaded && placeholder && (
         <div 
