@@ -4,11 +4,12 @@ import { Toaster as Sonner, toast } from "sonner"
 type ToasterProps = React.ComponentProps<typeof Sonner>
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme = "system" } = useTheme()
+  // Use optional chaining and fallback to prevent context errors
+  const { theme } = useTheme() || { theme: "system" }
 
   return (
     <Sonner
-      theme={theme as ToasterProps["theme"]}
+      theme={(theme || "system") as ToasterProps["theme"]}
       className="toaster group"
       toastOptions={{
         classNames: {
