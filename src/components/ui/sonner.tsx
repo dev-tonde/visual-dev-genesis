@@ -1,11 +1,24 @@
 import { useTheme } from "next-themes"
 import { Toaster as Sonner, toast } from "sonner"
+import { useEffect, useState } from "react"
 
 type ToasterProps = React.ComponentProps<typeof Sonner>
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  // Use optional chaining and fallback to prevent context errors
-  const { theme } = useTheme() || { theme: "system" }
+  const [mounted, setMounted] = useState(false)
+  
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Don't render until mounted to avoid SSR/hydration issues
+  if (!mounted) {
+    return null
+  }
+
+  // Use hook safely after component is mounted
+  const themeHook = useTheme()
+  const theme = themeHook?.theme || "system"
 
   return (
     <Sonner

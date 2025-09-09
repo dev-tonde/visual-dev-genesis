@@ -17,11 +17,17 @@ import { useTheme } from 'next-themes';
 
 const CommandPalette = () => {
   const [open, setOpen] = useState(false);
-  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  const themeHook = useTheme();
+  const { theme, setTheme } = themeHook || { theme: 'system', setTheme: () => {} };
 
   useHotkeys('meta+k, ctrl+k', () => setOpen(true), {
     preventDefault: true,
   });
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -33,6 +39,10 @@ const CommandPalette = () => {
     document.addEventListener('keydown', down);
     return () => document.removeEventListener('keydown', down);
   }, []);
+
+  if (!mounted) {
+    return null;
+  }
 
   const commands = [
     {
