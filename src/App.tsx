@@ -3,7 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ThemeProvider } from "@/components/ThemeProvider";
+import { SafeThemeProvider } from "@/components/SafeThemeProvider";
 import { HelmetProvider } from 'react-helmet-async';
 import CommandPalette from "@/components/CommandPalette";
 import MouseFollower from "@/components/MouseFollower";
@@ -40,7 +40,7 @@ const AppContent = () => {
 const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
+      <SafeThemeProvider>
         <TooltipProvider>
           <ErrorBoundary>
             <Toaster />
@@ -52,7 +52,7 @@ const App = () => (
             </BrowserRouter>
           </ErrorBoundary>
         </TooltipProvider>
-      </ThemeProvider>
+      </SafeThemeProvider>
     </QueryClientProvider>
   </HelmetProvider>
 );

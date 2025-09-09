@@ -1,16 +1,10 @@
 import { motion } from 'framer-motion';
-import { useTheme } from 'next-themes';
-import { useState, useEffect } from 'react';
+import { useSafeTheme } from '@/components/SafeThemeProvider';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const ThemeToggle = () => {
-  const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const { theme, setTheme, mounted } = useSafeTheme();
 
   if (!mounted) {
     return null;

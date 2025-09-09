@@ -13,21 +13,15 @@ import {
   Sun,
   Moon
 } from 'lucide-react';
-import { useTheme } from 'next-themes';
+import { useSafeTheme } from '@/components/SafeThemeProvider';
 
 const CommandPalette = () => {
   const [open, setOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const themeHook = useTheme();
-  const { theme, setTheme } = themeHook || { theme: 'system', setTheme: () => {} };
+  const { theme, setTheme, mounted } = useSafeTheme();
 
   useHotkeys('meta+k, ctrl+k', () => setOpen(true), {
     preventDefault: true,
   });
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {

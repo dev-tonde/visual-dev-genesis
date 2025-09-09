@@ -1,24 +1,15 @@
-import { useTheme } from "next-themes"
+import { useSafeTheme } from "@/components/SafeThemeProvider"
 import { Toaster as Sonner, toast } from "sonner"
-import { useEffect, useState } from "react"
+
 
 type ToasterProps = React.ComponentProps<typeof Sonner>
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const [mounted, setMounted] = useState(false)
-  
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  const { theme, mounted } = useSafeTheme()
 
-  // Don't render until mounted to avoid SSR/hydration issues
   if (!mounted) {
     return null
   }
-
-  // Use hook safely after component is mounted
-  const themeHook = useTheme()
-  const theme = themeHook?.theme || "system"
 
   return (
     <Sonner
