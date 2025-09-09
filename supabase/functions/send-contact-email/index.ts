@@ -59,6 +59,8 @@ const validateInput = (data: ContactEmailRequest): { isValid: boolean; errors: s
   }
   
   return { isValid: errors.length === 0, errors };
+};
+
 // Rate limiting functions
 const checkRateLimit = async (identifier: string, type: 'ip' | 'email'): Promise<boolean> => {
   const limit = type === 'ip' ? RATE_LIMITS.PER_IP_HOUR : RATE_LIMITS.PER_EMAIL_HOUR;
