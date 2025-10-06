@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import ThemeToggle from '@/components/ThemeToggle';
+import ThemeSwitch from '@/components/ThemeSwitch';
 
 // Hook to detect reduced motion preference
 const useReducedMotion = () => {
@@ -87,6 +87,7 @@ const Navigation = () => {
     { name: 'Home', id: 'hero' },
     { name: 'About', id: 'about' },
     { name: 'Projects', id: 'projects' },
+    { name: 'Games', id: 'games' },
     { name: 'Contact', id: 'contact' },
   ];
 
@@ -143,7 +144,7 @@ const Navigation = () => {
                 />
               </motion.button>
             ))}
-            <ThemeToggle />
+            <ThemeSwitch />
             <Button
               onClick={() => scrollToSection('contact')}
               className="gradient-primary hover:scale-105 transition-transform focus:ring-2 focus:ring-primary focus:ring-offset-2"
@@ -155,7 +156,7 @@ const Navigation = () => {
 
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center space-x-2">
-            <ThemeToggle />
+            <ThemeSwitch />
             <Button
               ref={menuButtonRef}
               variant="ghost"

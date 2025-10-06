@@ -23,23 +23,23 @@ export function SafeThemeProvider({ children }: SafeThemeProviderProps) {
     
     // Check for saved theme or default to system
     const savedTheme = localStorage.getItem('theme') as Theme;
-    if (savedTheme) {
-      setThemeState(savedTheme);
-    }
+    const systemPreference = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    const initialTheme = savedTheme || systemPreference;
+    
+    setThemeState(savedTheme || 'system');
     
     // Apply theme to document
     const applyTheme = (newTheme: Theme) => {
       const root = document.documentElement;
       
       if (newTheme === 'system') {
-        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        root.classList.toggle('dark', systemTheme === 'dark');
+        root.classList.toggle('dark', systemPreference === 'dark');
       } else {
         root.classList.toggle('dark', newTheme === 'dark');
       }
     };
 
-    applyTheme(savedTheme || 'system');
+    applyTheme(initialTheme);
   }, []);
 
   const setTheme = (newTheme: Theme) => {

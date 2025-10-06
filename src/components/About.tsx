@@ -3,7 +3,6 @@ import { useInView } from 'react-intersection-observer';
 import { Code, Palette, Zap, Users } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import SkillsVisualization from '@/components/SkillsVisualization';
-import AnimatedStats from '@/components/AnimatedStats';
 
 const About = () => {
   const [ref, inView] = useInView({
@@ -84,10 +83,10 @@ const About = () => {
                 <motion.div
                   key={highlight.title}
                   variants={itemVariants}
-                  whileHover={{ scale: 1.02 }}
+                  whileHover={{ scale: 1.01 }}
                   className="transition-transform"
                 >
-                  <Card className="glass border-0">
+                  <Card className="glass border-0 shadow-sm hover:shadow-md transition-shadow">
                     <CardContent className="p-4">
                       <div className="flex items-start space-x-3">
                         <div className="p-2 rounded-lg bg-primary/10">
@@ -117,9 +116,6 @@ const About = () => {
 
           {/* Interactive Skills Visualization */}
           <SkillsVisualization />
-
-          {/* Animated Statistics */}
-          <AnimatedStats />
         </motion.div>
       </div>
     </section>

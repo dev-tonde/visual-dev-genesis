@@ -1,10 +1,12 @@
 import { Suspense } from 'react';
 import Hero from '@/components/Hero';
 import About from '@/components/About';
+import AboutMe from '@/components/AboutMe';
 import Contact from '@/components/Contact';
 import Navigation from '@/components/Navigation';
 import Testimonials from '@/components/Testimonials';
 import SEOHead from '@/components/SEOHead';
+import SEOEnhancements from '@/components/SEOEnhancements';
 import StructuredData from '@/components/StructuredData';
 import InteractiveBackground from '@/components/InteractiveBackground';
 import FloatingElements from '@/components/FloatingElements';
@@ -18,6 +20,7 @@ const Index = () => {
   return (
     <>
       <SEOHead />
+      <SEOEnhancements />
       <StructuredData />
       <InteractiveBackground />
       <FloatingElements />
@@ -28,27 +31,31 @@ const Index = () => {
             <h1 id="hero-heading" className="sr-only">Tonderai Matanga - Full Stack Developer Portfolio</h1>
             <Hero />
           </section>
-          <section id="about" aria-labelledby="about-heading">
+          <section id="about" aria-labelledby="about-heading" className="py-12">
             <h2 id="about-heading" className="sr-only">About Tonderai Matanga</h2>
             <About />
           </section>
-          <section id="projects" aria-labelledby="projects-heading">
+          <section id="about-me" aria-labelledby="about-me-heading" className="py-12">
+            <h2 id="about-me-heading" className="sr-only">Personal Information</h2>
+            <AboutMe />
+          </section>
+          <section id="projects" aria-labelledby="projects-heading" className="py-12">
             <h2 id="projects-heading" className="sr-only">Featured Projects</h2>
             <Suspense fallback={<LoadingSpinner />}>
               <ProjectsLazy />
             </Suspense>
           </section>
-          <section id="certifications" aria-labelledby="certifications-heading">
+          <section id="certifications" aria-labelledby="certifications-heading" className="py-12">
             <h2 id="certifications-heading" className="sr-only">Certifications and Achievements</h2>
             <Suspense fallback={<LoadingSpinner />}>
               <CertificationsLazy />
             </Suspense>
           </section>
-          <section id="testimonials" aria-labelledby="testimonials-heading">
+          <section id="testimonials" aria-labelledby="testimonials-heading" className="py-12">
             <h2 id="testimonials-heading" className="sr-only">Client Testimonials</h2>
             <Testimonials />
           </section>
-          <section id="contact" aria-labelledby="contact-heading">
+          <section id="contact" aria-labelledby="contact-heading" className="py-12">
             <h2 id="contact-heading" className="sr-only">Contact Information</h2>
             <Contact />
           </section>

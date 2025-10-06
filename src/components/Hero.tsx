@@ -93,7 +93,7 @@ const Hero = () => {
         >
           <Button 
             size="lg" 
-            className="gradient-primary hover:scale-105 transition-transform"
+            className="gradient-primary hover:scale-102 transition-transform shadow-sm hover:shadow-md"
             onClick={() => scrollToSection('projects')}
           >
             View My Work
@@ -102,7 +102,7 @@ const Hero = () => {
           <Button 
             variant="outline" 
             size="lg"
-            className="glass hover:bg-primary/10 transition-smooth"
+            className="glass hover:bg-primary/10 transition-smooth shadow-sm hover:shadow-md"
             onClick={() => {
               const link = document.createElement('a');
               link.href = '/cv.pdf';
@@ -117,7 +117,7 @@ const Hero = () => {
           <Button 
             variant="outline" 
             size="lg"
-            className="glass hover:bg-primary/10 transition-smooth"
+            className="glass hover:bg-primary/10 transition-smooth shadow-sm hover:shadow-md"
             onClick={() => scrollToSection('contact')}
           >
             Get In Touch
