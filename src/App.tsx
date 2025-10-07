@@ -40,23 +40,23 @@ const AppContent = () => {
 };
 
 const App = () => (
-  <HelmetProvider>
-    <QueryClientProvider client={queryClient}>
-      <SafeThemeProvider>
-        <TooltipProvider>
-          <ErrorBoundary>
-            <Toaster />
-            <Sonner />
-            <CommandPalette />
-            <MouseFollower />
+  <ErrorBoundary>
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <SafeThemeProvider>
+          <TooltipProvider delayDuration={0} skipDelayDuration={0}>
             <BrowserRouter>
+              <Toaster />
+              <Sonner />
+              <CommandPalette />
+              <MouseFollower />
               <AppContent />
             </BrowserRouter>
-          </ErrorBoundary>
-        </TooltipProvider>
-      </SafeThemeProvider>
-    </QueryClientProvider>
-  </HelmetProvider>
+          </TooltipProvider>
+        </SafeThemeProvider>
+      </QueryClientProvider>
+    </HelmetProvider>
+  </ErrorBoundary>
 );
 
 export default App;
