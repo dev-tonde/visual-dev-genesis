@@ -116,7 +116,10 @@ const ContactForm = ({ variants }: ContactFormProps) => {
 
       form.reset();
     } catch (error) {
-      console.error('Form submission error:', error);
+      // Only log errors in development
+      if (import.meta.env.DEV) {
+        console.error('Form submission error:', error);
+      }
       
       if (retryCount === 0) {
         toast({

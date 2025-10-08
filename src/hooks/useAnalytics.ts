@@ -75,7 +75,9 @@ export const useAnalytics = () => {
         });
       } catch (error) {
         // Silently fail - analytics shouldn't break the app
-        console.debug('Analytics tracking failed:', error);
+        if (import.meta.env.DEV) {
+          console.debug('Analytics tracking failed:', error);
+        }
       }
     };
 
@@ -107,7 +109,9 @@ export const useAnalytics = () => {
       if (error) throw error;
       
     } catch (error) {
-      console.debug('Event tracking failed:', error);
+      if (import.meta.env.DEV) {
+        console.debug('Event tracking failed:', error);
+      }
       
       // Retry with exponential backoff for network errors
       if (retryCount < maxRetries && error instanceof Error && 
