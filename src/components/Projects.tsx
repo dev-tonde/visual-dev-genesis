@@ -12,6 +12,7 @@ import LoadingSpinner from '@/components/LoadingSpinner';
 import RetryButton from '@/components/RetryButton';
 import { useState, useMemo } from 'react';
 import ProjectSearch from '@/components/ProjectSearch';
+import { getDemoUrl } from '@/config/projectDemos';
 
 const Projects = () => {
   const [ref, inView] = useInView({
@@ -288,7 +289,7 @@ const Projects = () => {
                           className="flex-1 hover-lift gradient-primary"
                           asChild
                         >
-                          <a href={project.homepage || `https://${project.name.toLowerCase()}.dev-tonde.dev`} target="_blank" rel="noopener noreferrer">
+                          <a href={getDemoUrl(project.name, project.homepage)} target="_blank" rel="noopener noreferrer">
                             <ExternalLink className="w-4 h-4 mr-2" />
                             Live Demo
                           </a>

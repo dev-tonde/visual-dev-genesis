@@ -356,7 +356,4 @@
     }
   }
 
-  /* Custom cursor */
-body {
-  cursor: none;
-}
+  /* Custom cursor - disabled for normal mouse interaction */
