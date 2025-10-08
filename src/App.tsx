@@ -6,7 +6,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SafeThemeProvider } from "@/components/SafeThemeProvider";
 import { HelmetProvider } from 'react-helmet-async';
 import CommandPalette from "@/components/CommandPalette";
-import MouseFollower from "@/components/MouseFollower";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import PerformanceOptimizer from "@/components/PerformanceOptimizer";
 import PerformanceMonitor from "@/components/PerformanceMonitor";
@@ -49,7 +48,6 @@ const App = () => (
               <Toaster />
               <Sonner />
               <CommandPalette />
-              <MouseFollower />
               <AppContent />
             </BrowserRouter>
           </TooltipProvider>

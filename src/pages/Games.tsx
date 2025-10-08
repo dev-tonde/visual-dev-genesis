@@ -8,6 +8,9 @@ import Navigation from '@/components/Navigation';
 import SEOHead from '@/components/SEOHead';
 import TetrisGame from '@/components/games/TetrisGame';
 import SnakeGame from '@/components/games/SnakeGame';
+import PongGame from '@/components/games/PongGame';
+import MemoryGame from '@/components/games/MemoryGame';
+import TicTacToeGame from '@/components/games/TicTacToeGame';
 
 const Games = () => {
   const [ref, inView] = useInView({
@@ -15,7 +18,7 @@ const Games = () => {
     threshold: 0.1,
   });
 
-  const [activeGame, setActiveGame] = useState<'tetris' | 'snake' | null>(null);
+  const [activeGame, setActiveGame] = useState<'tetris' | 'snake' | 'pong' | 'memory' | 'tictactoe' | null>(null);
 
   const games = [
     {
@@ -31,6 +34,27 @@ const Games = () => {
       description: 'Guide the snake to eat food and grow. Don\'t hit the walls or yourself!',
       icon: Gamepad2,
       controls: '← → ↑ ↓ : Direction | Space : Pause',
+    },
+    {
+      id: 'pong' as const,
+      name: 'Pong',
+      description: 'Classic arcade game. Use your mouse to control the paddle and beat the AI!',
+      icon: Gamepad2,
+      controls: 'Mouse : Move Paddle | Space : Start/Pause',
+    },
+    {
+      id: 'memory' as const,
+      name: 'Memory Match',
+      description: 'Test your memory! Click cards to find matching pairs.',
+      icon: Grid3x3,
+      controls: 'Click : Flip Card | Match all pairs to win!',
+    },
+    {
+      id: 'tictactoe' as const,
+      name: 'Tic-Tac-Toe',
+      description: 'Classic strategy game. Beat the AI in this timeless battle of X\'s and O\'s!',
+      icon: Grid3x3,
+      controls: 'Click : Place Mark | Try to get three in a row!',
     },
   ];
 
@@ -62,6 +86,18 @@ const Games = () => {
 
   if (activeGame === 'snake') {
     return <SnakeGame onBack={() => setActiveGame(null)} />;
+  }
+
+  if (activeGame === 'pong') {
+    return <PongGame onBack={() => setActiveGame(null)} />;
+  }
+
+  if (activeGame === 'memory') {
+    return <MemoryGame onBack={() => setActiveGame(null)} />;
+  }
+
+  if (activeGame === 'tictactoe') {
+    return <TicTacToeGame onBack={() => setActiveGame(null)} />;
   }
 
   return (
