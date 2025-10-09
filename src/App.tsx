@@ -12,10 +12,14 @@ import PerformanceMonitor from "@/components/PerformanceMonitor";
 import AccessibilityEnhancer from "@/components/AccessibilityEnhancer";
 import Analytics from "@/components/Analytics";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { AuthProvider } from "@/components/AuthProvider";
 import Index from "./pages/Index";
 import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
 import Games from "./pages/Games";
+import Auth from "./pages/Auth";
+import TestimonialForm from "@/components/TestimonialForm";
+import AdminTestimonials from "./pages/AdminTestimonials";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +35,9 @@ const AppContent = () => {
         <Route path="/" element={<Index />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/games" element={<Games />} />
+        <Route path="/auth" element={<Auth />} />
+        <Route path="/submit-testimonial" element={<TestimonialForm />} />
+        <Route path="/admin/testimonials" element={<AdminTestimonials />} />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>
@@ -45,10 +52,12 @@ const App = () => (
         <SafeThemeProvider>
           <TooltipProvider delayDuration={0} skipDelayDuration={0}>
             <BrowserRouter>
-              <Toaster />
-              <Sonner />
-              <CommandPalette />
-              <AppContent />
+              <AuthProvider>
+                <Toaster />
+                <Sonner />
+                <CommandPalette />
+                <AppContent />
+              </AuthProvider>
             </BrowserRouter>
           </TooltipProvider>
         </SafeThemeProvider>

@@ -1,46 +1,54 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { Star, Quote, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Star, Quote } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useNavigate } from 'react-router-dom';
+
+interface Testimonial {
+  id: string;
+  user_id: string;
+  title: string;
+  company: string;
+  content: string;
+  profiles: {
+    full_name: string;
+  };
+}
 
 const Testimonials = () => {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
   });
+  const navigate = useNavigate();
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-
-  // Auto-play functionality
   useEffect(() => {
-    if (!isAutoPlaying) return;
+    fetchTestimonials();
+  }, []);
 
-    const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => 
-        prevIndex === testimonials.length - 1 ? 0 : prevIndex + 1
-      );
-    }, 5000); // Change slide every 5 seconds
+  const fetchTestimonials = async () => {
+    const { data, error } = await supabase
+      .from('testimonials')
+      .select(`
+        *,
+        profiles!testimonials_user_id_fkey (
+          full_name
+        )
+      `)
+      .eq('status', 'approved')
+      .order('created_at', { ascending: false })
+      .limit(6);
 
-    return () => clearInterval(interval);
-  }, [isAutoPlaying]);
-
-  const nextTestimonial = () => {
-    setCurrentIndex(currentIndex === testimonials.length - 1 ? 0 : currentIndex + 1);
-    setIsAutoPlaying(false);
-  };
-
-  const prevTestimonial = () => {
-    setCurrentIndex(currentIndex === 0 ? testimonials.length - 1 : currentIndex - 1);
-    setIsAutoPlaying(false);
-  };
-
-  const goToSlide = (index: number) => {
-    setCurrentIndex(index);
-    setIsAutoPlaying(false);
+    if (!error && data) {
+      setTestimonials(data as any);
+    }
+    setLoading(false);
   };
 
   const containerVariants = {
@@ -65,32 +73,6 @@ const Testimonials = () => {
     }
   };
 
-  const testimonials = [
-    {
-      name: "Sarah Johnson",
-      role: "Product Manager",
-      company: "TechCorp",
-      avatar: "/placeholder.svg",
-      rating: 5,
-      content: "Tonderai delivered exceptional work on our web application. His attention to detail and technical expertise made the project a huge success. Highly recommend!"
-    },
-    {
-      name: "Michael Chen",
-      role: "CTO",
-      company: "StartupXYZ",
-      avatar: "/placeholder.svg",
-      rating: 5,
-      content: "Working with Tonderai was a fantastic experience. He not only met all our requirements but also provided valuable insights that improved our overall product."
-    },
-    {
-      name: "Emily Rodriguez",
-      role: "Design Lead",
-      company: "Creative Agency",
-      avatar: "/placeholder.svg",
-      rating: 5,
-      content: "Tonderai's ability to translate design concepts into beautiful, functional websites is remarkable. He's a true professional and a pleasure to work with."
-    }
-  ];
 
   return (
     <section id="testimonials" className="py-20 px-4 bg-muted/30">
@@ -111,50 +93,69 @@ const Testimonials = () => {
             </p>
           </motion.div>
 
-          {/* Grid Layout */}
-          <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map((testimonial, index) => (
-              <motion.div
-                key={testimonial.name}
-                variants={itemVariants}
-                whileHover={{ y: -5, scale: 1.02 }}
-                className="group"
-              >
-                <Card className="glass-vibrant border-0 relative overflow-hidden hover-glow transition-all duration-500 h-full">
-                  <CardContent className="p-6 text-center h-full flex flex-col">
-                    <div className="flex justify-center mb-4">
-                      <div className="flex space-x-1">
-                        {[...Array(testimonial.rating)].map((_, i) => (
-                          <Star key={i} className="w-4 h-4 fill-current text-yellow-400" />
-                        ))}
-                      </div>
-                    </div>
-                    
-                    <Quote className="w-8 h-8 text-primary/30 mx-auto mb-4" />
-                    
-                    <p className="text-sm text-muted-foreground mb-6 italic leading-relaxed flex-grow">
-                      "{testimonial.content}"
-                    </p>
-                    
-                    <div className="flex items-center justify-center space-x-3">
-                      <Avatar className="ring-2 ring-primary/20 w-12 h-12">
-                        <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
-                        <AvatarFallback className="bg-primary/10">
-                          {testimonial.name.split(' ').map(n => n[0]).join('')}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="text-left">
-                        <h4 className="font-semibold text-sm">{testimonial.name}</h4>
-                        <p className="text-xs text-muted-foreground">
-                          {testimonial.role} at {testimonial.company}
+          {loading ? (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">Loading testimonials...</p>
+            </div>
+          ) : testimonials.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground mb-4">No testimonials yet. Be the first to share your experience!</p>
+              <Button onClick={() => navigate('/submit-testimonial')}>
+                Submit Testimonial
+              </Button>
+            </div>
+          ) : (
+            <>
+              <div className="grid md:grid-cols-3 gap-6 mb-8">
+                {testimonials.map((testimonial) => (
+                  <motion.div
+                    key={testimonial.id}
+                    variants={itemVariants}
+                    whileHover={{ y: -5, scale: 1.02 }}
+                    className="group"
+                  >
+                    <Card className="glass-vibrant border-0 relative overflow-hidden hover-glow transition-all duration-500 h-full">
+                      <CardContent className="p-6 text-center h-full flex flex-col">
+                        <div className="flex justify-center mb-4">
+                          <div className="flex space-x-1">
+                            {[...Array(5)].map((_, i) => (
+                              <Star key={i} className="w-4 h-4 fill-current text-yellow-400" />
+                            ))}
+                          </div>
+                        </div>
+                        
+                        <Quote className="w-8 h-8 text-primary/30 mx-auto mb-4" />
+                        
+                        <p className="text-sm text-muted-foreground mb-6 italic leading-relaxed flex-grow">
+                          "{testimonial.content}"
                         </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
+                        
+                        <div className="flex items-center justify-center space-x-3">
+                          <Avatar className="ring-2 ring-primary/20 w-12 h-12">
+                            <AvatarFallback className="bg-primary/10">
+                              {testimonial.profiles?.full_name?.split(' ').map(n => n[0]).join('') || 'U'}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="text-left">
+                            <h4 className="font-semibold text-sm">{testimonial.profiles?.full_name || 'Anonymous'}</h4>
+                            <p className="text-xs text-muted-foreground">
+                              {testimonial.title} at {testimonial.company}
+                            </p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
+
+              <div className="text-center">
+                <Button onClick={() => navigate('/submit-testimonial')} variant="outline">
+                  Submit Your Testimonial
+                </Button>
+              </div>
+            </>
+          )}
         </motion.div>
       </div>
     </section>
