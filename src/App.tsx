@@ -18,8 +18,8 @@ import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
 import Games from "./pages/Games";
 import Auth from "./pages/Auth";
-import TestimonialForm from "@/components/TestimonialForm";
-import AdminTestimonials from "./pages/AdminTestimonials";
+import SubmitTestimonial from "./pages/SubmitTestimonial";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const queryClient = new QueryClient();
 
@@ -36,8 +36,8 @@ const AppContent = () => {
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/games" element={<Games />} />
         <Route path="/auth" element={<Auth />} />
-        <Route path="/submit-testimonial" element={<TestimonialForm />} />
-        <Route path="/admin/testimonials" element={<AdminTestimonials />} />
+        <Route path="/submit-testimonial" element={<SubmitTestimonial />} />
+        <Route path="/admin/testimonials" element={<AdminDashboard />} />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>

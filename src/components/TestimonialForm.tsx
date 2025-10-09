@@ -7,6 +7,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import { z } from 'zod';
+
+const testimonialSchema = z.object({
+  title: z.string().trim().min(1, "Title is required").max(100, "Title must be less than 100 characters"),
+  company: z.string().trim().min(1, "Company is required").max(100, "Company must be less than 100 characters"),
+  content: z.string().trim().min(10, "Testimonial must be at least 10 characters").max(1000, "Testimonial must be less than 1000 characters")
+});
 
 const TestimonialForm = () => {
   const { user } = useAuth();
@@ -48,15 +55,29 @@ const TestimonialForm = () => {
       return;
     }
 
+    // Validate form data
+    try {
+      testimonialSchema.parse(formData);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          title: 'Validation Error',
+          description: error.issues[0].message,
+          variant: 'destructive'
+        });
+        return;
+      }
+    }
+
     setLoading(true);
 
     const { error } = await supabase
       .from('testimonials')
       .insert({
         user_id: user.id,
-        title: formData.title,
-        company: formData.company,
-        content: formData.content,
+        title: formData.title.trim(),
+        company: formData.company.trim(),
+        content: formData.content.trim(),
         status: 'pending'
       });
 
