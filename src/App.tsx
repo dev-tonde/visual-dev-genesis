@@ -19,6 +19,7 @@ import Games from "./pages/Games";
 import Auth from "./pages/Auth";
 import SubmitTestimonial from "./pages/SubmitTestimonial";
 import AdminDashboard from "./pages/AdminDashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const AppContent = () => {
   useAnalytics();
@@ -34,7 +35,11 @@ const AppContent = () => {
         <Route path="/games" element={<Games />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/submit-testimonial" element={<SubmitTestimonial />} />
-        <Route path="/admin/testimonials" element={<AdminDashboard />} />
+        <Route path="/admin/testimonials" element={
+          <ProtectedRoute>
+            <AdminDashboard />
+          </ProtectedRoute>
+        } />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>
