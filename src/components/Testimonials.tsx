@@ -11,9 +11,11 @@ import { useNavigate } from 'react-router-dom';
 interface Testimonial {
   id: string;
   user_id: string;
+  name: string;
   title: string;
   company: string;
   content: string;
+  profile_picture_url: string | null;
   profiles: {
     full_name: string;
   };
@@ -36,7 +38,13 @@ const Testimonials = () => {
     const { data, error } = await supabase
       .from('testimonials')
       .select(`
-        *,
+        id,
+        user_id,
+        name,
+        title,
+        company,
+        content,
+        profile_picture_url,
         profiles!testimonials_user_id_fkey (
           full_name
         )
@@ -132,12 +140,13 @@ const Testimonials = () => {
                         
                         <div className="flex items-center justify-center space-x-3">
                           <Avatar className="ring-2 ring-primary/20 w-12 h-12">
+                            <AvatarImage src={testimonial.profile_picture_url || ''} alt={testimonial.name} />
                             <AvatarFallback className="bg-primary/10">
-                              {testimonial.profiles?.full_name?.split(' ').map(n => n[0]).join('') || 'U'}
+                              {testimonial.name?.split(' ').map(n => n[0]).join('') || 'U'}
                             </AvatarFallback>
                           </Avatar>
                           <div className="text-left">
-                            <h4 className="font-semibold text-sm">{testimonial.profiles?.full_name || 'Anonymous'}</h4>
+                            <h4 className="font-semibold text-sm">{testimonial.name || 'Anonymous'}</h4>
                             <p className="text-xs text-muted-foreground">
                               {testimonial.title} at {testimonial.company}
                             </p>

@@ -1585,6 +1585,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_url: string | null
           company: string | null
           created_at: string | null
           date_of_birth: string | null
@@ -1599,6 +1600,7 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          avatar_url?: string | null
           company?: string | null
           created_at?: string | null
           date_of_birth?: string | null
@@ -1613,6 +1615,7 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          avatar_url?: string | null
           company?: string | null
           created_at?: string | null
           date_of_birth?: string | null
@@ -1700,6 +1703,30 @@ export type Database = {
           tech_stack?: string[] | null
           title?: string
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      push_subscriptions: {
+        Row: {
+          created_at: string | null
+          id: string
+          subscription: Json
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          subscription: Json
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          subscription?: Json
+          updated_at?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -1926,6 +1953,8 @@ export type Database = {
           content: string
           created_at: string
           id: string
+          name: string | null
+          profile_picture_url: string | null
           status: string
           title: string
           updated_at: string
@@ -1936,6 +1965,8 @@ export type Database = {
           content: string
           created_at?: string
           id?: string
+          name?: string | null
+          profile_picture_url?: string | null
           status?: string
           title: string
           updated_at?: string
@@ -1946,6 +1977,8 @@ export type Database = {
           content?: string
           created_at?: string
           id?: string
+          name?: string | null
+          profile_picture_url?: string | null
           status?: string
           title?: string
           updated_at?: string

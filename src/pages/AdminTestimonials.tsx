@@ -12,9 +12,11 @@ import { useNavigate } from 'react-router-dom';
 interface Testimonial {
   id: string;
   user_id: string;
+  name: string;
   title: string;
   company: string;
   content: string;
+  profile_picture_url: string | null;
   status: 'pending' | 'approved' | 'rejected';
   created_at: string;
   profiles: {
@@ -103,7 +105,34 @@ const AdminTestimonials = () => {
         title: 'Success',
         description: `Testimonial ${status}`
       });
+      
+      // Send approval email if approved
+      if (status === 'approved') {
+        sendApprovalEmail(id);
+      }
+      
       fetchTestimonials();
+    }
+  };
+
+  const sendApprovalEmail = async (testimonialId: string) => {
+    try {
+      const { error } = await supabase.functions.invoke('send-testimonial-approval', {
+        body: { testimonialId }
+      });
+
+      if (error) {
+        console.error('Error sending approval email:', error);
+        toast({
+          title: 'Warning',
+          description: 'Testimonial approved but email notification failed',
+          variant: 'default'
+        });
+      } else {
+        console.log('Approval email sent successfully');
+      }
+    } catch (error) {
+      console.error('Error invoking email function:', error);
     }
   };
 
@@ -135,14 +164,14 @@ const AdminTestimonials = () => {
       <CardContent className="pt-6">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center space-x-3">
-            <Avatar>
-              <AvatarImage src="" />
+            <Avatar className="w-12 h-12">
+              <AvatarImage src={testimonial.profile_picture_url || ''} />
               <AvatarFallback>
-                {testimonial.profiles?.full_name?.split(' ').map(n => n[0]).join('') || 'U'}
+                {testimonial.name?.split(' ').map(n => n[0]).join('') || 'U'}
               </AvatarFallback>
             </Avatar>
             <div>
-              <h4 className="font-semibold">{testimonial.profiles?.full_name || 'Unknown User'}</h4>
+              <h4 className="font-semibold">{testimonial.name || 'Unknown User'}</h4>
               <p className="text-sm text-muted-foreground">
                 {testimonial.title} at {testimonial.company}
               </p>

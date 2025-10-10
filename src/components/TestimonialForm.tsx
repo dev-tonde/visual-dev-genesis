@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/components/AuthProvider';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -8,8 +8,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Upload } from 'lucide-react';
 
 const testimonialSchema = z.object({
+  name: z.string().trim().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
   title: z.string().trim().min(1, "Title is required").max(100, "Title must be less than 100 characters"),
   company: z.string().trim().min(1, "Company is required").max(100, "Company must be less than 100 characters"),
   content: z.string().trim().min(10, "Testimonial must be at least 10 characters").max(1000, "Testimonial must be less than 1000 characters")
@@ -20,17 +23,40 @@ const TestimonialForm = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [profilePictureUrl, setProfilePictureUrl] = useState<string>('');
   const [formData, setFormData] = useState({
+    name: '',
     title: '',
     company: '',
     content: ''
   });
 
+  useEffect(() => {
+    if (user) {
+      // Pre-fill from user metadata (Google sign-in)
+      const metadata = user.user_metadata;
+      setFormData(prev => ({
+        ...prev,
+        name: prev.name || metadata?.full_name || metadata?.name || ''
+      }));
+      
+      // Set profile picture from Google
+      if (metadata?.avatar_url || metadata?.picture) {
+        setProfilePictureUrl(metadata.avatar_url || metadata.picture);
+      }
+    }
+  }, [user]);
+
   const handleGoogleSignIn = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/submit-testimonial`
+        redirectTo: `${window.location.origin}/submit-testimonial`,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent'
+        }
       }
     });
 
@@ -40,6 +66,67 @@ const TestimonialForm = () => {
         description: error.message,
         variant: 'destructive'
       });
+    }
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    // Validate file size (5MB)
+    if (file.size > 5242880) {
+      toast({
+        title: 'Error',
+        description: 'Image must be less than 5MB',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    // Validate file type
+    const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    if (!validTypes.includes(file.type)) {
+      toast({
+        title: 'Error',
+        description: 'Only JPEG, PNG, WebP, and GIF images are allowed',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    setUploading(true);
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+
+      const { error: uploadError, data } = await supabase.storage
+        .from('testimonial-avatars')
+        .upload(fileName, file, {
+          upsert: true,
+          contentType: file.type
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('testimonial-avatars')
+        .getPublicUrl(fileName);
+
+      setProfilePictureUrl(publicUrl);
+      
+      toast({
+        title: 'Success',
+        description: 'Profile picture uploaded successfully'
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to upload image',
+        variant: 'destructive'
+      });
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -75,9 +162,11 @@ const TestimonialForm = () => {
       .from('testimonials')
       .insert({
         user_id: user.id,
+        name: formData.name.trim(),
         title: formData.title.trim(),
         company: formData.company.trim(),
         content: formData.content.trim(),
+        profile_picture_url: profilePictureUrl || null,
         status: 'pending'
       });
 
@@ -94,7 +183,8 @@ const TestimonialForm = () => {
         title: 'Success',
         description: 'Your testimonial has been submitted for review'
       });
-      setFormData({ title: '', company: '', content: '' });
+      setFormData({ name: '', title: '', company: '', content: '' });
+      setProfilePictureUrl('');
       navigate('/');
     }
   };
@@ -140,6 +230,46 @@ const TestimonialForm = () => {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Profile Picture Upload */}
+            <div className="flex flex-col items-center gap-4">
+              <Avatar className="w-24 h-24">
+                <AvatarImage src={profilePictureUrl} alt={formData.name} />
+                <AvatarFallback>{formData.name?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col items-center gap-2">
+                <label htmlFor="avatar-upload" className="cursor-pointer">
+                  <Button type="button" variant="outline" size="sm" disabled={uploading} asChild>
+                    <span>
+                      <Upload className="w-4 h-4 mr-2" />
+                      {uploading ? 'Uploading...' : 'Upload Profile Picture'}
+                    </span>
+                  </Button>
+                </label>
+                <input
+                  id="avatar-upload"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+                <p className="text-xs text-muted-foreground">Max 5MB (JPEG, PNG, WebP, GIF)</p>
+              </div>
+            </div>
+
+            {/* Name Field */}
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Your Name
+              </label>
+              <Input
+                required
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="e.g., John Doe"
+                maxLength={100}
+              />
+            </div>
+
             <div>
               <label className="block text-sm font-medium mb-2">
                 Your Title/Position
