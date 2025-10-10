@@ -1,7 +1,6 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SafeThemeProvider } from "@/components/SafeThemeProvider";
 import { HelmetProvider } from 'react-helmet-async';
@@ -20,8 +19,6 @@ import Games from "./pages/Games";
 import Auth from "./pages/Auth";
 import SubmitTestimonial from "./pages/SubmitTestimonial";
 import AdminDashboard from "./pages/AdminDashboard";
-
-const queryClient = new QueryClient();
 
 const AppContent = () => {
   useAnalytics();
@@ -48,20 +45,18 @@ const AppContent = () => {
 const App = () => (
   <ErrorBoundary>
     <HelmetProvider>
-      <QueryClientProvider client={queryClient}>
-        <SafeThemeProvider>
-          <TooltipProvider delayDuration={0} skipDelayDuration={0}>
-            <BrowserRouter>
-              <AuthProvider>
-                <Toaster />
-                <Sonner />
-                <CommandPalette />
-                <AppContent />
-              </AuthProvider>
-            </BrowserRouter>
-          </TooltipProvider>
-        </SafeThemeProvider>
-      </QueryClientProvider>
+      <SafeThemeProvider>
+        <TooltipProvider delayDuration={0} skipDelayDuration={0}>
+          <BrowserRouter>
+            <AuthProvider>
+              <Toaster />
+              <Sonner />
+              <CommandPalette />
+              <AppContent />
+            </AuthProvider>
+          </BrowserRouter>
+        </TooltipProvider>
+      </SafeThemeProvider>
     </HelmetProvider>
   </ErrorBoundary>
 );
