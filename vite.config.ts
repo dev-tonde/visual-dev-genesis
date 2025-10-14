@@ -41,8 +41,10 @@ export default defineConfig(({ mode }) => ({
       "react/jsx-runtime",
       "react/jsx-dev-runtime"
     ],
+    preserveSymlinks: true,
   },
   optimizeDeps: {
+    force: true,
     include: [
       "react",
       "react-dom",

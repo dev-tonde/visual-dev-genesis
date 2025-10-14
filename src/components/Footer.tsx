@@ -10,6 +10,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   const technologies = [
@@ -131,12 +132,12 @@ const Footer = () => {
               </a>
             </li>
             <li>
-              <a 
-                href="/privacy" 
+              <Link 
+                to="/privacy" 
                 className="text-muted-foreground hover:text-primary transition-colors"
               >
                 Privacy
-              </a>
+              </Link>
             </li>
             <li>
               <a 
