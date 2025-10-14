@@ -126,8 +126,8 @@ const Navigation = () => {
             Tonderai
           </motion.div>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-8">
+          {/* Desktop Menu - Hidden below 768px (tablet) */}
+          <div className="hidden lg:flex items-center space-x-8">
             {menuItems.map((item) => (
               <motion.button
                 key={item.name}
@@ -154,8 +154,8 @@ const Navigation = () => {
             </Button>
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center space-x-2">
+          {/* Mobile & Tablet Menu Button - Shows below 1024px */}
+          <div className="lg:hidden flex items-center space-x-2">
             <ThemeSwitch />
             <Button
               ref={menuButtonRef}
@@ -172,12 +172,12 @@ const Navigation = () => {
           </div>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile & Tablet Menu */}
         {isMobileMenuOpen && (
           <motion.div
             ref={mobileMenuRef}
             id="mobile-menu"
-            className="md:hidden mt-4 relative z-50"
+            className="lg:hidden mt-4 relative z-50"
             role="dialog"
             aria-modal="true"
             aria-labelledby="mobile-menu-title"

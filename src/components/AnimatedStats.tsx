@@ -161,10 +161,10 @@ const StatCard = ({ stat, delay, inView, variants }: StatCardProps) => {
             transition={{ duration: 0.6 }}
           >
             <div 
-              className="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4 transition-all duration-300 group-hover:shadow-lg"
+              className="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4 transition-all duration-300 group-hover:shadow-md"
               style={{ 
                 backgroundColor: `${color}20`,
-                boxShadow: `0 0 20px ${color}40`
+                boxShadow: `0 0 12px ${color}30`
               }}
             >
               <Icon 

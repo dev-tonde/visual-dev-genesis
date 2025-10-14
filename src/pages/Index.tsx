@@ -5,6 +5,7 @@ import AboutMe from '@/components/AboutMe';
 import Contact from '@/components/Contact';
 import Navigation from '@/components/Navigation';
 import Testimonials from '@/components/Testimonials';
+import Footer from '@/components/Footer';
 import SEOHead from '@/components/SEOHead';
 import SEOEnhancements from '@/components/SEOEnhancements';
 import StructuredData from '@/components/StructuredData';
@@ -61,27 +62,8 @@ const Index = () => {
           </section>
         </main>
       
-        {/* Footer */}
-        <footer 
-          className="py-8 px-4 border-t border-primary/20" 
-          role="contentinfo" 
-          aria-label="Site footer"
-        >
-          <div className="container mx-auto text-center">
-            <p className="text-muted-foreground">
-              © {new Date().getFullYear()} Tonderai Matanga. Built with React, TypeScript, Tailwind CSS, and Framer Motion.
-            </p>
-            <nav aria-label="Footer navigation" className="mt-4">
-              <ul className="flex justify-center space-x-6 text-sm">
-                <li><a href="#about" className="hover:text-primary transition-colors">About</a></li>
-                <li><a href="#projects" className="hover:text-primary transition-colors">Projects</a></li>
-                <li><a href="#contact" className="hover:text-primary transition-colors">Contact</a></li>
-                <li><a href="/privacy" className="hover:text-primary transition-colors">Privacy</a></li>
-                <li><a href="/cv.pdf" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">CV</a></li>
-              </ul>
-            </nav>
-          </div>
-        </footer>
+        {/* Footer with full tech stack */}
+        <Footer />
       </div>
     </>
   );

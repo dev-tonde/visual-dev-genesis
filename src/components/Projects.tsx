@@ -212,7 +212,7 @@ const Projects = () => {
                   whileHover={{ y: -5, scale: 1.02, rotateY: 2 }}
                   className="group hover-lift"
                 >
-                  <Card className="glass-vibrant border-0 h-full overflow-hidden hover:shadow-2xl transition-all duration-500 hover-glow relative">
+                  <Card className="glass-vibrant border-0 h-full overflow-hidden hover:shadow-lg transition-all duration-500 hover-glow relative">
                     <CardHeader>
                       <div className="flex items-center justify-between mb-2">
                         <CardTitle className="text-xl group-hover:text-primary transition-colors">
