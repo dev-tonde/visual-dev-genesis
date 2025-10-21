@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ThemeSwitch from '@/components/ThemeSwitch';
+import SearchDialog from '@/components/SearchDialog';
 
 // Hook to detect reduced motion preference
 const useReducedMotion = () => {
@@ -127,7 +128,7 @@ const Navigation = () => {
           </motion.div>
 
           {/* Desktop Menu - Hidden below 768px (tablet) */}
-          <div className="hidden lg:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center space-x-4">
             {menuItems.map((item) => (
               <motion.button
                 key={item.name}
@@ -144,7 +145,22 @@ const Navigation = () => {
                 />
               </motion.button>
             ))}
+            <SearchDialog />
             <ThemeSwitch />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const link = document.createElement('a');
+                link.href = '/cv.pdf';
+                link.download = 'Tonderai_CV.pdf';
+                link.click();
+              }}
+              className="glass"
+            >
+              <Download className="w-4 h-4 mr-2" />
+              CV
+            </Button>
             <Button
               onClick={() => scrollToSection('contact')}
               className="gradient-primary hover:scale-105 transition-transform focus:ring-2 focus:ring-primary focus:ring-offset-2"
@@ -156,6 +172,7 @@ const Navigation = () => {
 
           {/* Mobile & Tablet Menu Button - Shows below 1024px */}
           <div className="lg:hidden flex items-center space-x-2">
+            <SearchDialog />
             <ThemeSwitch />
             <Button
               ref={menuButtonRef}
@@ -205,8 +222,21 @@ const Navigation = () => {
                 </button>
               ))}
               <Button
+                variant="outline"
+                onClick={() => {
+                  const link = document.createElement('a');
+                  link.href = '/cv.pdf';
+                  link.download = 'Tonderai_CV.pdf';
+                  link.click();
+                }}
+                className="w-full glass mt-4"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Download CV
+              </Button>
+              <Button
                 onClick={() => scrollToSection('contact')}
-                className="w-full gradient-primary mt-4 focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                className="w-full gradient-primary mt-2 focus:ring-2 focus:ring-primary focus:ring-offset-2"
                 aria-label="Navigate to contact section"
               >
                 Hire Me

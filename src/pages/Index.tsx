@@ -12,6 +12,11 @@ import StructuredData from '@/components/StructuredData';
 import InteractiveBackground from '@/components/InteractiveBackground';
 import FloatingElements from '@/components/FloatingElements';
 import LoadingSpinner from '@/components/LoadingSpinner';
+import BackToTop from '@/components/BackToTop';
+import TableOfContents from '@/components/TableOfContents';
+import AboutSkeleton from '@/components/AboutSkeleton';
+import AboutMeSkeleton from '@/components/AboutMeSkeleton';
+import CertificationsSkeleton from '@/components/CertificationsSkeleton';
 
 // Lazy load heavy components for better performance
 import { ProjectsLazy } from '@/components/Projects.lazy';
@@ -25,6 +30,8 @@ const Index = () => {
       <StructuredData />
       <InteractiveBackground />
       <FloatingElements />
+      <BackToTop />
+      <TableOfContents />
       <div className="min-h-screen bg-background text-foreground custom-scrollbar relative z-20">
         <Navigation />
         <main role="main" aria-label="Main content" id="main-content">
@@ -34,11 +41,15 @@ const Index = () => {
           </section>
           <section id="about" aria-labelledby="about-heading" className="py-12">
             <h2 id="about-heading" className="sr-only">About Tonderai Matanga</h2>
-            <About />
+            <Suspense fallback={<AboutSkeleton />}>
+              <About />
+            </Suspense>
           </section>
           <section id="about-me" aria-labelledby="about-me-heading" className="py-12">
             <h2 id="about-me-heading" className="sr-only">Personal Information</h2>
-            <AboutMe />
+            <Suspense fallback={<AboutMeSkeleton />}>
+              <AboutMe />
+            </Suspense>
           </section>
           <section id="projects" aria-labelledby="projects-heading" className="py-12">
             <h2 id="projects-heading" className="sr-only">Featured Projects</h2>
@@ -48,7 +59,7 @@ const Index = () => {
           </section>
           <section id="certifications" aria-labelledby="certifications-heading" className="py-12">
             <h2 id="certifications-heading" className="sr-only">Certifications and Achievements</h2>
-            <Suspense fallback={<LoadingSpinner />}>
+            <Suspense fallback={<CertificationsSkeleton />}>
               <CertificationsLazy />
             </Suspense>
           </section>
