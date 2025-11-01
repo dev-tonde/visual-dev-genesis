@@ -13,7 +13,6 @@ import InteractiveBackground from '@/components/InteractiveBackground';
 import FloatingElements from '@/components/FloatingElements';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import BackToTop from '@/components/BackToTop';
-import TableOfContents from '@/components/TableOfContents';
 import AboutSkeleton from '@/components/AboutSkeleton';
 import AboutMeSkeleton from '@/components/AboutMeSkeleton';
 import CertificationsSkeleton from '@/components/CertificationsSkeleton';
@@ -31,7 +30,6 @@ const Index = () => {
       <InteractiveBackground />
       <FloatingElements />
       <BackToTop />
-      <TableOfContents />
       <div className="min-h-screen bg-background text-foreground custom-scrollbar relative z-20">
         <Navigation />
         <main role="main" aria-label="Main content" id="main-content">

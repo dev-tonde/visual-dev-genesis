@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Menu, X, Download } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import ThemeSwitch from '@/components/ThemeSwitch';
 import SearchDialog from '@/components/SearchDialog';
@@ -27,6 +28,8 @@ const Navigation = () => {
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const prefersReducedMotion = useReducedMotion();
+  const location = useLocation();
+  const isGamesPage = location.pathname === '/games';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -76,6 +79,12 @@ const Navigation = () => {
   }, [isMobileMenuOpen]);
 
   const scrollToSection = (sectionId: string) => {
+    // If we're on games page and trying to go to a section, navigate home first
+    if (isGamesPage && sectionId !== 'games') {
+      window.location.href = `/#${sectionId}`;
+      return;
+    }
+    
     const element = document.getElementById(sectionId);
     element?.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth' });
     if (isMobileMenuOpen) {
@@ -85,11 +94,12 @@ const Navigation = () => {
   };
 
   const menuItems = [
-    { name: 'Home', id: 'hero' },
-    { name: 'About', id: 'about' },
-    { name: 'Projects', id: 'projects' },
-    { name: 'Games', id: 'games' },
-    { name: 'Contact', id: 'contact' },
+    { name: 'Home', id: 'hero', type: 'scroll' as const },
+    { name: 'About', id: 'about', type: 'scroll' as const },
+    { name: 'Projects', id: 'projects', type: 'scroll' as const },
+    { name: 'Certifications', id: 'certifications', type: 'scroll' as const },
+    { name: 'Games', id: 'games', type: 'link' as const },
+    { name: 'Contact', id: 'contact', type: 'scroll' as const },
   ];
 
   return (
@@ -127,24 +137,34 @@ const Navigation = () => {
             Tonderai
           </motion.div>
 
-          {/* Desktop Menu - Hidden below 768px (tablet) */}
-          <div className="hidden lg:flex items-center space-x-4">
-            {menuItems.map((item) => (
-              <motion.button
-                key={item.name}
-                onClick={() => scrollToSection(item.id)}
-                className="text-foreground hover:text-primary transition-colors relative focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md px-2 py-1"
-                whileHover={{ scale: 1.05 }}
-                aria-label={`Navigate to ${item.name} section`}
-              >
-                {item.name}
-                <motion.div
-                  className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary"
-                  whileHover={{ width: '100%' }}
-                  transition={{ duration: 0.2 }}
-                />
-              </motion.button>
-            ))}
+          {/* Desktop Menu - Hidden below 1024px */}
+          <div className="hidden lg:flex items-center space-x-2">
+            {menuItems.map((item) => 
+              item.type === 'link' ? (
+                <Link
+                  key={item.name}
+                  to={`/${item.id}`}
+                  className="text-foreground hover:text-primary transition-colors relative focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md px-2 py-1"
+                >
+                  {item.name}
+                </Link>
+              ) : (
+                <motion.button
+                  key={item.name}
+                  onClick={() => scrollToSection(item.id)}
+                  className="text-foreground hover:text-primary transition-colors relative focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md px-2 py-1"
+                  whileHover={{ scale: 1.05 }}
+                  aria-label={`Navigate to ${item.name} section`}
+                >
+                  {item.name}
+                  <motion.div
+                    className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary"
+                    whileHover={{ width: '100%' }}
+                    transition={{ duration: 0.2 }}
+                  />
+                </motion.button>
+              )
+            )}
             <SearchDialog />
             <ThemeSwitch />
             <Button
@@ -210,17 +230,29 @@ const Navigation = () => {
               <h2 id="mobile-menu-title" className="sr-only">
                 Navigation Menu
               </h2>
-              {menuItems.map((item, index) => (
-                <button
-                  key={item.name}
-                  onClick={() => scrollToSection(item.id)}
-                  className="block w-full text-left text-foreground hover:text-primary transition-colors py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md"
-                  aria-label={`Navigate to ${item.name} section`}
-                  autoFocus={index === 0}
-                >
-                  {item.name}
-                </button>
-              ))}
+              {menuItems.map((item, index) => 
+                item.type === 'link' ? (
+                  <Link
+                    key={item.name}
+                    to={`/${item.id}`}
+                    className="block w-full text-left text-foreground hover:text-primary transition-colors py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    aria-label={`Navigate to ${item.name} page`}
+                  >
+                    {item.name}
+                  </Link>
+                ) : (
+                  <button
+                    key={item.name}
+                    onClick={() => scrollToSection(item.id)}
+                    className="block w-full text-left text-foreground hover:text-primary transition-colors py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md"
+                    aria-label={`Navigate to ${item.name} section`}
+                    autoFocus={index === 0}
+                  >
+                    {item.name}
+                  </button>
+                )
+              )}
               <Button
                 variant="outline"
                 onClick={() => {

@@ -10,9 +10,22 @@ import {
   Sparkles
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const Footer = () => {
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
+
+  const handleSectionClick = (e: React.MouseEvent<HTMLAnchorElement>, sectionId: string) => {
+    e.preventDefault();
+    if (isHomePage) {
+      const element = document.getElementById(sectionId);
+      element?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      window.location.href = `/#${sectionId}`;
+    }
+  };
+
   const technologies = [
     {
       category: 'Frontend',
@@ -110,6 +123,7 @@ const Footer = () => {
             <li>
               <a 
                 href="#about" 
+                onClick={(e) => handleSectionClick(e, 'about')}
                 className="text-muted-foreground hover:text-primary transition-colors"
               >
                 About
@@ -118,6 +132,7 @@ const Footer = () => {
             <li>
               <a 
                 href="#projects" 
+                onClick={(e) => handleSectionClick(e, 'projects')}
                 className="text-muted-foreground hover:text-primary transition-colors"
               >
                 Projects
@@ -125,7 +140,25 @@ const Footer = () => {
             </li>
             <li>
               <a 
+                href="#certifications" 
+                onClick={(e) => handleSectionClick(e, 'certifications')}
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                Certifications
+              </a>
+            </li>
+            <li>
+              <Link 
+                to="/games" 
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                Games
+              </Link>
+            </li>
+            <li>
+              <a 
                 href="#contact" 
+                onClick={(e) => handleSectionClick(e, 'contact')}
                 className="text-muted-foreground hover:text-primary transition-colors"
               >
                 Contact
