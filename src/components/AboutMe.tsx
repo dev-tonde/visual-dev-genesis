@@ -42,7 +42,7 @@ const AboutMe = () => {
   };
 
   return (
-    <section className="py-20 px-4">
+    <section id="journey" className="py-20 px-4">
       <motion.div
         ref={ref}
         variants={containerVariants}
@@ -52,7 +52,7 @@ const AboutMe = () => {
       >
         <motion.div variants={itemVariants} className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            About Me
+            My Journey
           </h2>
           <p className="text-lg text-muted-foreground">
             Get to know the person behind the code

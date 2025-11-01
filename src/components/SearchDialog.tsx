@@ -28,7 +28,8 @@ const SearchDialog = () => {
   // Searchable content database
   const searchableContent: SearchResult[] = [
     { id: 'hero', title: 'Home', type: 'section', description: 'Portfolio homepage', sectionId: 'hero' },
-    { id: 'about', title: 'About Me', type: 'section', description: 'Learn about my background', sectionId: 'about' },
+    { id: 'about', title: 'Skills & Expertise', type: 'section', description: 'My technical skills and what I do', sectionId: 'about' },
+    { id: 'journey', title: 'My Journey', type: 'section', description: 'Learn about my background and story', sectionId: 'journey' },
     { id: 'projects', title: 'Projects', type: 'section', description: 'View my work', sectionId: 'projects' },
     { id: 'certifications', title: 'Certifications', type: 'section', description: 'My achievements and credentials', sectionId: 'certifications' },
     { id: 'testimonials', title: 'Testimonials', type: 'section', description: 'Client feedback', sectionId: 'testimonials' },

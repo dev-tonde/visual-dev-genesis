@@ -68,11 +68,11 @@ const About = () => {
         >
           <motion.div variants={itemVariants} className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              About Me
+              Skills & Expertise
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              I'm a passionate frontend developer with a love for creating exceptional digital experiences. 
               I specialize in modern web technologies and have a keen eye for design and user experience.
+              Here's what I bring to the table.
             </p>
           </motion.div>
 

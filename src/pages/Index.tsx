@@ -38,13 +38,13 @@ const Index = () => {
             <Hero />
           </section>
           <section id="about" aria-labelledby="about-heading" className="py-12">
-            <h2 id="about-heading" className="sr-only">About Tonderai Matanga</h2>
+            <h2 id="about-heading" className="sr-only">Skills and Expertise</h2>
             <Suspense fallback={<AboutSkeleton />}>
               <About />
             </Suspense>
           </section>
-          <section id="about-me" aria-labelledby="about-me-heading" className="py-12">
-            <h2 id="about-me-heading" className="sr-only">Personal Information</h2>
+          <section id="journey" aria-labelledby="journey-heading" className="py-12">
+            <h2 id="journey-heading" className="sr-only">My Journey and Background</h2>
             <Suspense fallback={<AboutMeSkeleton />}>
               <AboutMe />
             </Suspense>
