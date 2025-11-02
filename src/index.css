@@ -2,22 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Modern Developer Portfolio Design System */
+
 @layer base {
   * {
     font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
   
-  /* Ensure proper color contrast for accessibility */
-  .dark {
-    --background: 222 84% 5%;
-    --foreground: 210 40% 98%;
-    --muted-foreground: 215 25% 70%;
-  }
-}
-
-/* Modern Developer Portfolio Design System */
-
-@layer base {
   :root {
     /* Light theme */
     --background: 0 0% 100%;
@@ -116,34 +107,29 @@
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
-  }
 
-    /* Icon theme-aware colors */
+    /* Icon colors for dark mode */
     --icon-primary: 270 60% 60%;
     --icon-secondary: 210 80% 55%;
     --icon-muted: 215 16% 47%;
     --icon-accent: 280 70% 70%;
-
-    /* Light theme icon colors */
+  }
+  
+  /* Icon colors for light mode */
+  :root {
     --icon-primary: 270 60% 50%;
     --icon-secondary: 210 80% 45%;
     --icon-muted: 215 16% 40%;
     --icon-accent: 280 70% 60%;
   }
+}
 
 @layer base {
   * {

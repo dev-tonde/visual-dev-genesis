@@ -81,7 +81,11 @@ const Navigation = () => {
   const scrollToSection = (sectionId: string) => {
     // If we're on games page and trying to go to a section, navigate home first
     if (isGamesPage && sectionId !== 'games') {
-      window.location.href = `/#${sectionId}`;
+      // Use React Router navigation to prevent full page reload
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        element?.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+      }, 100);
       return;
     }
     

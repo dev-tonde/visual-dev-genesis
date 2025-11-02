@@ -34,6 +34,7 @@ const Hero = () => {
 
   return (
     <section 
+      id="hero"
       className="min-h-screen flex items-center justify-center relative overflow-hidden"
       style={{
         backgroundImage: `url(${heroBg})`,
@@ -41,6 +42,7 @@ const Hero = () => {
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed'
       }}
+      aria-labelledby="hero-title"
     >
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-background/80 via-background/60 to-background/80" />
@@ -79,7 +81,7 @@ const Hero = () => {
           className="mb-8"
           variants={itemVariants}
         >
-          <h1 className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-4">
+          <h1 id="hero-title" className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-4">
             <DynamicGreeting />, I'm Tonderai
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto">

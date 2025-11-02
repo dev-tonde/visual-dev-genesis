@@ -22,6 +22,7 @@ const Footer = () => {
       const element = document.getElementById(sectionId);
       element?.scrollIntoView({ behavior: 'smooth' });
     } else {
+      // Navigate to home page first, then scroll to section
       window.location.href = `/#${sectionId}`;
     }
   };
