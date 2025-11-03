@@ -3,7 +3,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 const ProjectSkeleton = () => {
   return (
-    <Card className="glass border-0 h-full">
+    <Card className="glass border-0 h-full" style={{ minHeight: '380px' }}>
       <CardHeader>
         <div className="flex items-center justify-between mb-2">
           <Skeleton className="h-6 w-32" />
@@ -21,6 +21,7 @@ const ProjectSkeleton = () => {
       
       <CardContent className="space-y-4">
         <div className="space-y-2">
+          <Skeleton className="h-4 w-full" />
           <Skeleton className="h-4 w-full" />
           <Skeleton className="h-4 w-3/4" />
         </div>

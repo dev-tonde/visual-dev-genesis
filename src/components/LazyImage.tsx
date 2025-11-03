@@ -5,9 +5,12 @@ interface LazyImageProps {
   alt: string;
   className?: string;
   placeholder?: string;
+  width?: number;
+  height?: number;
+  aspectRatio?: string;
 }
 
-const LazyImage = ({ src, alt, className = '', placeholder }: LazyImageProps) => {
+const LazyImage = ({ src, alt, className = '', placeholder, width, height, aspectRatio = '16/9' }: LazyImageProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isInView, setIsInView] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
@@ -38,7 +41,15 @@ const LazyImage = ({ src, alt, className = '', placeholder }: LazyImageProps) =>
   }, []);
 
   return (
-    <div ref={imgRef} className={`lazy-image ${isLoaded ? 'loaded' : ''} ${className}`}>
+    <div 
+      ref={imgRef} 
+      className={`lazy-image ${isLoaded ? 'loaded' : ''} ${className} relative`}
+      style={{
+        aspectRatio: aspectRatio,
+        width: width ? `${width}px` : '100%',
+        height: height ? `${height}px` : 'auto',
+      }}
+    >
       {isInView && (
         <picture>
           <source 
@@ -52,6 +63,8 @@ const LazyImage = ({ src, alt, className = '', placeholder }: LazyImageProps) =>
           <img
             src={src}
             alt={alt}
+            width={width}
+            height={height}
             loading="lazy"
             decoding="async"
             onLoad={() => setIsLoaded(true)}
@@ -67,12 +80,12 @@ const LazyImage = ({ src, alt, className = '', placeholder }: LazyImageProps) =>
           />
         </picture>
       )}
-      {!isLoaded && placeholder && (
+      {!isLoaded && (
         <div 
           className="absolute inset-0 bg-muted animate-pulse flex items-center justify-center"
           aria-hidden="true"
         >
-          <span className="text-muted-foreground text-sm">{placeholder}</span>
+          {placeholder && <span className="text-muted-foreground text-sm">{placeholder}</span>}
         </div>
       )}
     </div>

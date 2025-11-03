@@ -36,14 +36,20 @@ const Hero = () => {
     <section 
       id="hero"
       className="min-h-screen flex items-center justify-center relative overflow-hidden"
-      style={{
-        backgroundImage: `url(${heroBg})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundAttachment: 'fixed'
-      }}
       aria-labelledby="hero-title"
     >
+      {/* Optimized background image with explicit dimensions */}
+      <div 
+        className="absolute inset-0 w-full h-full"
+        style={{
+          backgroundImage: `url(${heroBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+          willChange: 'transform',
+        }}
+        aria-hidden="true"
+      />
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-background/80 via-background/60 to-background/80" />
       

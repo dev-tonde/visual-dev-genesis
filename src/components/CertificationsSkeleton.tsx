@@ -3,7 +3,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 const CertificationsSkeleton = () => {
   return (
-    <section className="py-20 px-4">
+    <section className="py-20 px-4" style={{ minHeight: '900px' }}>
       <div className="container mx-auto">
         {/* Header */}
         <div className="text-center mb-12">

@@ -3,7 +3,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 const AboutSkeleton = () => {
   return (
-    <section className="py-20 px-4">
+    <section className="py-20 px-4" style={{ minHeight: '700px' }}>
       <div className="container mx-auto">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
