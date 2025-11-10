@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,6 +11,7 @@ import PerformanceOptimizer from "@/components/PerformanceOptimizer";
 import PerformanceMonitor from "@/components/PerformanceMonitor";
 import AccessibilityEnhancer from "@/components/AccessibilityEnhancer";
 import Analytics from "@/components/Analytics";
+import ConsentManager, { ConsentPreferences } from "@/components/ConsentManager";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { AuthProvider } from "@/components/AuthProvider";
 import Index from "./pages/Index";
@@ -19,25 +21,52 @@ import Games from "./pages/Games";
 import Auth from "./pages/Auth";
 import SubmitTestimonial from "./pages/SubmitTestimonial";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminHub from "./pages/AdminHub";
+import AdminContacts from "./pages/AdminContacts";
+import Profile from "./pages/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 const AppContent = () => {
   useAnalytics();
+  const [consentPreferences, setConsentPreferences] = useState<ConsentPreferences | null>(null);
+
+  const handleConsentChange = (consent: ConsentPreferences) => {
+    setConsentPreferences(consent);
+    // Store consent in localStorage (already handled by ConsentManager)
+    // You can also send this to your analytics service if needed
+  };
+
   return (
     <>
       <PerformanceOptimizer />
       <PerformanceMonitor />
       <AccessibilityEnhancer />
       <Analytics />
+      <ConsentManager onConsentChange={handleConsentChange} />
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/games" element={<Games />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/submit-testimonial" element={<SubmitTestimonial />} />
+        <Route path="/profile" element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin" element={
+          <ProtectedRoute>
+            <AdminHub />
+          </ProtectedRoute>
+        } />
         <Route path="/admin/testimonials" element={
           <ProtectedRoute>
             <AdminDashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin/contacts" element={
+          <ProtectedRoute>
+            <AdminContacts />
           </ProtectedRoute>
         } />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
