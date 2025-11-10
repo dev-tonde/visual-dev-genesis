@@ -8,7 +8,7 @@ const StructuredData = () => {
     "name": "Tonderai Matanga - Full Stack Development Services",
     "description": "Professional full-stack web development services specializing in React, TypeScript, Node.js, and modern web technologies",
     "url": "https://iamtonde.co.za",
-    "telephone": "+27-XXX-XXX-XXXX",
+    // "telephone": "+27-XXX-XXX-XXXX", // Uncomment and add real phone if available
     "email": "hello@iamtonde.co.za",
     "address": {
       "@type": "PostalAddress",
@@ -89,7 +89,7 @@ const StructuredData = () => {
     },
     "contactPoint": {
       "@type": "ContactPoint",
-      "telephone": "+27-XXX-XXX-XXXX",
+      // "telephone": "+27-XXX-XXX-XXXX", // Uncomment and add real phone if available
       "contactType": "customer service",
       "email": "hello@iamtonde.co.za",
       "areaServed": "ZA",
@@ -119,7 +119,7 @@ const StructuredData = () => {
     "name": "Tonderai Matanga - Web Developer Cape Town",
     "image": "https://iamtonde.co.za/og-image.jpg",
     "url": "https://iamtonde.co.za",
-    "telephone": "+27-XXX-XXX-XXXX",
+    // "telephone": "+27-XXX-XXX-XXXX", // Uncomment and add real phone if available
     "email": "hello@iamtonde.co.za",
     "address": {
       "@type": "PostalAddress",

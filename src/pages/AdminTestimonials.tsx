@@ -43,24 +43,37 @@ const AdminTestimonials = () => {
       return;
     }
 
-    const { data, error } = await supabase
-      .from('admin_users')
-      .select('*')
-      .eq('user_id', user.id)
-      .maybeSingle();
+    try {
+      // Use RPC function for server-side admin check (more secure)
+      const { data, error } = await supabase.rpc('is_admin');
 
-    if (error || !data) {
-      toast({
-        title: 'Access Denied',
-        description: 'You do not have admin privileges',
-        variant: 'destructive'
-      });
+      if (error) {
+        console.error('Error checking admin status:', error);
+        toast({
+          title: 'Access Denied',
+          description: 'You do not have permission to access this page.',
+          variant: 'destructive'
+        });
+        navigate('/');
+        return;
+      }
+
+      if (!data) {
+        toast({
+          title: 'Access Denied',
+          description: 'Admin privileges required.',
+          variant: 'destructive'
+        });
+        navigate('/');
+        return;
+      }
+
+      setIsAdmin(true);
+      fetchTestimonials();
+    } catch (err) {
+      console.error('Unexpected error:', err);
       navigate('/');
-      return;
     }
-
-    setIsAdmin(true);
-    fetchTestimonials();
   };
 
   const fetchTestimonials = async () => {

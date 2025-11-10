@@ -48,18 +48,7 @@ const ContactForm = ({ variants }: ContactFormProps) => {
     setIsSubmitting(true);
 
     try {
-      // Save to database
-      const { error: dbError } = await supabase
-        .from('contact_submissions')
-        .insert({
-          name: data.name,
-          email: data.email,
-          message: data.message
-        });
-
-      if (dbError) throw dbError;
-
-      // Call edge function to send email
+      // ONLY call edge function - it handles database insert and email sending
       const { data: emailResponse, error: emailError } = await supabase.functions.invoke('send-contact-email', {
         body: data
       });

@@ -20,7 +20,6 @@ export function SafeThemeProvider({ children }: SafeThemeProviderProps) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    console.log('[Debug] React version (SafeThemeProvider):', ReactVersion);
     setMounted(true);
     
     // Check for saved theme or default to system
