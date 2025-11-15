@@ -42,7 +42,7 @@ const AboutMe = () => {
   };
 
   return (
-    <section id="journey" className="py-20 px-4">
+    <section id="journey" className="px-4">
       <motion.div
         ref={ref}
         variants={containerVariants}

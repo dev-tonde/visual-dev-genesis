@@ -103,6 +103,7 @@ const Hero = () => {
             size="lg" 
             className="gradient-primary hover:scale-102 transition-transform shadow-sm hover:shadow-md"
             onClick={() => scrollToSection('projects')}
+            aria-label="View my portfolio projects"
           >
             View My Work
           </Button>
@@ -117,8 +118,9 @@ const Hero = () => {
               link.download = 'Tonderai_CV.pdf';
               link.click();
             }}
+            aria-label="Download my CV as PDF"
           >
-            <Download className="w-4 h-4 mr-2" />
+            <Download className="w-4 h-4 mr-2" aria-hidden="true" />
             Download CV
           </Button>
           
@@ -127,6 +129,7 @@ const Hero = () => {
             size="lg"
             className="glass hover:bg-primary/10 transition-smooth shadow-sm hover:shadow-md"
             onClick={() => scrollToSection('contact')}
+            aria-label="Navigate to contact section"
           >
             Get In Touch
           </Button>
@@ -143,9 +146,9 @@ const Hero = () => {
             className="p-3 glass rounded-full hover:bg-primary/10 transition-smooth"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            aria-label="GitHub Profile"
+            aria-label="Visit my GitHub profile"
           >
-            <Github className="w-6 h-6" />
+            <Github className="w-6 h-6" aria-hidden="true" />
           </motion.a>
           
           <motion.a
@@ -155,9 +158,9 @@ const Hero = () => {
             className="p-3 glass rounded-full hover:bg-primary/10 transition-smooth"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            aria-label="LinkedIn Profile"
+            aria-label="Visit my LinkedIn profile"
           >
-            <Linkedin className="w-6 h-6" />
+            <Linkedin className="w-6 h-6" aria-hidden="true" />
           </motion.a>
           
           <motion.a
@@ -165,9 +168,9 @@ const Hero = () => {
             className="p-3 glass rounded-full hover:bg-primary/10 transition-smooth"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            aria-label="Send Email"
+            aria-label="Send me an email"
           >
-            <Mail className="w-6 h-6" />
+            <Mail className="w-6 h-6" aria-hidden="true" />
           </motion.a>
         </motion.div>
 
@@ -180,8 +183,9 @@ const Hero = () => {
             className="p-2 rounded-full hover:bg-primary/10 transition-smooth"
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
+            aria-label="Scroll down to about section"
           >
-            <ArrowDown className="w-6 h-6" />
+            <ArrowDown className="w-6 h-6" aria-hidden="true" />
           </motion.button>
         </motion.div>
       </motion.div>

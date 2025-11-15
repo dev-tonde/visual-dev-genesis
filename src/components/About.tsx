@@ -57,7 +57,7 @@ const About = () => {
   ];
 
   return (
-    <section id="about" className="py-20 px-4">
+    <section id="about" className="px-4">
       <div className="container mx-auto">
         <motion.div
           ref={ref}
@@ -87,7 +87,7 @@ const About = () => {
                   className="transition-transform"
                 >
                   <Card className="glass border-0 shadow-sm hover:shadow-md transition-shadow">
-                    <CardContent className="p-4">
+                    <CardContent className="p-6">
                       <div className="flex items-start space-x-3">
                         <div className="p-2 rounded-lg bg-primary/10">
                           <highlight.icon className="w-5 h-5 icon-primary" />

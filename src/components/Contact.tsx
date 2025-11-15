@@ -32,7 +32,7 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-20 px-4">
+    <section id="contact" className="px-4">
       <div className="container mx-auto">
         <motion.div
           ref={ref}
