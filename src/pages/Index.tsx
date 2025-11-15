@@ -37,35 +37,35 @@ const Index = () => {
             <h1 id="hero-heading" className="sr-only">Tonderai Matanga - Full Stack Developer Portfolio</h1>
             <Hero />
           </section>
-          <section id="about" aria-labelledby="about-heading" className="py-12">
+          <section id="about" aria-labelledby="about-heading" className="py-16">
             <h2 id="about-heading" className="sr-only">Skills and Expertise</h2>
             <Suspense fallback={<AboutSkeleton />}>
               <About />
             </Suspense>
           </section>
-          <section id="journey" aria-labelledby="journey-heading" className="py-12">
+          <section id="journey" aria-labelledby="journey-heading" className="py-16">
             <h2 id="journey-heading" className="sr-only">My Journey and Background</h2>
             <Suspense fallback={<AboutMeSkeleton />}>
               <AboutMe />
             </Suspense>
           </section>
-          <section id="projects" aria-labelledby="projects-heading" className="py-12">
+          <section id="projects" aria-labelledby="projects-heading" className="py-16">
             <h2 id="projects-heading" className="sr-only">Featured Projects</h2>
             <Suspense fallback={<LoadingSpinner />}>
               <ProjectsLazy />
             </Suspense>
           </section>
-          <section id="certifications" aria-labelledby="certifications-heading" className="py-12">
+          <section id="certifications" aria-labelledby="certifications-heading" className="py-16">
             <h2 id="certifications-heading" className="sr-only">Certifications and Achievements</h2>
             <Suspense fallback={<CertificationsSkeleton />}>
               <CertificationsLazy />
             </Suspense>
           </section>
-          <section id="testimonials" aria-labelledby="testimonials-heading" className="py-12">
+          <section id="testimonials" aria-labelledby="testimonials-heading" className="py-16">
             <h2 id="testimonials-heading" className="sr-only">Client Testimonials</h2>
             <Testimonials />
           </section>
-          <section id="contact" aria-labelledby="contact-heading" className="py-12">
+          <section id="contact" aria-labelledby="contact-heading" className="py-16">
             <h2 id="contact-heading" className="sr-only">Contact Information</h2>
             <Contact />
           </section>
