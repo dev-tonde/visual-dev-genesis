@@ -165,11 +165,11 @@ const Certifications = () => {
 
   const getLevelColor = (level: string) => {
     switch (level) {
-      case 'Beginner': return 'bg-green-500/20 text-green-400';
-      case 'Intermediate': return 'bg-blue-500/20 text-blue-400';
-      case 'Advanced': return 'bg-purple-500/20 text-purple-400';
-      case 'Expert': return 'bg-orange-500/20 text-orange-400';
-      default: return 'bg-gray-500/20 text-gray-400';
+      case 'Beginner': return 'bg-accent/20 text-accent-foreground';
+      case 'Intermediate': return 'bg-primary/20 text-primary-foreground';
+      case 'Advanced': return 'bg-secondary/20 text-secondary-foreground';
+      case 'Expert': return 'bg-primary/30 text-primary-foreground';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -183,12 +183,12 @@ const Certifications = () => {
         <CardHeader className="pb-3">
           <div className="flex items-start justify-between mb-2">
             <div className="flex items-center gap-2">
-              <Award className="w-5 h-5 text-primary" />
+              <Award className="w-5 h-5 text-primary" aria-hidden="true" />
               <Badge className={getLevelColor(cert.level)}>{cert.level}</Badge>
             </div>
             <div className="flex items-center text-muted-foreground text-sm">
-              <Calendar className="w-4 h-4 mr-1" />
-              {cert.date}
+              <Calendar className="w-4 h-4 mr-1" aria-hidden="true" />
+              <time dateTime={cert.date}>{cert.date}</time>
             </div>
           </div>
           <CardTitle className="text-lg group-hover:text-primary transition-colors">
@@ -218,15 +218,20 @@ const Certifications = () => {
           <div className="flex gap-2 pt-2">
             <Dialog>
               <DialogTrigger asChild>
-                <Button size="sm" variant="outline" className="flex-1 hover-lift">
-                  <BookOpen className="w-4 h-4 mr-2" />
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  className="flex-1 hover-lift"
+                  aria-label={`View details for ${cert.title}`}
+                >
+                  <BookOpen className="w-4 h-4 mr-2" aria-hidden="true" />
                   Details
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-2xl">
                 <DialogHeader>
                   <DialogTitle className="flex items-center gap-2">
-                    <Award className="w-5 h-5 text-primary" />
+                    <Award className="w-5 h-5 text-primary" aria-hidden="true" />
                     {cert.title}
                   </DialogTitle>
                 </DialogHeader>
@@ -265,10 +270,18 @@ const Certifications = () => {
 
                   {cert.credentialUrl && (
                     <div className="pt-4 border-t">
-                      <Button asChild className="w-full gradient-primary">
-                        <a href={cert.credentialUrl} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="w-4 h-4 mr-2" />
-                          View Credential
+                      <Button 
+                        asChild 
+                        className="w-full gradient-primary"
+                        aria-label={`Verify ${cert.title} certification`}
+                      >
+                        <a 
+                          href={cert.credentialUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                        >
+                          <ExternalLink className="w-4 h-4 mr-2" aria-hidden="true" />
+                          Verify Certification
                         </a>
                       </Button>
                     </div>
@@ -278,9 +291,18 @@ const Certifications = () => {
             </Dialog>
 
             {cert.credentialUrl && (
-              <Button size="sm" className="flex-1 gradient-primary hover-lift" asChild>
-                <a href={cert.credentialUrl} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="w-4 h-4 mr-2" />
+              <Button 
+                size="sm" 
+                className="flex-1 gradient-primary hover-lift" 
+                asChild
+              >
+                <a 
+                  href={cert.credentialUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  aria-label={`Verify ${cert.title} certification`}
+                >
+                  <ExternalLink className="w-4 h-4 mr-2" aria-hidden="true" />
                   Verify
                 </a>
               </Button>
@@ -292,7 +314,7 @@ const Certifications = () => {
   );
 
   return (
-    <section id="certifications" className="px-4">
+    <section id="certifications" className="py-16 px-4">
       <div className="container mx-auto">
         <motion.div
           ref={ref}
@@ -312,13 +334,19 @@ const Certifications = () => {
 
           <Tabs defaultValue="ai" className="w-full">
             <TabsList className="grid w-full grid-cols-3 mb-8">
-              <TabsTrigger value="ai">AI & Machine Learning</TabsTrigger>
-              <TabsTrigger value="development">App Development</TabsTrigger>
-              <TabsTrigger value="frontend">Frontend & Design</TabsTrigger>
+              <TabsTrigger value="ai" aria-label="AI and Machine Learning certifications">
+                AI & Machine Learning
+              </TabsTrigger>
+              <TabsTrigger value="development" aria-label="App Development certifications">
+                App Development
+              </TabsTrigger>
+              <TabsTrigger value="frontend" aria-label="Frontend and Design certifications">
+                Frontend & Design
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="ai" className="space-y-6">
-              <div className="grid md:grid-cols-3 lg:grid-cols-3 gap-6">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {certifications.ai.map((cert) => (
                   <CertificationCard key={cert.id} cert={cert} />
                 ))}
@@ -326,7 +354,7 @@ const Certifications = () => {
             </TabsContent>
 
             <TabsContent value="development" className="space-y-6">
-              <div className="grid md:grid-cols-3 lg:grid-cols-3 gap-6">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {certifications.development.map((cert) => (
                   <CertificationCard key={cert.id} cert={cert} />
                 ))}
@@ -334,7 +362,7 @@ const Certifications = () => {
             </TabsContent>
 
             <TabsContent value="frontend" className="space-y-6">
-              <div className="grid md:grid-cols-3 lg:grid-cols-3 gap-6">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {certifications.frontend.map((cert) => (
                   <CertificationCard key={cert.id} cert={cert} />
                 ))}
