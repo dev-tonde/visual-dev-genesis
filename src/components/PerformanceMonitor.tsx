@@ -74,7 +74,9 @@ const PerformanceMonitor = () => {
         const lcpObserver = new PerformanceObserver((list) => {
           const entries = list.getEntries();
           const lastEntry = entries[entries.length - 1];
-          console.log('LCP:', lastEntry.startTime);
+          if (import.meta.env.DEV) {
+            console.log('LCP:', lastEntry.startTime);
+          }
         });
         lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
 
@@ -83,12 +85,16 @@ const PerformanceMonitor = () => {
           const entries = list.getEntries();
           entries.forEach(entry => {
             const fidEntry = entry as any;
-            console.log('FID:', fidEntry.processingStart - fidEntry.startTime);
+            if (import.meta.env.DEV) {
+              console.log('FID:', fidEntry.processingStart - fidEntry.startTime);
+            }
           });
         });
         fidObserver.observe({ entryTypes: ['first-input'] });
 
-        // Track Cumulative Layout Shift
+        // Track Cumulative Layout Shift - disabled to prevent console spam
+        // CLS tracking causes performance issues, monitor via browser devtools instead
+        /*
         let clsValue = 0;
         const clsObserver = new PerformanceObserver((list) => {
           const entries = list.getEntries();
@@ -96,11 +102,14 @@ const PerformanceMonitor = () => {
             const clsEntry = entry as any;
             if (!clsEntry.hadRecentInput) {
               clsValue += clsEntry.value;
-              console.log('CLS:', clsValue);
+              if (import.meta.env.DEV) {
+                console.log('CLS:', clsValue);
+              }
             }
           });
         });
         clsObserver.observe({ entryTypes: ['layout-shift'] });
+        */
       }
     };
 
@@ -121,9 +130,13 @@ const PerformanceMonitor = () => {
         navigator.serviceWorker.register('/sw.js', {
           scope: '/'
         }).then(registration => {
-          console.log('SW registered:', registration);
+          if (import.meta.env.DEV) {
+            console.log('SW registered:', registration);
+          }
         }).catch(error => {
-          console.log('SW registration failed:', error);
+          if (import.meta.env.DEV) {
+            console.log('SW registration failed:', error);
+          }
         });
       }
     };

@@ -85,7 +85,10 @@ const InteractiveBackground = () => {
           
           if (distance < 120) {
             ctx.beginPath();
-            ctx.strokeStyle = `rgba(168, 85, 247, ${(120 - distance) / 120 * 0.2})`;
+            // Use CSS variable for primary color
+            const primaryHsl = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
+            const [h, s, l] = primaryHsl.split(' ').map(v => parseFloat(v));
+            ctx.strokeStyle = `hsla(${h}, ${s}%, ${l}%, ${(120 - distance) / 120 * 0.2})`;
             ctx.lineWidth = 1;
             ctx.moveTo(particle.x, particle.y);
             ctx.lineTo(otherParticle.x, otherParticle.y);
@@ -101,8 +104,11 @@ const InteractiveBackground = () => {
           particle.x, particle.y, 0,
           particle.x, particle.y, particle.size
         );
-        gradient.addColorStop(0, `rgba(168, 85, 247, ${particle.opacity})`);
-        gradient.addColorStop(1, `rgba(168, 85, 247, 0)`);
+        // Use CSS variable for primary color
+        const primaryHsl = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
+        const [h, s, l] = primaryHsl.split(' ').map(v => parseFloat(v));
+        gradient.addColorStop(0, `hsla(${h}, ${s}%, ${l}%, ${particle.opacity})`);
+        gradient.addColorStop(1, `hsla(${h}, ${s}%, ${l}%, 0)`);
         
         ctx.fillStyle = gradient;
         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);

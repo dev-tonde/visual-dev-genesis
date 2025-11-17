@@ -53,8 +53,8 @@ const Hero = () => {
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-background/80 via-background/60 to-background/80" />
       
-      {/* Animated particles */}
-      <div className="absolute inset-0">
+      {/* Animated particles - optimized for performance */}
+      <div className="absolute inset-0" style={{ willChange: 'auto' }}>
         {[...Array(20)].map((_, i) => (
           <motion.div
             key={i}
@@ -72,7 +72,9 @@ const Hero = () => {
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
+              willChange: 'transform',
             }}
+            aria-hidden="true"
           />
         ))}
       </div>
