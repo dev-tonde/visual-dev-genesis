@@ -35,6 +35,7 @@ const MouseFollower = () => {
           backgroundColor: 'white',
           borderRadius: '50%',
           transform: 'translate(-50%, -50%)',
+          willChange: 'transform',
         }}
         animate={{
           x: mousePosition.x,
@@ -47,6 +48,7 @@ const MouseFollower = () => {
           damping: 28,
           mass: 0.5,
         }}
+        aria-hidden="true"
       />
       <motion.div
         className="pointer-events-none fixed top-0 left-0 z-40 border border-white/20 mix-blend-difference"
@@ -55,6 +57,7 @@ const MouseFollower = () => {
           height: '40px',
           borderRadius: '50%',
           transform: 'translate(-50%, -50%)',
+          willChange: 'transform',
         }}
         animate={{
           x: mousePosition.x,
@@ -67,6 +70,7 @@ const MouseFollower = () => {
           damping: 15,
           mass: 0.1,
         }}
+        aria-hidden="true"
       />
     </>
   );
