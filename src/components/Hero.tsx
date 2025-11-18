@@ -38,16 +38,14 @@ const Hero = () => {
       className="min-h-screen flex items-center justify-center relative overflow-hidden"
       aria-labelledby="hero-title"
     >
-      {/* Optimized background image with explicit dimensions */}
-      <div 
-        className="absolute inset-0 w-full h-full"
-        style={{
-          backgroundImage: `url(${heroBg})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundAttachment: 'fixed',
-          willChange: 'transform',
-        }}
+      {/* Optimized background image with explicit dimensions and priority hints for LCP */}
+      <img
+        src={heroBg}
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover object-center"
+        style={{ position: 'fixed', willChange: 'transform' }}
+        fetchPriority="high"
+        loading="eager"
         aria-hidden="true"
       />
       {/* Gradient overlay */}
