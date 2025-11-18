@@ -5,6 +5,15 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
+    <!-- Inline critical CSS for fastest FCP -->
+    <style>
+      /* Critical CSS for initial render */
+      *,::before,::after{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}
+      html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif}
+      body{margin:0;line-height:inherit}
+      #root{min-height:100vh;width:100%}
+    </style>
+    
     <!-- Performance optimizations -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -13,9 +22,8 @@
     <link rel="preconnect" href="https://api.github.com" crossorigin />
     <link rel="preconnect" href="https://rjoahcteuiddikmriegb.supabase.co" crossorigin />
     
-    <!-- Preload critical font with font-display swap for better LCP -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" as="style" />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    <!-- Defer font loading to prevent render blocking -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" /></noscript>
     
     <!-- Preload hero background image for faster LCP -->
