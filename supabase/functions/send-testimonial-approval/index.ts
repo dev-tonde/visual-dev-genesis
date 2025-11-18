@@ -35,7 +35,7 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    console.log("Fetching testimonial:", testimonialId);
+    console.log("Fetching testimonial data");
 
     // Fetch testimonial details with user email
     const { data: testimonial, error: fetchError } = await supabase
@@ -53,7 +53,7 @@ const handler = async (req: Request): Promise<Response> => {
       .single();
 
     if (fetchError || !testimonial) {
-      console.error("Error fetching testimonial:", fetchError);
+      console.error("Error fetching testimonial data");
       return new Response(
         JSON.stringify({ error: "Testimonial not found" }),
         {
@@ -76,7 +76,7 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    console.log("Sending approval email to:", userEmail);
+    console.log("Sending approval email");
 
     // Send approval email
     const emailResponse = await resend.emails.send({
