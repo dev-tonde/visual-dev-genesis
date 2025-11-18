@@ -133,7 +133,7 @@ const handler = async (req: Request): Promise<Response> => {
     ]);
 
     if (!ipRateOk || !emailRateOk) {
-      console.warn(`Rate limit exceeded - IP: ${clientIP}, Email: ${email}`);
+      console.warn("Rate limit exceeded for contact form submission");
       return new Response(
         JSON.stringify({
           success: false,
@@ -155,7 +155,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Log submission (minimal data for monitoring)
     await logSubmission({ name, email, message, ip_address: clientIP });
 
-    console.log("Processing contact form submission from:", { ip: clientIP, email: email.replace(/(.{2}).*(@.*)/, '$1***$2') });
+    console.log("Processing contact form submission");
 
     // Send notification email to yourself
     const notificationEmail = await resend.emails.send({
@@ -214,7 +214,7 @@ const handler = async (req: Request): Promise<Response> => {
       }
     );
   } catch (error: any) {
-    console.error("Error in send-contact-email function:", error);
+    console.error("Error in send-contact-email function:", error.message || "Unknown error");
     
     // Standardized error response
     const errorResponse = {
