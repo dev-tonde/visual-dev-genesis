@@ -41,6 +41,7 @@ export default defineConfig(({ mode }) => ({
   },
   optimizeDeps: {
     force: true,
+    include: ['react', 'react-dom', 'framer-motion'],
     exclude: [],
     esbuildOptions: {
       resolveExtensions: [".mjs", ".js", ".ts", ".jsx", ".tsx", ".json"],
