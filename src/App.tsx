@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -14,17 +14,20 @@ import Analytics from "@/components/Analytics";
 import ConsentManager, { ConsentPreferences } from "@/components/ConsentManager";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { AuthProvider } from "@/components/AuthProvider";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import Index from "./pages/Index";
-import Privacy from "./pages/Privacy";
-import NotFound from "./pages/NotFound";
-import Games from "./pages/Games";
-import Auth from "./pages/Auth";
-import SubmitTestimonial from "./pages/SubmitTestimonial";
-import AdminDashboard from "./pages/AdminDashboard";
-import AdminHub from "./pages/AdminHub";
-import AdminContacts from "./pages/AdminContacts";
-import Profile from "./pages/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
+
+// Lazy load route components not needed on initial load
+const Privacy = lazy(() => import("./pages/Privacy"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Games = lazy(() => import("./pages/Games"));
+const Auth = lazy(() => import("./pages/Auth"));
+const SubmitTestimonial = lazy(() => import("./pages/SubmitTestimonial"));
+const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
+const AdminHub = lazy(() => import("./pages/AdminHub"));
+const AdminContacts = lazy(() => import("./pages/AdminContacts"));
+const Profile = lazy(() => import("./pages/Profile"));
 
 const AppContent = () => {
   useAnalytics();
@@ -43,35 +46,37 @@ const AppContent = () => {
       <AccessibilityEnhancer />
       <Analytics />
       <ConsentManager onConsentChange={handleConsentChange} />
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/privacy" element={<Privacy />} />
-        <Route path="/games" element={<Games />} />
-        <Route path="/auth" element={<Auth />} />
-        <Route path="/submit-testimonial" element={<SubmitTestimonial />} />
-        <Route path="/profile" element={
-          <ProtectedRoute>
-            <Profile />
-          </ProtectedRoute>
-        } />
-        <Route path="/admin" element={
-          <ProtectedRoute>
-            <AdminHub />
-          </ProtectedRoute>
-        } />
-        <Route path="/admin/testimonials" element={
-          <ProtectedRoute>
-            <AdminDashboard />
-          </ProtectedRoute>
-        } />
-        <Route path="/admin/contacts" element={
-          <ProtectedRoute>
-            <AdminContacts />
-          </ProtectedRoute>
-        } />
-        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <Suspense fallback={<LoadingSpinner />}>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/games" element={<Games />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/submit-testimonial" element={<SubmitTestimonial />} />
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin" element={
+            <ProtectedRoute>
+              <AdminHub />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/testimonials" element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/contacts" element={
+            <ProtectedRoute>
+              <AdminContacts />
+            </ProtectedRoute>
+          } />
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
     </>
   );
 };

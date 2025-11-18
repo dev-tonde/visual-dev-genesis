@@ -19,10 +19,12 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['react', 'react-dom'],
-          ui: ['@radix-ui/react-dialog', '@radix-ui/react-popover', '@radix-ui/react-toast'],
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          ui: ['@radix-ui/react-dialog', '@radix-ui/react-popover', '@radix-ui/react-toast', '@radix-ui/react-dropdown-menu', '@radix-ui/react-select'],
           icons: ['lucide-react'],
           animations: ['framer-motion'],
+          forms: ['react-hook-form', '@hookform/resolvers', 'zod'],
+          supabase: ['@supabase/supabase-js', '@tanstack/react-query'],
         },
       },
     },
