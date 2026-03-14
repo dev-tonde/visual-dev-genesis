@@ -3,9 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 const HOME_PATHNAME = '/';
 
-const getScrollBehavior = (): ScrollBehavior => (
-  window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
-);
+const getScrollBehavior = (): ScrollBehavior =>
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
 
 export const getSectionHref = (sectionId: string) => `/#${encodeURIComponent(sectionId)}`;
 
@@ -28,20 +27,23 @@ export const useSectionNavigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  return useCallback((sectionId: string) => {
-    const nextHash = `#${encodeURIComponent(sectionId)}`;
-    const isHomeRoute = location.pathname === HOME_PATHNAME;
+  return useCallback(
+    (sectionId: string) => {
+      const nextHash = `#${encodeURIComponent(sectionId)}`;
+      const isHomeRoute = location.pathname === HOME_PATHNAME;
 
-    if (isHomeRoute && location.hash === nextHash) {
-      scrollSectionIntoView(sectionId);
-      return;
-    }
+      if (isHomeRoute && location.hash === nextHash) {
+        scrollSectionIntoView(sectionId);
+        return;
+      }
 
-    navigate({
-      pathname: HOME_PATHNAME,
-      hash: nextHash,
-    });
-  }, [location.hash, location.pathname, navigate]);
+      navigate({
+        pathname: HOME_PATHNAME,
+        hash: nextHash,
+      });
+    },
+    [location.hash, location.pathname, navigate]
+  );
 };
 
 export const useSectionHashScroll = () => {

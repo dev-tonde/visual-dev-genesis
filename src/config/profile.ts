@@ -14,10 +14,7 @@ export const PROFILE = {
   cvFileName: 'Tonderai_Matanga_CV.pdf',
 } as const;
 
-export const PROFILE_SAME_AS_URLS = [
-  PROFILE.githubUrl,
-  PROFILE.linkedinUrl,
-] as const;
+export const PROFILE_SAME_AS_URLS = [PROFILE.githubUrl, PROFILE.linkedinUrl] as const;
 
 export const downloadCv = () => {
   if (typeof document === 'undefined') {

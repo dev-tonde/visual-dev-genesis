@@ -25,9 +25,9 @@ const AboutMe = () => {
       opacity: 1,
       transition: {
         delayChildren: 0.2,
-        staggerChildren: 0.1
-      }
-    }
+        staggerChildren: 0.1,
+      },
+    },
   };
 
   const itemVariants = {
@@ -36,9 +36,9 @@ const AboutMe = () => {
       y: 0,
       opacity: 1,
       transition: {
-        duration: 0.6
-      }
-    }
+        duration: 0.6,
+      },
+    },
   };
 
   return (
@@ -47,7 +47,7 @@ const AboutMe = () => {
         ref={ref}
         variants={containerVariants}
         initial="hidden"
-        animate={inView ? "visible" : "hidden"}
+        animate={inView ? 'visible' : 'hidden'}
         className="max-w-4xl mx-auto"
       >
         <motion.div variants={itemVariants} className="mb-12">
@@ -63,20 +63,23 @@ const AboutMe = () => {
             <CardContent className="p-8">
               <div className="space-y-4 text-foreground/90 leading-relaxed">
                 <p>
-                  Hey there! I'm Tonderai, a passionate senior front-end developer with a love for creating 
-                  beautiful, performant, and accessible web experiences. With years of experience in the 
-                  industry, I've honed my craft in building scalable applications that users love.
+                  Hey there! I'm Tonderai, a passionate senior front-end developer with a love for
+                  creating beautiful, performant, and accessible web experiences. With years of
+                  experience in the industry, I've honed my craft in building scalable applications
+                  that users love.
                 </p>
                 <p>
-                  My journey in tech started with a curiosity about how things work on the web. That curiosity 
-                  evolved into a career where I get to solve complex problems, mentor junior developers, and 
-                  stay at the forefront of web technologies. I believe in writing clean, maintainable code 
-                  and creating interfaces that are both aesthetically pleasing and highly functional.
+                  My journey in tech started with a curiosity about how things work on the web. That
+                  curiosity evolved into a career where I get to solve complex problems, mentor
+                  junior developers, and stay at the forefront of web technologies. I believe in
+                  writing clean, maintainable code and creating interfaces that are both
+                  aesthetically pleasing and highly functional.
                 </p>
                 <p>
-                  When I'm not coding, I'm constantly learning new technologies, contributing to open source, 
-                  and exploring the latest trends in web development. I'm particularly interested in performance 
-                  optimization, accessibility, and creating delightful user experiences.
+                  When I'm not coding, I'm constantly learning new technologies, contributing to
+                  open source, and exploring the latest trends in web development. I'm particularly
+                  interested in performance optimization, accessibility, and creating delightful
+                  user experiences.
                 </p>
               </div>
             </CardContent>
@@ -95,16 +98,13 @@ const AboutMe = () => {
               >
                 <Card className="glass-vibrant border-0 text-center shadow-sm hover:shadow-md transition-shadow">
                   <CardContent className="p-6">
-                    <div 
+                    <div
                       className="w-12 h-12 mx-auto rounded-full flex items-center justify-center mb-3"
-                      style={{ 
+                      style={{
                         backgroundColor: `${hobby.color}20`,
                       }}
                     >
-                      <hobby.icon 
-                        className="w-6 h-6" 
-                        style={{ color: hobby.color }}
-                      />
+                      <hobby.icon className="w-6 h-6" style={{ color: hobby.color }} />
                     </div>
                     <p className="font-medium">{hobby.name}</p>
                   </CardContent>

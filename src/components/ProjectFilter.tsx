@@ -11,7 +11,7 @@ interface ProjectFilterProps {
 const ProjectFilter = ({ selectedFilters, onFilterChange, availableTechs }: ProjectFilterProps) => {
   const toggleFilter = (tech: string) => {
     if (selectedFilters.includes(tech)) {
-      onFilterChange(selectedFilters.filter(f => f !== tech));
+      onFilterChange(selectedFilters.filter((f) => f !== tech));
     } else {
       onFilterChange([...selectedFilters, tech]);
     }
@@ -22,7 +22,7 @@ const ProjectFilter = ({ selectedFilters, onFilterChange, availableTechs }: Proj
   };
 
   return (
-    <motion.div 
+    <motion.div
       className="mb-8"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -30,7 +30,7 @@ const ProjectFilter = ({ selectedFilters, onFilterChange, availableTechs }: Proj
     >
       <div className="flex flex-wrap items-center gap-3">
         <span className="text-sm font-medium text-muted-foreground">Filter by:</span>
-        
+
         {availableTechs.map((tech) => (
           <motion.button
             key={tech}
@@ -39,10 +39,10 @@ const ProjectFilter = ({ selectedFilters, onFilterChange, availableTechs }: Proj
             whileTap={{ scale: 0.95 }}
           >
             <Badge
-              variant={selectedFilters.includes(tech) ? "default" : "outline"}
+              variant={selectedFilters.includes(tech) ? 'default' : 'outline'}
               className={`cursor-pointer transition-all duration-200 ${
-                selectedFilters.includes(tech) 
-                  ? 'bg-primary text-primary-foreground' 
+                selectedFilters.includes(tech)
+                  ? 'bg-primary text-primary-foreground'
                   : 'hover:bg-primary/10'
               }`}
             >
@@ -50,7 +50,7 @@ const ProjectFilter = ({ selectedFilters, onFilterChange, availableTechs }: Proj
             </Badge>
           </motion.button>
         ))}
-        
+
         {selectedFilters.length > 0 && (
           <Button
             variant="ghost"
@@ -62,9 +62,9 @@ const ProjectFilter = ({ selectedFilters, onFilterChange, availableTechs }: Proj
           </Button>
         )}
       </div>
-      
+
       {selectedFilters.length > 0 && (
-        <motion.p 
+        <motion.p
           className="text-sm text-muted-foreground mt-2"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

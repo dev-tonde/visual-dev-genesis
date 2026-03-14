@@ -16,11 +16,10 @@ export const useAnalytics = () => {
   useEffect(() => {
     // Check Do Not Track setting
     const windowDoNotTrack = (window as WindowWithDoNotTrack).doNotTrack;
-    const dntEnabled = navigator.doNotTrack === "1" || 
-                      navigator.doNotTrack === "yes" ||
-                      windowDoNotTrack === "1";
+    const dntEnabled =
+      navigator.doNotTrack === '1' || navigator.doNotTrack === 'yes' || windowDoNotTrack === '1';
     setIsDNTEnabled(dntEnabled);
-    
+
     if (dntEnabled) {
       console.log('Analytics disabled: Do Not Track is enabled');
       return;
@@ -33,7 +32,7 @@ export const useAnalytics = () => {
         setHasConsent(consent.analytics);
       }
     };
-    
+
     checkConsent();
     // Listen for consent changes
     window.addEventListener('storage', checkConsent);
@@ -44,13 +43,14 @@ export const useAnalytics = () => {
     const trackPageView = async () => {
       // Respect DNT and user consent
       if (isDNTEnabled || !hasConsent) return;
-      
+
       try {
         // Generate a simple session ID
-        const sessionId = sessionStorage.getItem('session_id') || 
-          crypto.randomUUID?.() || 
+        const sessionId =
+          sessionStorage.getItem('session_id') ||
+          crypto.randomUUID?.() ||
           Math.random().toString(36).substring(2, 15);
-        
+
         if (!sessionStorage.getItem('session_id')) {
           sessionStorage.setItem('session_id', sessionId);
         }
@@ -60,7 +60,7 @@ export const useAnalytics = () => {
           page_path: location.pathname + location.search,
           session_id: sessionId,
           referrer: document.referrer || null,
-          user_agent: navigator.userAgent
+          user_agent: navigator.userAgent,
         });
 
         // Track custom user event
@@ -73,8 +73,8 @@ export const useAnalytics = () => {
             search: location.search,
             hash: location.hash,
             referrer: document.referrer,
-            timestamp: new Date().toISOString()
-          }
+            timestamp: new Date().toISOString(),
+          },
         });
       } catch (error) {
         // Silently fail - analytics shouldn't break the app
@@ -93,32 +93,35 @@ export const useAnalytics = () => {
   const trackEvent = async (eventName: string, eventData?: EventData, retryCount = 0) => {
     // Respect DNT and user consent
     if (isDNTEnabled || !hasConsent) return;
-    
+
     const maxRetries = 2;
-    
+
     try {
-      const sessionId = sessionStorage.getItem('session_id') || crypto.randomUUID?.() || 'anonymous';
-      
+      const sessionId =
+        sessionStorage.getItem('session_id') || crypto.randomUUID?.() || 'anonymous';
+
       const { error } = await supabase.from('user_events').insert({
         event_name: eventName,
         page_path: location.pathname,
         session_id: sessionId,
         event_data: {
           ...eventData,
-          timestamp: new Date().toISOString()
-        }
+          timestamp: new Date().toISOString(),
+        },
       });
-      
+
       if (error) throw error;
-      
     } catch (error) {
       if (import.meta.env.DEV) {
         console.debug('Event tracking failed:', error);
       }
-      
+
       // Retry with exponential backoff for network errors
-      if (retryCount < maxRetries && error instanceof Error && 
-          (error.message.includes('network') || error.message.includes('fetch'))) {
+      if (
+        retryCount < maxRetries &&
+        error instanceof Error &&
+        (error.message.includes('network') || error.message.includes('fetch'))
+      ) {
         const delay = Math.pow(2, retryCount) * 1000;
         setTimeout(() => trackEvent(eventName, eventData, retryCount + 1), delay);
       }

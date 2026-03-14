@@ -1,11 +1,13 @@
 # Portfolio Architecture Documentation
 
 ## Overview
+
 This is a production-ready, enterprise-grade full-stack portfolio application built with modern web technologies and best practices.
 
 ## Tech Stack
 
 ### Frontend
+
 - **React 18** - Latest React with Concurrent Features
 - **TypeScript** - Type-safe development
 - **Vite** - Next-generation frontend tooling
@@ -15,6 +17,7 @@ This is a production-ready, enterprise-grade full-stack portfolio application bu
 - **Radix UI** - Unstyled, accessible component primitives
 
 ### Backend & Infrastructure
+
 - **Supabase** - Open-source Firebase alternative
   - PostgreSQL database
   - Row Level Security (RLS)
@@ -24,6 +27,7 @@ This is a production-ready, enterprise-grade full-stack portfolio application bu
   - File storage with CDN
 
 ### Development & Quality
+
 - **Vitest** - Unit testing framework
 - **Testing Library** - React component testing
 - **Axe Core** - Accessibility testing
@@ -33,6 +37,7 @@ This is a production-ready, enterprise-grade full-stack portfolio application bu
 - **Prettier** - Code formatting
 
 ### Performance Optimizations
+
 - Code splitting with React.lazy()
 - Image lazy loading
 - Service Worker for PWA
@@ -43,6 +48,7 @@ This is a production-ready, enterprise-grade full-stack portfolio application bu
 - Memoized expensive computations
 
 ### Security Features
+
 - Row Level Security (RLS) on all database tables
 - Environment variable management
 - HTTPS enforcement
@@ -55,6 +61,7 @@ This is a production-ready, enterprise-grade full-stack portfolio application bu
 ## Architecture Patterns
 
 ### Component Structure
+
 ```
 src/
 ├── components/        # Reusable UI components
@@ -68,12 +75,14 @@ src/
 ```
 
 ### State Management
+
 - **Local State**: React useState for component-level state
 - **Server State**: TanStack Query for API data fetching and caching
 - **Theme State**: Context API with localStorage persistence
 - **Form State**: React Hook Form with Zod validation
 
 ### Routing Strategy
+
 - Client-side routing with React Router v6
 - Lazy-loaded route components
 - Protected routes with authentication
@@ -81,6 +90,7 @@ src/
 - Smooth scroll navigation
 
 ### Data Flow
+
 1. User interaction triggers action
 2. React Hook Form validates input
 3. API call via Supabase client
@@ -92,12 +102,14 @@ src/
 ## Performance Metrics
 
 ### Lighthouse Scores (Target)
+
 - Performance: 95+
 - Accessibility: 100
 - Best Practices: 100
 - SEO: 100
 
 ### Key Performance Indicators
+
 - First Contentful Paint (FCP): < 1.2s
 - Largest Contentful Paint (LCP): < 2.5s
 - Time to Interactive (TTI): < 3.8s
@@ -107,12 +119,14 @@ src/
 ## Security Measures
 
 ### Database Security
+
 - All tables have RLS enabled
 - User-specific data isolated by auth.uid()
 - Admin-only operations restricted
 - Prepared statements prevent SQL injection
 
 ### Authentication Flow
+
 1. User submits credentials
 2. Supabase Auth validates
 3. JWT token issued
@@ -121,6 +135,7 @@ src/
 6. Automatic token refresh
 
 ### File Upload Security
+
 - File type validation
 - Size restrictions
 - Virus scanning (planned)
@@ -130,6 +145,7 @@ src/
 ## Scalability Considerations
 
 ### Frontend Scalability
+
 - Code splitting reduces initial bundle size
 - Lazy loading defers non-critical resources
 - CDN delivery for static assets
@@ -137,6 +153,7 @@ src/
 - Service Worker caching strategy
 
 ### Backend Scalability
+
 - Serverless edge functions auto-scale
 - Database connection pooling
 - Indexed database queries
@@ -144,6 +161,7 @@ src/
 - Rate limiting on API endpoints
 
 ### Database Schema Design
+
 - Normalized data structure
 - Proper foreign key relationships
 - Indexed columns for common queries
@@ -153,18 +171,21 @@ src/
 ## Monitoring & Observability
 
 ### Error Tracking
+
 - ErrorBoundary components catch React errors
 - Console error monitoring
 - Network request logging
 - User action tracking
 
 ### Analytics
+
 - Google Analytics integration
 - Custom event tracking
 - User journey mapping
 - Conversion funnel analysis
 
 ### Performance Monitoring
+
 - Real User Monitoring (RUM)
 - Synthetic monitoring
 - Core Web Vitals tracking
@@ -173,6 +194,7 @@ src/
 ## Deployment Strategy
 
 ### Build Process
+
 1. Run type checking (TypeScript)
 2. Run linting (ESLint)
 3. Run tests (Vitest)
@@ -183,11 +205,13 @@ src/
 8. Deploy to Vercel
 
 ### Environment Management
+
 - Development: Local with hot reload
 - Staging: Preview deployments
 - Production: Main branch auto-deploy
 
 ### CI/CD Pipeline
+
 - GitHub Actions workflow
 - Automated testing on PR
 - Security scanning
@@ -197,6 +221,7 @@ src/
 ## Accessibility Standards
 
 ### WCAG 2.1 Level AA Compliance
+
 - Semantic HTML structure
 - ARIA labels and roles
 - Keyboard navigation support
@@ -207,6 +232,7 @@ src/
 - Skip to main content link
 
 ### Focus Trap
+
 - Modal dialogs trap focus
 - Escape key closes modals
 - Return focus to trigger element
@@ -215,6 +241,7 @@ src/
 ## SEO Optimization
 
 ### Technical SEO
+
 - Server-side rendering (SSR) ready
 - Semantic HTML5 tags
 - Meta tags (title, description, keywords)
@@ -226,6 +253,7 @@ src/
 - Structured data (JSON-LD)
 
 ### Content SEO
+
 - Unique page titles
 - Descriptive meta descriptions
 - Header hierarchy (H1-H6)
@@ -237,24 +265,28 @@ src/
 ## Testing Strategy
 
 ### Unit Tests
+
 - Component logic testing
 - Utility function testing
 - Hook testing
 - Mocking external dependencies
 
 ### Integration Tests
+
 - User flow testing
 - API integration testing
 - Database operation testing
 - Authentication flow testing
 
 ### E2E Tests (Planned)
+
 - Critical user journeys
 - Cross-browser testing
 - Mobile device testing
 - Performance testing
 
 ### Accessibility Tests
+
 - Manual keyboard navigation
 - Screen reader testing
 - Color contrast validation
@@ -262,6 +294,7 @@ src/
 ## Future Enhancements
 
 ### Planned Features
+
 1. **Advanced Analytics Dashboard**
    - Real-time visitor tracking
    - Conversion rate optimization
@@ -298,6 +331,7 @@ src/
 ## Best Practices Implemented
 
 ### Code Quality
+
 - TypeScript strict mode enabled
 - ESLint with strict rules
 - Prettier for consistent formatting
@@ -305,6 +339,7 @@ src/
 - Conventional commit messages
 
 ### Git Workflow
+
 - Feature branch workflow
 - Pull request reviews
 - Protected main branch
@@ -312,6 +347,7 @@ src/
 - Changelog maintenance
 
 ### Documentation
+
 - Inline code comments
 - JSDoc for functions
 - README with setup instructions

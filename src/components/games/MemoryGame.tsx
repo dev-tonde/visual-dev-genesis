@@ -51,48 +51,38 @@ const MemoryGame = ({ onBack }: MemoryGameProps) => {
   }, [matches]);
 
   const handleCardClick = (cardId: number) => {
-    if (
-      flippedCards.length === 2 ||
-      flippedCards.includes(cardId) ||
-      cards[cardId].isMatched
-    ) {
+    if (flippedCards.length === 2 || flippedCards.includes(cardId) || cards[cardId].isMatched) {
       return;
     }
 
     const newFlippedCards = [...flippedCards, cardId];
     setFlippedCards(newFlippedCards);
 
-    setCards(prev =>
-      prev.map(card =>
-        card.id === cardId ? { ...card, isFlipped: true } : card
-      )
+    setCards((prev) =>
+      prev.map((card) => (card.id === cardId ? { ...card, isFlipped: true } : card))
     );
 
     if (newFlippedCards.length === 2) {
-      setMoves(prev => prev + 1);
+      setMoves((prev) => prev + 1);
       const [firstId, secondId] = newFlippedCards;
 
       if (cards[firstId].value === cards[secondId].value) {
         // Match found
         setTimeout(() => {
-          setCards(prev =>
-            prev.map(card =>
-              card.id === firstId || card.id === secondId
-                ? { ...card, isMatched: true }
-                : card
+          setCards((prev) =>
+            prev.map((card) =>
+              card.id === firstId || card.id === secondId ? { ...card, isMatched: true } : card
             )
           );
-          setMatches(prev => prev + 1);
+          setMatches((prev) => prev + 1);
           setFlippedCards([]);
         }, 500);
       } else {
         // No match
         setTimeout(() => {
-          setCards(prev =>
-            prev.map(card =>
-              card.id === firstId || card.id === secondId
-                ? { ...card, isFlipped: false }
-                : card
+          setCards((prev) =>
+            prev.map((card) =>
+              card.id === firstId || card.id === secondId ? { ...card, isFlipped: false } : card
             )
           );
           setFlippedCards([]);
@@ -121,7 +111,9 @@ const MemoryGame = ({ onBack }: MemoryGameProps) => {
               </div>
               <div className="text-center">
                 <div className="text-sm text-muted-foreground">Matches</div>
-                <div className="text-2xl font-bold text-primary">{matches}/{emojis.length}</div>
+                <div className="text-2xl font-bold text-primary">
+                  {matches}/{emojis.length}
+                </div>
               </div>
             </div>
           </div>
@@ -160,9 +152,10 @@ const MemoryGame = ({ onBack }: MemoryGameProps) => {
                           className={`
                             w-full aspect-square rounded-lg text-5xl font-bold
                             transition-all duration-300 transform
-                            ${card.isFlipped || card.isMatched
-                              ? 'bg-primary/10 border-2 border-primary'
-                              : 'bg-muted hover:bg-muted/80 border-2 border-border'
+                            ${
+                              card.isFlipped || card.isMatched
+                                ? 'bg-primary/10 border-2 border-primary'
+                                : 'bg-muted hover:bg-muted/80 border-2 border-border'
                             }
                             ${card.isMatched ? 'opacity-50' : ''}
                           `}

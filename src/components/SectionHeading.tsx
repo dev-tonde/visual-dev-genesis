@@ -7,12 +7,7 @@ interface SectionHeadingProps {
   className?: string;
 }
 
-const SectionHeading = ({
-  label,
-  title,
-  description,
-  className,
-}: SectionHeadingProps) => {
+const SectionHeading = ({ label, title, description, className }: SectionHeadingProps) => {
   return (
     <div className={cn('mx-auto max-w-3xl text-center', className)}>
       {label && (
@@ -23,9 +18,7 @@ const SectionHeading = ({
       <h2 className="text-4xl font-bold tracking-tight md:text-5xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
         {title}
       </h2>
-      <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-        {description}
-      </p>
+      <p className="mt-5 text-lg leading-relaxed text-muted-foreground">{description}</p>
     </div>
   );
 };

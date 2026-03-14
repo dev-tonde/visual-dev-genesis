@@ -30,18 +30,21 @@ If you discover a security vulnerability, please send an email to security@iamto
 ## Security Measures
 
 ### Frontend Security
+
 - Content Security Policy (CSP) headers
 - XSS protection via input sanitization
 - Secure cookie configuration
 - HTTPS enforcement
 
 ### Backend Security
+
 - Row Level Security (RLS) on all database tables
 - Rate limiting on API endpoints
 - Input validation and sanitization
 - Secure headers configuration
 
 ### Infrastructure Security
+
 - Automated dependency updates
 - Security audit pipeline
 - Regular vulnerability scanning

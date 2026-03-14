@@ -44,7 +44,8 @@ vi.mock('framer-motion', () => {
   const motion = new Proxy(
     {},
     {
-      get: (_target, tag) =>
+      get:
+        (_target, tag) =>
         ({ children, ...props }: MockMotionProps) => {
           const domProps = Object.fromEntries(
             Object.entries(props).filter(([key]) => !motionOnlyProps.has(key))
@@ -84,7 +85,8 @@ describe('ContactForm', () => {
     invokeMock.mockResolvedValue({
       data: {
         success: true,
-        message: 'Thank you for your message! It was received successfully, and I will review it soon.',
+        message:
+          'Thank you for your message! It was received successfully, and I will review it soon.',
         submissionId: 'submission-123',
         emailDelivery: {
           notification: 'sent',
@@ -109,10 +111,13 @@ describe('ContactForm', () => {
     });
 
     await waitFor(() => {
-      expect(toastMock).toHaveBeenCalledWith(expect.objectContaining({
-        title: 'Message sent successfully!',
-        description: 'Thank you for your message! It was received successfully, and I will review it soon.',
-      }));
+      expect(toastMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: 'Message sent successfully!',
+          description:
+            'Thank you for your message! It was received successfully, and I will review it soon.',
+        })
+      );
     });
 
     await waitFor(() => {
@@ -140,11 +145,13 @@ describe('ContactForm', () => {
 
     await waitFor(() => {
       expect(toastMock).toHaveBeenCalledTimes(1);
-      expect(toastMock).toHaveBeenCalledWith(expect.objectContaining({
-        title: 'Invalid input',
-        description: 'Message must be between 10 and 1000 characters.',
-        variant: 'destructive',
-      }));
+      expect(toastMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: 'Invalid input',
+          description: 'Message must be between 10 and 1000 characters.',
+          variant: 'destructive',
+        })
+      );
     });
   });
 
@@ -159,11 +166,13 @@ describe('ContactForm', () => {
 
       await waitFor(() => {
         expect(toastMock).toHaveBeenCalledTimes(1);
-        expect(toastMock).toHaveBeenCalledWith(expect.objectContaining({
-          title: 'Failed to send message',
-          description: 'Please try again or contact me directly via email.',
-          variant: 'destructive',
-        }));
+        expect(toastMock).toHaveBeenCalledWith(
+          expect.objectContaining({
+            title: 'Failed to send message',
+            description: 'Please try again or contact me directly via email.',
+            variant: 'destructive',
+          })
+        );
       });
 
       expect(screen.getByRole('button', { name: /send message/i })).not.toBeDisabled();

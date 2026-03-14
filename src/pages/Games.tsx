@@ -1,14 +1,7 @@
 import { useMemo, useState, type ComponentType } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import {
-  Code2,
-  Cpu,
-  ExternalLink,
-  Gamepad2,
-  Github,
-  Grid3x3,
-} from 'lucide-react';
+import { Code2, Cpu, ExternalLink, Gamepad2, Github, Grid3x3 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -45,39 +38,46 @@ const GAME_SHOWCASES: readonly GameShowcase[] = [
   {
     id: 'tetris',
     name: 'Tetris',
-    summary: 'A grid-based gameplay loop that stresses collision rules, rotation, and line clearing.',
+    summary:
+      'A grid-based gameplay loop that stresses collision rules, rotation, and line clearing.',
     icon: Grid3x3,
     track: 'systems',
     densityLabel: 'Featured demo',
     evidence: 'Shows real-time state updates on a 10x20 board with deterministic piece merges.',
     technologies: ['React state', 'TypeScript', 'Grid rendering'],
-    challenge: 'Rotation and collision checks have to stay predictable while merging pieces and clearing multiple rows.',
+    challenge:
+      'Rotation and collision checks have to stay predictable while merging pieces and clearing multiple rows.',
     controls: 'Arrow keys move and rotate. Space pauses.',
     sourceUrl: `${GAME_SOURCE_BASE_URL}/TetrisGame.tsx`,
   },
   {
     id: 'snake',
     name: 'Snake',
-    summary: 'A compact game loop focused on keyboard input, interval timing, and collision handling.',
+    summary:
+      'A compact game loop focused on keyboard input, interval timing, and collision handling.',
     icon: Gamepad2,
     track: 'systems',
     densityLabel: 'Featured demo',
-    evidence: 'Demonstrates input guards, pause state, and coordinate-based rendering without a canvas dependency.',
+    evidence:
+      'Demonstrates input guards, pause state, and coordinate-based rendering without a canvas dependency.',
     technologies: ['React hooks', 'TypeScript', 'Absolute positioning'],
-    challenge: 'Direction changes must feel immediate without allowing invalid self-reversals or stale interval state.',
+    challenge:
+      'Direction changes must feel immediate without allowing invalid self-reversals or stale interval state.',
     controls: 'Arrow keys change direction. Space pauses.',
     sourceUrl: `${GAME_SOURCE_BASE_URL}/SnakeGame.tsx`,
   },
   {
     id: 'pong',
     name: 'Pong',
-    summary: 'A canvas-based rendering demo with mouse input, AI paddle tracking, and frame-by-frame motion.',
+    summary:
+      'A canvas-based rendering demo with mouse input, AI paddle tracking, and frame-by-frame motion.',
     icon: Gamepad2,
     track: 'systems',
     densityLabel: 'Featured demo',
     evidence: 'Shows when imperative canvas rendering is the right fit for a fast update loop.',
     technologies: ['Canvas 2D', 'React refs', 'TypeScript'],
-    challenge: 'The paddle AI, bounce response, and render loop need to stay responsive without turning the component into uncontrolled state.',
+    challenge:
+      'The paddle AI, bounce response, and render loop need to stay responsive without turning the component into uncontrolled state.',
     controls: 'Move the mouse to steer. Space starts or pauses.',
     sourceUrl: `${GAME_SOURCE_BASE_URL}/PongGame.tsx`,
   },
@@ -90,20 +90,23 @@ const GAME_SHOWCASES: readonly GameShowcase[] = [
     densityLabel: 'Compact logic demo',
     evidence: 'The value here is the AI decision tree, not the board rendering.',
     technologies: ['Minimax', 'React state', 'TypeScript'],
-    challenge: 'The AI should feel immediate while still exploring the full game tree and preserving clear UI state.',
+    challenge:
+      'The AI should feel immediate while still exploring the full game tree and preserving clear UI state.',
     controls: 'Click any empty square to place X.',
     sourceUrl: `${GAME_SOURCE_BASE_URL}/TicTacToeGame.tsx`,
   },
   {
     id: 'memory',
     name: 'Memory Match',
-    summary: 'A lightweight interaction study for staged UI updates, disabled states, and feedback timing.',
+    summary:
+      'A lightweight interaction study for staged UI updates, disabled states, and feedback timing.',
     icon: Grid3x3,
     track: 'logic',
     densityLabel: 'Compact logic demo',
     evidence: 'Useful as a smaller proof point for match evaluation and delayed state transitions.',
     technologies: ['React state', 'Framer Motion', 'TypeScript'],
-    challenge: 'Card flips, match locks, and reset timing need to stay consistent even under rapid clicks.',
+    challenge:
+      'Card flips, match locks, and reset timing need to stay consistent even under rapid clicks.',
     controls: 'Click cards to reveal and match pairs.',
     sourceUrl: `${GAME_SOURCE_BASE_URL}/MemoryGame.tsx`,
   },
@@ -166,7 +169,9 @@ const GameShowcaseCard = ({ game, onLaunch }: GameShowcaseCardProps) => (
             <div className="space-y-2">
               <div className="flex flex-wrap items-center gap-2">
                 <Badge variant="outline">{game.densityLabel}</Badge>
-                <Badge variant="secondary">{game.track === 'systems' ? 'Interactive systems' : 'Decision logic'}</Badge>
+                <Badge variant="secondary">
+                  {game.track === 'systems' ? 'Interactive systems' : 'Decision logic'}
+                </Badge>
               </div>
               <CardTitle className="text-2xl">{game.name}</CardTitle>
             </div>
@@ -224,7 +229,12 @@ const GameShowcaseCard = ({ game, onLaunch }: GameShowcaseCardProps) => (
             Open Demo
           </Button>
           <Button variant="outline" size="lg" asChild className="card-action-button">
-            <a href={game.sourceUrl} target="_blank" rel="noopener noreferrer" aria-label={`View source for ${game.name}`}>
+            <a
+              href={game.sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`View source for ${game.name}`}
+            >
               <Code2 className="w-4 h-4 mr-2" />
               View Source
             </a>
@@ -255,12 +265,9 @@ const Games = () => {
 
   const featuredDemos = useMemo(
     () => GAME_SHOWCASES.filter((game) => game.track === 'systems'),
-    [],
+    []
   );
-  const compactDemos = useMemo(
-    () => GAME_SHOWCASES.filter((game) => game.track === 'logic'),
-    [],
-  );
+  const compactDemos = useMemo(() => GAME_SHOWCASES.filter((game) => game.track === 'logic'), []);
 
   if (activeGame) {
     const ActiveGameComponent = getGameComponent(activeGame);
@@ -300,7 +307,9 @@ const Games = () => {
                   Interactive Engineering Demos
                 </h1>
                 <p className="max-w-3xl text-lg leading-8 text-muted-foreground">
-                  This page exists to show front-end engineering judgment, not side entertainment. Each demo is small on purpose and highlights a specific skill: real-time state, canvas rendering, input handling, or decision logic.
+                  This page exists to show front-end engineering judgment, not side entertainment.
+                  Each demo is small on purpose and highlights a specific skill: real-time state,
+                  canvas rendering, input handling, or decision logic.
                 </p>
               </div>
             </div>
@@ -320,7 +329,8 @@ const Games = () => {
                   <p className="font-semibold">What to look for</p>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Input models, update loops, and how rendering strategy changes between DOM-driven and canvas-driven interactions.
+                  Input models, update loops, and how rendering strategy changes between DOM-driven
+                  and canvas-driven interactions.
                 </p>
               </CardContent>
             </Card>
@@ -331,7 +341,8 @@ const Games = () => {
                   <p className="font-semibold">Why these demos matter</p>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  They surface implementation decisions that a static portfolio card cannot show: timing, collision rules, AI behavior, and state recovery.
+                  They surface implementation decisions that a static portfolio card cannot show:
+                  timing, collision rules, AI behavior, and state recovery.
                 </p>
               </CardContent>
             </Card>
@@ -342,16 +353,19 @@ const Games = () => {
                   <p className="font-semibold">Source availability</p>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Every demo links to its implementation in the public portfolio repo so the code can be inspected directly.
+                  Every demo links to its implementation in the public portfolio repo so the code
+                  can be inspected directly.
                 </p>
               </CardContent>
             </Card>
           </motion.div>
 
-          {([
-            ['systems', featuredDemos],
-            ['logic', compactDemos],
-          ] as const).map(([track, games]) => (
+          {(
+            [
+              ['systems', featuredDemos],
+              ['logic', compactDemos],
+            ] as const
+          ).map(([track, games]) => (
             <section key={track} className="mb-14">
               <motion.div
                 variants={{
@@ -378,13 +392,11 @@ const Games = () => {
                 )}
               </motion.div>
 
-              <div className={`grid gap-6 ${track === 'systems' ? 'lg:grid-cols-3 md:grid-cols-2' : 'lg:grid-cols-2'}`}>
+              <div
+                className={`grid gap-6 ${track === 'systems' ? 'lg:grid-cols-3 md:grid-cols-2' : 'lg:grid-cols-2'}`}
+              >
                 {games.map((game) => (
-                  <GameShowcaseCard
-                    key={game.id}
-                    game={game}
-                    onLaunch={setActiveGame}
-                  />
+                  <GameShowcaseCard key={game.id} game={game} onLaunch={setActiveGame} />
                 ))}
               </div>
             </section>

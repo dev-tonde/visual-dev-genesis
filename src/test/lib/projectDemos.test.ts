@@ -15,11 +15,13 @@ describe('resolveProjectDemoLink', () => {
   });
 
   it('falls back to the repository homepage when no curated demo link exists', () => {
-    expect(resolveProjectDemoLink('portfolio-site', 'https://github-homepage.example.com')).toEqual({
-      label: 'Repo homepage',
-      source: 'repository_homepage',
-      url: 'https://github-homepage.example.com',
-    });
+    expect(resolveProjectDemoLink('portfolio-site', 'https://github-homepage.example.com')).toEqual(
+      {
+        label: 'Repo homepage',
+        source: 'repository_homepage',
+        url: 'https://github-homepage.example.com',
+      }
+    );
   });
 
   it('returns null when no verified public link exists', () => {

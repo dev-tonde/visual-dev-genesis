@@ -12,9 +12,9 @@ describe('sanitize helpers', () => {
   });
 
   it('normalizes multiline input before submission', () => {
-    expect(
-      sanitizeMultilineForSubmission(' \r\nHello\u0007   there\r\n\r\n\r\nWorld  '),
-    ).toBe('Hello there\n\nWorld');
+    expect(sanitizeMultilineForSubmission(' \r\nHello\u0007   there\r\n\r\n\r\nWorld  ')).toBe(
+      'Hello there\n\nWorld'
+    );
   });
 
   it('canonicalizes email and phone values', () => {

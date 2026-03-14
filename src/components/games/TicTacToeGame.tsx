@@ -31,12 +31,16 @@ const TicTacToeGame = ({ onBack }: TicTacToeGameProps) => {
   const checkWinner = (currentBoard: Board): { winner: Player | 'draw' | null; line: number[] } => {
     for (const combo of winningCombinations) {
       const [a, b, c] = combo;
-      if (currentBoard[a] && currentBoard[a] === currentBoard[b] && currentBoard[a] === currentBoard[c]) {
+      if (
+        currentBoard[a] &&
+        currentBoard[a] === currentBoard[b] &&
+        currentBoard[a] === currentBoard[c]
+      ) {
         return { winner: currentBoard[a], line: combo };
       }
     }
 
-    if (currentBoard.every(cell => cell !== null)) {
+    if (currentBoard.every((cell) => cell !== null)) {
       return { winner: 'draw', line: [] };
     }
 
@@ -45,7 +49,7 @@ const TicTacToeGame = ({ onBack }: TicTacToeGameProps) => {
 
   const minimax = (board: Board, depth: number, isMaximizing: boolean): number => {
     const result = checkWinner(board);
-    
+
     if (result.winner === 'O') return 10 - depth;
     if (result.winner === 'X') return depth - 10;
     if (result.winner === 'draw') return 0;
@@ -148,14 +152,14 @@ const TicTacToeGame = ({ onBack }: TicTacToeGameProps) => {
             </Button>
             <div className="text-center">
               <div className="text-sm text-muted-foreground">
-                {winner 
-                  ? winner === 'draw' 
-                    ? "It's a Draw!" 
-                    : winner === 'X' 
-                      ? 'You Won! 🎉' 
+                {winner
+                  ? winner === 'draw'
+                    ? "It's a Draw!"
+                    : winner === 'X'
+                      ? 'You Won! 🎉'
                       : 'AI Wins!'
-                  : isPlayerTurn 
-                    ? 'Your Turn (X)' 
+                  : isPlayerTurn
+                    ? 'Your Turn (X)'
                     : 'AI Thinking... (O)'}
               </div>
             </div>
@@ -169,7 +173,9 @@ const TicTacToeGame = ({ onBack }: TicTacToeGameProps) => {
                   animate={{ scale: 1, opacity: 1 }}
                   className="text-center mb-6"
                 >
-                  <Trophy className={`w-16 h-16 mx-auto mb-2 ${winner === 'X' ? 'text-primary' : 'text-destructive'}`} />
+                  <Trophy
+                    className={`w-16 h-16 mx-auto mb-2 ${winner === 'X' ? 'text-primary' : 'text-destructive'}`}
+                  />
                 </motion.div>
               )}
 
@@ -183,9 +189,10 @@ const TicTacToeGame = ({ onBack }: TicTacToeGameProps) => {
                     className={`
                       aspect-square rounded-lg text-5xl font-bold
                       transition-all duration-200
-                      ${winningLine.includes(index) 
-                        ? 'bg-primary/20 border-2 border-primary' 
-                        : 'bg-muted/50 hover:bg-muted border-2 border-border'
+                      ${
+                        winningLine.includes(index)
+                          ? 'bg-primary/20 border-2 border-primary'
+                          : 'bg-muted/50 hover:bg-muted border-2 border-border'
                       }
                       ${!cell && !winner && isPlayerTurn ? 'cursor-pointer' : 'cursor-not-allowed'}
                     `}

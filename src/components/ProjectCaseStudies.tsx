@@ -100,7 +100,10 @@ const CaseStudyCard = ({
         </p>
         <ul className="mt-3 space-y-3 text-sm leading-6 text-foreground/80">
           {caseStudy.outcomes.map((outcome) => (
-            <li key={outcome.text} className="flex flex-col gap-2 rounded-xl border border-border/50 bg-background/50 p-4">
+            <li
+              key={outcome.text}
+              className="flex flex-col gap-2 rounded-xl border border-border/50 bg-background/50 p-4"
+            >
               {outcome.type === 'metric_placeholder' && (
                 <Badge variant="outline" className="w-fit">
                   Add verified metric
@@ -125,7 +128,8 @@ const ProjectCaseStudies = ({ verifiedRepoNames }: ProjectCaseStudiesProps) => (
       <div>
         <h3 className="text-3xl md:text-4xl font-bold">Selected case studies</h3>
         <p className="mt-3 text-muted-foreground">
-          These are the projects worth reading beyond the card view. The write-ups below are curated on purpose; the live repository feed underneath stays synced with GitHub.
+          These are the projects worth reading beyond the card view. The write-ups below are curated
+          on purpose; the live repository feed underneath stays synced with GitHub.
         </p>
       </div>
     </div>

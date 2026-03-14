@@ -1,10 +1,5 @@
 import { motion } from 'framer-motion';
-import {
-  Code2, 
-  Palette, 
-  Database,
-  Shield,
-} from 'lucide-react';
+import { Code2, Palette, Database, Shield } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
 import { PROFILE } from '@/config/profile';
@@ -22,35 +17,35 @@ const Footer = () => {
     {
       category: 'Frontend',
       icon: Code2,
-      items: ['React 18', 'TypeScript', 'Tailwind CSS', 'Framer Motion']
+      items: ['React 18', 'TypeScript', 'Tailwind CSS', 'Framer Motion'],
     },
     {
       category: 'UI System',
       icon: Palette,
-      items: ['shadcn/ui', 'Radix UI', 'Lucide', 'next-themes']
+      items: ['shadcn/ui', 'Radix UI', 'Lucide', 'next-themes'],
     },
     {
       category: 'Backend',
       icon: Database,
-      items: ['Supabase', 'PostgreSQL', 'Edge Functions', 'Row Level Security']
+      items: ['Supabase', 'PostgreSQL', 'Edge Functions', 'Row Level Security'],
     },
     {
       category: 'Quality & Delivery',
       icon: Shield,
-      items: ['Vitest', 'Testing Library', 'GitHub Actions', 'Vercel']
-    }
+      items: ['Vitest', 'Testing Library', 'GitHub Actions', 'Vercel'],
+    },
   ];
 
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer 
-      className="py-16 px-4 border-t border-border/50 bg-background/50 backdrop-blur-sm" 
-      role="contentinfo" 
+    <footer
+      className="py-16 px-4 border-t border-border/50 bg-background/50 backdrop-blur-sm"
+      role="contentinfo"
       aria-label="Site footer"
     >
       <div className="container mx-auto">
-        <motion.div 
+        <motion.div
           className="mb-12"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -60,7 +55,7 @@ const Footer = () => {
           <h2 className="text-3xl font-bold text-center mb-8 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
             Current Stack
           </h2>
-          
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             {technologies.map((tech, index) => (
               <motion.div
@@ -92,7 +87,7 @@ const Footer = () => {
         <nav aria-label="Footer navigation" className="mb-8">
           <ul className="flex flex-wrap justify-center gap-4 sm:gap-6 text-sm">
             <li>
-              <a 
+              <a
                 href={getSectionHref('about')}
                 onClick={(e) => handleSectionClick(e, 'about')}
                 className="rounded-sm px-1 py-1 text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
@@ -101,7 +96,7 @@ const Footer = () => {
               </a>
             </li>
             <li>
-              <a 
+              <a
                 href={getSectionHref('projects')}
                 onClick={(e) => handleSectionClick(e, 'projects')}
                 className="rounded-sm px-1 py-1 text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
@@ -110,7 +105,7 @@ const Footer = () => {
               </a>
             </li>
             <li>
-              <a 
+              <a
                 href={getSectionHref('certifications')}
                 onClick={(e) => handleSectionClick(e, 'certifications')}
                 className="rounded-sm px-1 py-1 text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
@@ -119,15 +114,15 @@ const Footer = () => {
               </a>
             </li>
             <li>
-              <Link 
-                to="/games" 
+              <Link
+                to="/games"
                 className="rounded-sm px-1 py-1 text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               >
                 Demos
               </Link>
             </li>
             <li>
-              <a 
+              <a
                 href={getSectionHref('contact')}
                 onClick={(e) => handleSectionClick(e, 'contact')}
                 className="rounded-sm px-1 py-1 text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
@@ -136,18 +131,18 @@ const Footer = () => {
               </a>
             </li>
             <li>
-              <Link 
-                to="/privacy" 
+              <Link
+                to="/privacy"
                 className="rounded-sm px-1 py-1 text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               >
                 Privacy
               </Link>
             </li>
             <li>
-              <a 
-                href={PROFILE.cvHref} 
-                target="_blank" 
-                rel="noopener noreferrer" 
+              <a
+                href={PROFILE.cvHref}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="rounded-sm px-1 py-1 text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               >
                 Download CV

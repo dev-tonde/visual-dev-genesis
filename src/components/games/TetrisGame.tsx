@@ -12,12 +12,30 @@ const BOARD_HEIGHT = 20;
 
 const TETROMINOES = {
   I: [[1, 1, 1, 1]],
-  O: [[1, 1], [1, 1]],
-  T: [[0, 1, 0], [1, 1, 1]],
-  S: [[0, 1, 1], [1, 1, 0]],
-  Z: [[1, 1, 0], [0, 1, 1]],
-  J: [[1, 0, 0], [1, 1, 1]],
-  L: [[0, 0, 1], [1, 1, 1]],
+  O: [
+    [1, 1],
+    [1, 1],
+  ],
+  T: [
+    [0, 1, 0],
+    [1, 1, 1],
+  ],
+  S: [
+    [0, 1, 1],
+    [1, 1, 0],
+  ],
+  Z: [
+    [1, 1, 0],
+    [0, 1, 1],
+  ],
+  J: [
+    [1, 0, 0],
+    [1, 1, 1],
+  ],
+  L: [
+    [0, 0, 1],
+    [1, 1, 1],
+  ],
 };
 
 const COLORS = [
@@ -33,8 +51,10 @@ const COLORS = [
 type Board = number[][];
 type Tetromino = number[][];
 
-const createEmptyBoard = (): Board => 
-  Array(BOARD_HEIGHT).fill(null).map(() => Array(BOARD_WIDTH).fill(0));
+const createEmptyBoard = (): Board =>
+  Array(BOARD_HEIGHT)
+    .fill(null)
+    .map(() => Array(BOARD_WIDTH).fill(0));
 
 const TetrisGame = ({ onBack }: TetrisGameProps) => {
   const [board, setBoard] = useState<Board>(createEmptyBoard());
@@ -52,29 +72,32 @@ const TetrisGame = ({ onBack }: TetrisGameProps) => {
     return { piece, color };
   }, []);
 
-  const checkCollision = useCallback((piece: Tetromino, pos: { x: number; y: number }, currentBoard: Board) => {
-    for (let y = 0; y < piece.length; y++) {
-      for (let x = 0; x < piece[y].length; x++) {
-        if (piece[y][x]) {
-          const newX = pos.x + x;
-          const newY = pos.y + y;
-          
-          if (newX < 0 || newX >= BOARD_WIDTH || newY >= BOARD_HEIGHT) {
-            return true;
-          }
-          if (newY >= 0 && currentBoard[newY][newX]) {
-            return true;
+  const checkCollision = useCallback(
+    (piece: Tetromino, pos: { x: number; y: number }, currentBoard: Board) => {
+      for (let y = 0; y < piece.length; y++) {
+        for (let x = 0; x < piece[y].length; x++) {
+          if (piece[y][x]) {
+            const newX = pos.x + x;
+            const newY = pos.y + y;
+
+            if (newX < 0 || newX >= BOARD_WIDTH || newY >= BOARD_HEIGHT) {
+              return true;
+            }
+            if (newY >= 0 && currentBoard[newY][newX]) {
+              return true;
+            }
           }
         }
       }
-    }
-    return false;
-  }, []);
+      return false;
+    },
+    []
+  );
 
   const mergePiece = useCallback(() => {
     if (!currentPiece) return;
-    
-    const newBoard = board.map(row => [...row]);
+
+    const newBoard = board.map((row) => [...row]);
     for (let y = 0; y < currentPiece.length; y++) {
       for (let x = 0; x < currentPiece[y].length; x++) {
         if (currentPiece[y][x]) {
@@ -86,27 +109,27 @@ const TetrisGame = ({ onBack }: TetrisGameProps) => {
         }
       }
     }
-    
+
     // Check for complete lines
     const completeLines = newBoard.reduce((acc, row, index) => {
-      if (row.every(cell => cell !== 0)) acc.push(index);
+      if (row.every((cell) => cell !== 0)) acc.push(index);
       return acc;
     }, [] as number[]);
-    
+
     if (completeLines.length > 0) {
-      completeLines.forEach(lineIndex => {
+      completeLines.forEach((lineIndex) => {
         newBoard.splice(lineIndex, 1);
         newBoard.unshift(Array(BOARD_WIDTH).fill(0));
       });
-      setScore(prev => prev + completeLines.length * 100);
+      setScore((prev) => prev + completeLines.length * 100);
     }
-    
+
     setBoard(newBoard);
-    
+
     // Spawn new piece
     const { piece, color } = getRandomPiece();
     const newPosition = { x: 4, y: 0 };
-    
+
     if (checkCollision(piece, newPosition, newBoard)) {
       setGameOver(true);
     } else {
@@ -118,7 +141,7 @@ const TetrisGame = ({ onBack }: TetrisGameProps) => {
 
   const moveDown = useCallback(() => {
     if (!currentPiece || gameOver || isPaused) return;
-    
+
     const newPos = { ...position, y: position.y + 1 };
     if (checkCollision(currentPiece, newPos, board)) {
       mergePiece();
@@ -146,7 +169,7 @@ const TetrisGame = ({ onBack }: TetrisGameProps) => {
   const rotatePiece = useCallback(() => {
     if (!currentPiece || gameOver || isPaused) return;
     const rotated = currentPiece[0].map((_, index) =>
-      currentPiece.map(row => row[index]).reverse()
+      currentPiece.map((row) => row[index]).reverse()
     );
     if (!checkCollision(rotated, position, board)) {
       setCurrentPiece(rotated);
@@ -172,7 +195,7 @@ const TetrisGame = ({ onBack }: TetrisGameProps) => {
       if (e.key === 'ArrowUp') rotatePiece();
       if (e.key === ' ') {
         e.preventDefault();
-        setIsPaused(prev => !prev);
+        setIsPaused((prev) => !prev);
       }
     };
 
@@ -192,8 +215,8 @@ const TetrisGame = ({ onBack }: TetrisGameProps) => {
   };
 
   const renderBoard = () => {
-    const displayBoard = board.map(row => [...row]);
-    
+    const displayBoard = board.map((row) => [...row]);
+
     if (currentPiece && !gameOver) {
       currentPiece.forEach((row, y) => {
         row.forEach((cell, x) => {
@@ -255,9 +278,7 @@ const TetrisGame = ({ onBack }: TetrisGameProps) => {
             )}
 
             <div className="flex justify-center mb-6">
-              <div className="inline-block p-2 bg-muted/30 rounded-lg">
-                {renderBoard()}
-              </div>
+              <div className="inline-block p-2 bg-muted/30 rounded-lg">{renderBoard()}</div>
             </div>
 
             <div className="grid grid-cols-2 gap-4 text-sm">

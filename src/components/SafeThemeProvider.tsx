@@ -1,11 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode,
-} from 'react';
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { ThemeProvider, useTheme } from 'next-themes';
 
 type ResolvedTheme = 'dark' | 'light';
@@ -36,14 +29,11 @@ const SafeThemeStateProvider = ({ children }: SafeThemeProviderProps) => {
   const value = useMemo<ThemeContextType>(
     () => ({
       theme: resolvedTheme === 'dark' ? 'dark' : 'light',
-      preference:
-        theme === 'dark' || theme === 'light' || theme === 'system'
-          ? theme
-          : 'system',
+      preference: theme === 'dark' || theme === 'light' || theme === 'system' ? theme : 'system',
       setTheme: (nextTheme) => setTheme(nextTheme),
       mounted,
     }),
-    [mounted, resolvedTheme, setTheme, theme],
+    [mounted, resolvedTheme, setTheme, theme]
   );
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;

@@ -21,38 +21,36 @@ const ThemeSwitch = () => {
 
   return (
     <div className="flex items-center gap-3">
-      <Label 
+      <Label
         htmlFor={switchId}
         className="flex items-center gap-2 cursor-pointer text-sm font-medium"
       >
         <motion.div
           initial={false}
-          animate={{ 
+          animate={{
             scale: !isDark ? 1 : 0.8,
-            opacity: !isDark ? 1 : 0.5
+            opacity: !isDark ? 1 : 0.5,
           }}
           transition={{ duration: 0.2 }}
         >
           <Sun className="w-4 h-4" />
         </motion.div>
-        <span className="hidden sm:inline">
-          {isDark ? 'Dark' : 'Light'}
-        </span>
+        <span className="hidden sm:inline">{isDark ? 'Dark' : 'Light'}</span>
       </Label>
-      
-      <Switch 
+
+      <Switch
         id={switchId}
         checked={isDark}
         onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
         aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
         className="data-[state=checked]:bg-primary"
       />
-      
+
       <motion.div
         initial={false}
-        animate={{ 
+        animate={{
           scale: isDark ? 1 : 0.8,
-          opacity: isDark ? 1 : 0.5
+          opacity: isDark ? 1 : 0.5,
         }}
         transition={{ duration: 0.2 }}
       >

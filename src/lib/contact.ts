@@ -14,14 +14,8 @@ export const CONTACT_SUBMISSION_STATUSES = ['pending', 'read', 'responded'] as c
 
 export type ContactSubmissionStatus = (typeof CONTACT_SUBMISSION_STATUSES)[number];
 
-const sanitizeString = <T extends z.ZodTypeAny>(
-  sanitizer: (value: string) => string,
-  schema: T,
-) =>
-  z.preprocess(
-    (value) => (typeof value === 'string' ? sanitizer(value) : value),
-    schema,
-  );
+const sanitizeString = <T extends z.ZodTypeAny>(sanitizer: (value: string) => string, schema: T) =>
+  z.preprocess((value) => (typeof value === 'string' ? sanitizer(value) : value), schema);
 
 export const contactFormSchema = z.object({
   name: sanitizeString(
@@ -29,18 +23,21 @@ export const contactFormSchema = z.object({
     z
       .string()
       .min(CONTACT_NAME_MIN_LENGTH, `Name must be at least ${CONTACT_NAME_MIN_LENGTH} characters`)
-      .max(CONTACT_NAME_MAX_LENGTH, `Name must be less than ${CONTACT_NAME_MAX_LENGTH} characters`),
+      .max(CONTACT_NAME_MAX_LENGTH, `Name must be less than ${CONTACT_NAME_MAX_LENGTH} characters`)
   ),
-  email: sanitizeString(
-    sanitizeEmailInput,
-    z.string().email('Please enter a valid email address'),
-  ),
+  email: sanitizeString(sanitizeEmailInput, z.string().email('Please enter a valid email address')),
   message: sanitizeString(
     sanitizeMultilineForSubmission,
     z
       .string()
-      .min(CONTACT_MESSAGE_MIN_LENGTH, `Message must be at least ${CONTACT_MESSAGE_MIN_LENGTH} characters`)
-      .max(CONTACT_MESSAGE_MAX_LENGTH, `Message must be less than ${CONTACT_MESSAGE_MAX_LENGTH} characters`),
+      .min(
+        CONTACT_MESSAGE_MIN_LENGTH,
+        `Message must be at least ${CONTACT_MESSAGE_MIN_LENGTH} characters`
+      )
+      .max(
+        CONTACT_MESSAGE_MAX_LENGTH,
+        `Message must be less than ${CONTACT_MESSAGE_MAX_LENGTH} characters`
+      )
   ),
 });
 
@@ -78,7 +75,7 @@ const isStringArray = (value: unknown): value is string[] =>
   Array.isArray(value) && value.every((item) => typeof item === 'string');
 
 export const isContactFunctionErrorPayload = (
-  value: unknown,
+  value: unknown
 ): value is ContactFunctionErrorPayload => {
   if (typeof value !== 'object' || value === null) {
     return false;
@@ -95,7 +92,7 @@ export const isContactFunctionErrorPayload = (
 };
 
 export const isContactFunctionSuccessPayload = (
-  value: unknown,
+  value: unknown
 ): value is ContactFunctionSuccessPayload => {
   if (typeof value !== 'object' || value === null) {
     return false;

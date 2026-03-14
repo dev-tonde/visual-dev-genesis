@@ -26,7 +26,8 @@ vi.mock('framer-motion', () => {
   const motion = new Proxy(
     {},
     {
-      get: (_target, tag) =>
+      get:
+        (_target, tag) =>
         ({ children, ...props }: MockMotionProps) => {
           const domProps = Object.fromEntries(
             Object.entries(props).filter(([key]) => !motionOnlyProps.has(key))

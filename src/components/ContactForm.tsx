@@ -4,7 +4,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
@@ -40,8 +47,8 @@ const ContactForm = ({ variants }: ContactFormProps) => {
     defaultValues: {
       name: '',
       email: '',
-      message: ''
-    }
+      message: '',
+    },
   });
 
   // Real-time validation states
@@ -53,9 +60,12 @@ const ContactForm = ({ variants }: ContactFormProps) => {
 
     try {
       // ONLY call edge function - it handles database insert and email sending
-      const { data: responseData, error: functionError } = await supabase.functions.invoke('send-contact-email', {
-        body: data
-      });
+      const { data: responseData, error: functionError } = await supabase.functions.invoke(
+        'send-contact-email',
+        {
+          body: data,
+        }
+      );
 
       const errorData = functionError
         ? parseContactFunctionError(functionError)
@@ -67,11 +77,11 @@ const ContactForm = ({ variants }: ContactFormProps) => {
         // Handle specific error types with retry logic
         if (errorData.error === 'RATE_LIMIT_EXCEEDED' && retryCount < 2) {
           const retryAfter = errorData.retryAfter || 60000;
-          
+
           toast({
-            title: "Rate limit exceeded",
+            title: 'Rate limit exceeded',
             description: `Too many requests. Retrying in ${Math.ceil(retryAfter / 1000)} seconds...`,
-            variant: "destructive",
+            variant: 'destructive',
           });
 
           setRetryTimeout(retryAfter);
@@ -79,17 +89,20 @@ const ContactForm = ({ variants }: ContactFormProps) => {
             setRetryTimeout(null);
             submitWithRetry(data, retryCount + 1);
           }, retryAfter);
-          
+
           return;
         }
 
-        if ((errorData.error === 'NETWORK_ERROR' || errorData.error === 'CONTACT_SEND_FAILED') && retryCount < 3) {
+        if (
+          (errorData.error === 'NETWORK_ERROR' || errorData.error === 'CONTACT_SEND_FAILED') &&
+          retryCount < 3
+        ) {
           const delay = Math.pow(2, retryCount) * 1000; // Exponential backoff
-          
+
           toast({
-            title: "Connection issue",
+            title: 'Connection issue',
             description: `Retrying in ${delay / 1000} seconds...`,
-            variant: "destructive",
+            variant: 'destructive',
           });
 
           setTimeout(() => submitWithRetry(data, retryCount + 1), delay);
@@ -97,9 +110,10 @@ const ContactForm = ({ variants }: ContactFormProps) => {
         }
 
         toast({
-          title: errorData.error === 'VALIDATION_ERROR' ? "Invalid input" : "Failed to send message",
+          title:
+            errorData.error === 'VALIDATION_ERROR' ? 'Invalid input' : 'Failed to send message',
           description: errorData.details?.[0] || errorData.message,
-          variant: "destructive",
+          variant: 'destructive',
         });
 
         return;
@@ -111,7 +125,7 @@ const ContactForm = ({ variants }: ContactFormProps) => {
 
       setRetryTimeout(null);
       toast({
-        title: "Message sent successfully!",
+        title: 'Message sent successfully!',
         description: successMessage,
       });
 
@@ -121,12 +135,12 @@ const ContactForm = ({ variants }: ContactFormProps) => {
       if (import.meta.env.DEV) {
         console.error('Form submission error:', error);
       }
-      
+
       if (retryCount === 0) {
         toast({
-          title: "Failed to send message",
-          description: "Please try again or contact me directly via email.",
-          variant: "destructive",
+          title: 'Failed to send message',
+          description: 'Please try again or contact me directly via email.',
+          variant: 'destructive',
         });
       }
     } finally {
@@ -155,30 +169,30 @@ const ContactForm = ({ variants }: ContactFormProps) => {
                       {watchedValues.name && !errors.name && (
                         <CheckCircle className="w-4 h-4 text-green-500" />
                       )}
-                      {errors.name && (
-                        <XCircle className="w-4 h-4 text-red-500" />
-                      )}
+                      {errors.name && <XCircle className="w-4 h-4 text-red-500" />}
                     </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Your Name"
                         maxLength={CONTACT_NAME_MAX_LENGTH}
                         className={`glass border-0 shadow-sm transition-all duration-300 ${
-                          watchedValues.name && !errors.name 
-                            ? 'ring-1 ring-green-500/30 bg-green-500/5' 
-                            : errors.name 
+                          watchedValues.name && !errors.name
+                            ? 'ring-1 ring-green-500/30 bg-green-500/5'
+                            : errors.name
                               ? 'ring-1 ring-red-500/30 bg-red-500/5'
                               : ''
                         }`}
                         {...field}
-                        onChange={(event) => field.onChange(sanitizeSingleLineInput(event.target.value))}
+                        onChange={(event) =>
+                          field.onChange(sanitizeSingleLineInput(event.target.value))
+                        }
                       />
                     </FormControl>
                     <FormMessage className="text-xs mt-1" />
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="email"
@@ -189,18 +203,16 @@ const ContactForm = ({ variants }: ContactFormProps) => {
                       {watchedValues.email && !errors.email && (
                         <CheckCircle className="w-4 h-4 text-green-500" />
                       )}
-                      {errors.email && (
-                        <XCircle className="w-4 h-4 text-red-500" />
-                      )}
+                      {errors.email && <XCircle className="w-4 h-4 text-red-500" />}
                     </FormLabel>
                     <FormControl>
                       <Input
                         type="email"
                         placeholder="your.email@example.com"
                         className={`glass border-0 shadow-sm transition-all duration-300 ${
-                          watchedValues.email && !errors.email 
-                            ? 'ring-1 ring-green-500/30 bg-green-500/5' 
-                            : errors.email 
+                          watchedValues.email && !errors.email
+                            ? 'ring-1 ring-green-500/30 bg-green-500/5'
+                            : errors.email
                               ? 'ring-1 ring-red-500/30 bg-red-500/5'
                               : ''
                         }`}
@@ -212,7 +224,7 @@ const ContactForm = ({ variants }: ContactFormProps) => {
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="message"
@@ -223,9 +235,7 @@ const ContactForm = ({ variants }: ContactFormProps) => {
                       {watchedValues.message && !errors.message && (
                         <CheckCircle className="w-4 h-4 text-green-500" />
                       )}
-                      {errors.message && (
-                        <XCircle className="w-4 h-4 text-red-500" />
-                      )}
+                      {errors.message && <XCircle className="w-4 h-4 text-red-500" />}
                     </FormLabel>
                     <FormControl>
                       <Textarea
@@ -233,14 +243,16 @@ const ContactForm = ({ variants }: ContactFormProps) => {
                         rows={5}
                         maxLength={CONTACT_MESSAGE_MAX_LENGTH}
                         className={`glass border-0 resize-none shadow-sm transition-all duration-300 ${
-                          watchedValues.message && !errors.message 
-                            ? 'ring-1 ring-green-500/30 bg-green-500/5' 
-                            : errors.message 
+                          watchedValues.message && !errors.message
+                            ? 'ring-1 ring-green-500/30 bg-green-500/5'
+                            : errors.message
                               ? 'ring-1 ring-red-500/30 bg-red-500/5'
                               : ''
                         }`}
                         {...field}
-                        onChange={(event) => field.onChange(sanitizeMultilineInput(event.target.value))}
+                        onChange={(event) =>
+                          field.onChange(sanitizeMultilineInput(event.target.value))
+                        }
                       />
                     </FormControl>
                     <FormMessage className="text-xs mt-1" />
@@ -250,18 +262,18 @@ const ContactForm = ({ variants }: ContactFormProps) => {
                   </FormItem>
                 )}
               />
-              
-              <Button 
-                type="submit" 
+
+              <Button
+                type="submit"
                 className="w-full gradient-primary focus:ring-2 focus:ring-primary focus:ring-offset-2"
                 size="lg"
                 disabled={isSubmitting || !!retryTimeout}
                 aria-label={
-                  isSubmitting 
-                    ? "Sending message..." 
-                    : retryTimeout 
+                  isSubmitting
+                    ? 'Sending message...'
+                    : retryTimeout
                       ? `Retrying in ${Math.ceil(retryTimeout / 1000)} seconds...`
-                      : "Send message"
+                      : 'Send message'
                 }
               >
                 {isSubmitting ? (

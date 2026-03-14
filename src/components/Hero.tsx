@@ -15,9 +15,9 @@ const Hero = () => {
       opacity: 1,
       transition: {
         delayChildren: 0.3,
-        staggerChildren: 0.2
-      }
-    }
+        staggerChildren: 0.2,
+      },
+    },
   };
 
   const itemVariants = {
@@ -26,13 +26,13 @@ const Hero = () => {
       y: 0,
       opacity: 1,
       transition: {
-        duration: 0.6
-      }
-    }
+        duration: 0.6,
+      },
+    },
   };
 
   return (
-    <section 
+    <section
       id="hero"
       className="min-h-screen flex items-center justify-center relative overflow-hidden"
       aria-labelledby="hero-title"
@@ -47,14 +47,14 @@ const Hero = () => {
         initial="hidden"
         animate="visible"
       >
-        <motion.div
-          className="mb-8"
-          variants={itemVariants}
-        >
+        <motion.div className="mb-8" variants={itemVariants}>
           <p className="mb-4 text-sm font-semibold uppercase tracking-[0.28em] text-primary/80">
             Developer Portfolio
           </p>
-          <h1 id="hero-title" className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-4">
+          <h1
+            id="hero-title"
+            className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-4"
+          >
             <DynamicGreeting />, I'm {PROFILE.firstName}
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto">
@@ -66,17 +66,17 @@ const Hero = () => {
           className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
           variants={itemVariants}
         >
-            <Button 
-            size="lg" 
+          <Button
+            size="lg"
             className="gradient-primary"
             onClick={() => navigateToSection('projects')}
             aria-label="View selected work and case studies"
           >
             View Case Studies
           </Button>
-          
-          <Button 
-            variant="outline" 
+
+          <Button
+            variant="outline"
             size="lg"
             className="glass hover:bg-primary/10 transition-smooth shadow-sm hover:shadow-md"
             onClick={downloadCv}
@@ -85,9 +85,9 @@ const Hero = () => {
             <Download className="w-4 h-4 mr-2" aria-hidden="true" />
             Download CV
           </Button>
-          
-            <Button 
-            variant="outline" 
+
+          <Button
+            variant="outline"
             size="lg"
             className="glass hover:bg-primary/10 transition-smooth shadow-sm hover:shadow-md"
             onClick={() => navigateToSection('contact')}
@@ -97,10 +97,7 @@ const Hero = () => {
           </Button>
         </motion.div>
 
-        <motion.div
-          className="flex justify-center space-x-6 mb-16"
-          variants={itemVariants}
-        >
+        <motion.div className="flex justify-center space-x-6 mb-16" variants={itemVariants}>
           <motion.a
             href={PROFILE.githubUrl}
             target="_blank"
@@ -112,7 +109,7 @@ const Hero = () => {
           >
             <Github className="w-6 h-6" aria-hidden="true" />
           </motion.a>
-          
+
           <motion.a
             href={PROFILE.linkedinUrl}
             target="_blank"
@@ -124,7 +121,7 @@ const Hero = () => {
           >
             <Linkedin className="w-6 h-6" aria-hidden="true" />
           </motion.a>
-          
+
           <motion.a
             href={PROFILE.emailHref}
             className="interactive-icon-button glass h-12 w-12 hover:bg-primary/10"
@@ -136,10 +133,7 @@ const Hero = () => {
           </motion.a>
         </motion.div>
 
-        <motion.div
-          className="flex justify-center"
-          variants={itemVariants}
-        >
+        <motion.div className="flex justify-center" variants={itemVariants}>
           <motion.button
             onClick={() => navigateToSection('about')}
             className="interactive-icon-button h-11 w-11 hover:bg-primary/10"

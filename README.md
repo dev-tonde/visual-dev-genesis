@@ -33,6 +33,7 @@ VITE_GITHUB_TOKEN=
 ```
 
 Notes:
+
 - `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` are required. The app throws at startup if either is missing.
 - `VITE_GITHUB_TOKEN` is optional, but recommended. Without it, the projects section is more likely to hit GitHub rate limits.
 - `VITE_GITHUB_USERNAME` defaults to `dev-tonde` in code. Set it explicitly if you are adapting this repo for another profile.
@@ -49,6 +50,7 @@ CORS_ORIGIN=http://localhost:5173
 ```
 
 Notes:
+
 - Contact submissions depend on the `send-contact-email` edge function being deployed and reachable from the frontend.
 - If `RESEND_API_KEY` is missing, the submission can still be stored, but email delivery is skipped.
 

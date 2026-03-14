@@ -7,21 +7,21 @@ import SEOHead from '@/components/SEOHead';
 import { Link } from 'react-router-dom';
 
 const Privacy = () => {
-  const lastUpdated = "December 2024";
+  const lastUpdated = 'December 2024';
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
   };
 
   return (
     <>
-      <SEOHead 
+      <SEOHead
         title="Privacy Policy - Tonderai Matanga"
         description="Learn how we protect your privacy and handle your data on our portfolio website. Transparent privacy practices and data protection."
         url="https://iamtonde.co.za/privacy"
       />
-      
+
       <div className="min-h-screen bg-background text-foreground">
         {/* Header */}
         <header className="border-b border-primary/20 bg-background/95 backdrop-blur-sm sticky top-0 z-40">
@@ -43,12 +43,7 @@ const Privacy = () => {
         </header>
 
         <main className="container mx-auto px-4 py-8 max-w-4xl">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={fadeInUp}
-            className="space-y-8"
-          >
+          <motion.div initial="hidden" animate="visible" variants={fadeInUp} className="space-y-8">
             {/* Introduction */}
             <Card>
               <CardHeader>
@@ -57,19 +52,20 @@ const Privacy = () => {
                   Your Privacy Matters
                 </CardTitle>
                 <CardDescription>
-                  This privacy policy explains how we collect, use, and protect your information when you visit our portfolio website.
-                  Last updated: {lastUpdated}
+                  This privacy policy explains how we collect, use, and protect your information
+                  when you visit our portfolio website. Last updated: {lastUpdated}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-muted-foreground">
-                  We are committed to protecting your privacy and being transparent about our data practices. 
-                  This policy outlines what information we collect, how we use it, and your rights regarding your data.
+                  We are committed to protecting your privacy and being transparent about our data
+                  practices. This policy outlines what information we collect, how we use it, and
+                  your rights regarding your data.
                 </p>
                 <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
                   <p className="text-sm font-medium text-primary">
-                    <strong>Do Not Track:</strong> We respect the "Do Not Track" browser setting. 
-                    If you have enabled DNT, we will not collect any analytics data about your visit.
+                    <strong>Do Not Track:</strong> We respect the "Do Not Track" browser setting. If
+                    you have enabled DNT, we will not collect any analytics data about your visit.
                   </p>
                 </div>
               </CardContent>
@@ -94,10 +90,14 @@ const Privacy = () => {
                     <li>Email address</li>
                     <li>Message content</li>
                     <li>Submission timestamp</li>
-                    <li>A one-way hash of your IP address when available, used only for abuse prevention and rate limiting</li>
+                    <li>
+                      A one-way hash of your IP address when available, used only for abuse
+                      prevention and rate limiting
+                    </li>
                   </ul>
                   <p className="text-sm text-muted-foreground mt-2">
-                    This information is stored securely and used solely to respond to your inquiry. Raw IP addresses are not stored with contact submissions.
+                    This information is stored securely and used solely to respond to your inquiry.
+                    Raw IP addresses are not stored with contact submissions.
                   </p>
                 </div>
 
@@ -153,17 +153,17 @@ const Privacy = () => {
                   <div>
                     <h3 className="font-semibold mb-2">Contact Form Submissions</h3>
                     <p className="text-muted-foreground">
-                      Information from contact forms is used exclusively to respond to your inquiries 
-                      and maintain a record of our communication. We do not share this information 
-                      with third parties or use it for marketing purposes.
+                      Information from contact forms is used exclusively to respond to your
+                      inquiries and maintain a record of our communication. We do not share this
+                      information with third parties or use it for marketing purposes.
                     </p>
                   </div>
-                  
+
                   <div>
                     <h3 className="font-semibold mb-2">Analytics Data</h3>
                     <p className="text-muted-foreground">
-                      Analytics data helps us understand how visitors use our website, which pages 
-                      are most popular, and how we can improve the user experience. This data is 
+                      Analytics data helps us understand how visitors use our website, which pages
+                      are most popular, and how we can improve the user experience. This data is
                       aggregated and anonymized.
                     </p>
                   </div>
@@ -171,8 +171,8 @@ const Privacy = () => {
                   <div>
                     <h3 className="font-semibold mb-2">Security and Performance</h3>
                     <p className="text-muted-foreground">
-                      Technical logs are used to monitor website security, prevent abuse, 
-                      and ensure optimal performance for all visitors.
+                      Technical logs are used to monitor website security, prevent abuse, and ensure
+                      optimal performance for all visitors.
                     </p>
                   </div>
                 </div>
@@ -188,15 +188,16 @@ const Privacy = () => {
                 <div>
                   <h3 className="font-semibold mb-2">Email Service (Resend)</h3>
                   <p className="text-muted-foreground">
-                    Contact form submissions are processed through Resend to send email notifications. 
-                    Resend processes your email data according to their privacy policy.
+                    Contact form submissions are processed through Resend to send email
+                    notifications. Resend processes your email data according to their privacy
+                    policy.
                   </p>
                 </div>
 
                 <div>
                   <h3 className="font-semibold mb-2">Database (Supabase)</h3>
                   <p className="text-muted-foreground">
-                    Contact form data and analytics are stored in a Supabase database with 
+                    Contact form data and analytics are stored in a Supabase database with
                     industry-standard encryption and security measures.
                   </p>
                 </div>
@@ -204,8 +205,8 @@ const Privacy = () => {
                 <div>
                   <h3 className="font-semibold mb-2">GitHub API</h3>
                   <p className="text-muted-foreground">
-                    We use GitHub's public API to display project information. No personal 
-                    data is shared with GitHub beyond standard API requests.
+                    We use GitHub's public API to display project information. No personal data is
+                    shared with GitHub beyond standard API requests.
                   </p>
                 </div>
               </CardContent>
@@ -223,15 +224,16 @@ const Privacy = () => {
                 <div>
                   <h3 className="font-semibold mb-2">Data Access and Deletion</h3>
                   <p className="text-muted-foreground">
-                    You have the right to request access to any personal data we hold about you 
-                    or request its deletion. Contact us using the information below to exercise these rights.
+                    You have the right to request access to any personal data we hold about you or
+                    request its deletion. Contact us using the information below to exercise these
+                    rights.
                   </p>
                 </div>
 
                 <div>
                   <h3 className="font-semibold mb-2">Analytics Opt-Out</h3>
                   <p className="text-muted-foreground">
-                    You can opt out of analytics tracking at any time using the privacy preferences 
+                    You can opt out of analytics tracking at any time using the privacy preferences
                     banner or by enabling "Do Not Track" in your browser settings.
                   </p>
                 </div>
@@ -239,7 +241,7 @@ const Privacy = () => {
                 <div>
                   <h3 className="font-semibold mb-2">Cookie Management</h3>
                   <p className="text-muted-foreground">
-                    We use minimal cookies for essential functionality. You can manage cookies 
+                    We use minimal cookies for essential functionality. You can manage cookies
                     through your browser settings, though this may affect website functionality.
                   </p>
                 </div>
@@ -256,12 +258,16 @@ const Privacy = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground mb-4">
-                  If you have any questions about this privacy policy or how we handle your data, 
+                  If you have any questions about this privacy policy or how we handle your data,
                   please don't hesitate to contact us:
                 </p>
                 <div className="space-y-2">
-                  <p><strong>Email:</strong> hello@iamtonde.co.za</p>
-                  <p><strong>Response Time:</strong> We aim to respond within 48 hours</p>
+                  <p>
+                    <strong>Email:</strong> hello@iamtonde.co.za
+                  </p>
+                  <p>
+                    <strong>Response Time:</strong> We aim to respond within 48 hours
+                  </p>
                 </div>
               </CardContent>
             </Card>

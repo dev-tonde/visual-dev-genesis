@@ -1,11 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useMemo,
-  useRef,
-  useState,
-  type ReactNode,
-} from 'react';
+import { createContext, useContext, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { Command } from 'cmdk';
@@ -68,11 +61,10 @@ const openExternalUrl = (url: string) => {
   window.open(url, '_blank', 'noopener,noreferrer');
 };
 
-const getShortcutLabel = () => (
+const getShortcutLabel = () =>
   typeof navigator !== 'undefined' && /Mac|iPhone|iPad|iPod/.test(navigator.platform)
     ? '⌘K'
-    : 'Ctrl K'
-);
+    : 'Ctrl K';
 
 const useCommandPalette = () => {
   const context = useContext(CommandPaletteContext);
@@ -100,7 +92,10 @@ const CommandPaletteDialog = () => {
           {
             id: 'home',
             label: 'Home',
-            description: location.pathname === '/' ? 'Jump to the top of the portfolio.' : 'Return to the portfolio homepage.',
+            description:
+              location.pathname === '/'
+                ? 'Jump to the top of the portfolio.'
+                : 'Return to the portfolio homepage.',
             icon: Home,
             searchText: 'home hero landing portfolio start',
             action: () => navigateToSection('hero'),
@@ -198,24 +193,28 @@ const CommandPaletteDialog = () => {
         heading: 'Appearance',
         actions: [
           ...(theme !== 'light'
-            ? [{
-                id: 'theme-light',
-                label: 'Switch to Light Mode',
-                description: 'Use the light color theme.',
-                icon: Sun,
-                searchText: 'theme light appearance display',
-                action: () => setTheme('light'),
-              }]
+            ? [
+                {
+                  id: 'theme-light',
+                  label: 'Switch to Light Mode',
+                  description: 'Use the light color theme.',
+                  icon: Sun,
+                  searchText: 'theme light appearance display',
+                  action: () => setTheme('light'),
+                },
+              ]
             : []),
           ...(theme !== 'dark'
-            ? [{
-                id: 'theme-dark',
-                label: 'Switch to Dark Mode',
-                description: 'Use the dark color theme.',
-                icon: Moon,
-                searchText: 'theme dark appearance display',
-                action: () => setTheme('dark'),
-              }]
+            ? [
+                {
+                  id: 'theme-dark',
+                  label: 'Switch to Dark Mode',
+                  description: 'Use the dark color theme.',
+                  icon: Moon,
+                  searchText: 'theme dark appearance display',
+                  action: () => setTheme('dark'),
+                },
+              ]
             : []),
         ],
       });
@@ -273,12 +272,13 @@ const CommandPaletteDialog = () => {
                     onSelect={() => handleSelect(command.action)}
                     className="mx-2 flex cursor-default select-none items-start gap-3 rounded-md px-3 py-3 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground"
                   >
-                    <command.icon className="mt-0.5 h-4 w-4 shrink-0 icon-primary" aria-hidden="true" />
+                    <command.icon
+                      className="mt-0.5 h-4 w-4 shrink-0 icon-primary"
+                      aria-hidden="true"
+                    />
                     <div className="min-w-0">
                       <div className="font-medium">{command.label}</div>
-                      <div className="text-xs text-muted-foreground">
-                        {command.description}
-                      </div>
+                      <div className="text-xs text-muted-foreground">{command.description}</div>
                     </div>
                   </Command.Item>
                 ))}
@@ -299,12 +299,16 @@ const CommandPaletteDialog = () => {
 export const CommandPaletteProvider = ({ children }: CommandPaletteProviderProps) => {
   const [open, setOpen] = useState(false);
 
-  useHotkeys('mod+k', (event) => {
-    event.preventDefault();
-    setOpen(true);
-  }, {
-    preventDefault: true,
-  });
+  useHotkeys(
+    'mod+k',
+    (event) => {
+      event.preventDefault();
+      setOpen(true);
+    },
+    {
+      preventDefault: true,
+    }
+  );
 
   return (
     <CommandPaletteContext.Provider value={{ open, setOpen }}>

@@ -55,15 +55,22 @@ describe('Games page', () => {
   it('positions the games as engineering demos with technical context and source links', () => {
     render(<Games />);
 
-    expect(screen.getByRole('heading', { name: /interactive engineering demos/i })).toBeInTheDocument();
-    expect(screen.getByText(/This page exists to show front-end engineering judgment/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /interactive engineering demos/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/This page exists to show front-end engineering judgment/i)
+    ).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /featured systems demos/i })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /compact logic demos/i })).toBeInTheDocument();
     expect(screen.queryByText(/Game Zone/i)).not.toBeInTheDocument();
 
-    expect(screen.getByText(/Rotation and collision checks have to stay predictable/i)).toBeInTheDocument();
     expect(
-      screen.getByRole('link', { name: /view source for tetris/i })
-    ).toHaveAttribute('href', `${PROFILE.portfolioRepoUrl}/blob/main/src/components/games/TetrisGame.tsx`);
+      screen.getByText(/Rotation and collision checks have to stay predictable/i)
+    ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /view source for tetris/i })).toHaveAttribute(
+      'href',
+      `${PROFILE.portfolioRepoUrl}/blob/main/src/components/games/TetrisGame.tsx`
+    );
   });
 });

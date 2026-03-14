@@ -111,7 +111,9 @@ describe('Projects', () => {
     expect(screen.getByRole('heading', { name: /visual dev genesis/i })).toBeInTheDocument();
     expect(screen.getAllByText(/Add verified metric/i).length).toBeGreaterThan(1);
     expect(
-      screen.getByText(/Add recruiter reply rate, interview conversion, or qualified inbound lead count/i)
+      screen.getByText(
+        /Add recruiter reply rate, interview conversion, or qualified inbound lead count/i
+      )
     ).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /live repository feed/i })).toBeInTheDocument();
   });
@@ -125,9 +127,13 @@ describe('Projects', () => {
     render(<Projects />);
 
     expect(
-      screen.getByText(/Curated case studies are available below while the live GitHub repository feed loads/i)
+      screen.getByText(
+        /Curated case studies are available below while the live GitHub repository feed loads/i
+      )
     ).toBeInTheDocument();
-    expect(screen.queryByText(/GitHub projects are temporarily unavailable/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/GitHub projects are temporarily unavailable/i)
+    ).not.toBeInTheDocument();
   });
 
   it('shows an honest unavailable state without invented fallback projects', () => {

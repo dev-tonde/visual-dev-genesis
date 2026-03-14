@@ -23,7 +23,7 @@ describe('ConsentManager', () => {
         analytics: true,
         performance: true,
         functional: true,
-      }),
+      })
     );
 
     render(<ConsentManager onConsentChange={onConsentChange} />);
@@ -33,7 +33,7 @@ describe('ConsentManager', () => {
         analytics: true,
         performance: true,
         functional: true,
-      }),
+      })
     );
 
     expect(screen.queryByText('Privacy Preferences')).not.toBeInTheDocument();

@@ -13,13 +13,11 @@ const isAsciiControlCharacter = (character: string) => {
 
 const removeControlCharacters = (value: string, replacement = '') =>
   Array.from(value, (character) =>
-    isAsciiControlCharacter(character) ? replacement : character,
+    isAsciiControlCharacter(character) ? replacement : character
   ).join('');
 
 export const sanitizeSingleLineInput = (value: string) =>
-  collapseWhitespace(
-    removeControlCharacters(value, ' ').replace(/[\r\n]+/g, ' '),
-  ).trimStart();
+  collapseWhitespace(removeControlCharacters(value, ' ').replace(/[\r\n]+/g, ' ')).trimStart();
 
 export const sanitizeSingleLineForSubmission = (value: string) =>
   sanitizeSingleLineInput(value).trim();
@@ -35,9 +33,7 @@ export const sanitizeMultilineForSubmission = (value: string) =>
   sanitizeMultilineInput(value).trim();
 
 export const sanitizeEmailInput = (value: string) =>
-  removeControlCharacters(value)
-    .replace(/\s+/g, '')
-    .toLowerCase();
+  removeControlCharacters(value).replace(/\s+/g, '').toLowerCase();
 
 export const sanitizePhoneInput = (value: string) =>
   removeControlCharacters(value)
@@ -49,5 +45,4 @@ export const sanitizePhoneInput = (value: string) =>
 export const sanitizeSearchInput = (value: string) =>
   removeControlCharacters(value).replace(/\s+/g, ' ').trimStart();
 
-export const sanitizePasswordInput = (value: string) =>
-  removeControlCharacters(value);
+export const sanitizePasswordInput = (value: string) => removeControlCharacters(value);

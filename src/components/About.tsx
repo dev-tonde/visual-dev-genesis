@@ -17,9 +17,9 @@ const About = () => {
       opacity: 1,
       transition: {
         delayChildren: 0.2,
-        staggerChildren: 0.1
-      }
-    }
+        staggerChildren: 0.1,
+      },
+    },
   };
 
   const itemVariants = {
@@ -28,33 +28,32 @@ const About = () => {
       y: 0,
       opacity: 1,
       transition: {
-        duration: 0.6
-      }
-    }
+        duration: 0.6,
+      },
+    },
   };
-
 
   const highlights = [
     {
       icon: Code,
       title: 'Clean Code',
-      description: 'Writing maintainable, scalable code with best practices'
+      description: 'Writing maintainable, scalable code with best practices',
     },
     {
       icon: Palette,
       title: 'UI/UX Design',
-      description: 'Creating beautiful, intuitive user interfaces'
+      description: 'Creating beautiful, intuitive user interfaces',
     },
     {
       icon: Zap,
       title: 'Performance',
-      description: 'Optimizing for speed and exceptional user experience'
+      description: 'Optimizing for speed and exceptional user experience',
     },
     {
       icon: Users,
       title: 'Collaboration',
-      description: 'Working effectively in team environments'
-    }
+      description: 'Working effectively in team environments',
+    },
   ];
 
   return (
@@ -64,7 +63,7 @@ const About = () => {
           ref={ref}
           variants={containerVariants}
           initial="hidden"
-          animate={inView ? "visible" : "hidden"}
+          animate={inView ? 'visible' : 'hidden'}
           className="max-w-4xl mx-auto"
         >
           <motion.div variants={itemVariants} className="mb-16">
@@ -103,13 +102,10 @@ const About = () => {
             </div>
           </motion.div>
 
-          <motion.div
-            variants={itemVariants}
-            className="text-center p-8 glass rounded-2xl"
-          >
+          <motion.div variants={itemVariants} className="text-center p-8 glass rounded-2xl">
             <p className="text-lg leading-relaxed">
-              "I believe in the power of technology to transform ideas into reality. 
-              Every project is an opportunity to push boundaries and create something amazing."
+              "I believe in the power of technology to transform ideas into reality. Every project
+              is an opportunity to push boundaries and create something amazing."
             </p>
           </motion.div>
 

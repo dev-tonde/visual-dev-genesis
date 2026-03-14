@@ -8,9 +8,17 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import type { Tables } from '@/integrations/supabase/types';
-import { 
-  Mail, Calendar, Search, Filter, CheckCircle, 
-  XCircle, Loader2, ExternalLink, Trash2, MailOpen
+import {
+  Mail,
+  Calendar,
+  Search,
+  Filter,
+  CheckCircle,
+  XCircle,
+  Loader2,
+  ExternalLink,
+  Trash2,
+  MailOpen,
 } from 'lucide-react';
 import {
   Select,
@@ -58,7 +66,7 @@ const ContactInboxPage = () => {
       toast({
         title: 'Error',
         description: 'Failed to load contact submissions',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } else {
       setSubmissions(data || []);
@@ -80,7 +88,7 @@ const ContactInboxPage = () => {
           toast({
             title: 'Access Denied',
             description: 'Admin privileges required.',
-            variant: 'destructive'
+            variant: 'destructive',
           });
           navigate('/');
           return;
@@ -99,53 +107,47 @@ const ContactInboxPage = () => {
 
   const normalizedSearchTerm = searchTerm.toLowerCase();
   const filteredSubmissions = submissions.filter((submission) => {
-    const matchesSearch = normalizedSearchTerm === '' || (
+    const matchesSearch =
+      normalizedSearchTerm === '' ||
       submission.name.toLowerCase().includes(normalizedSearchTerm) ||
       submission.email.toLowerCase().includes(normalizedSearchTerm) ||
-      submission.message.toLowerCase().includes(normalizedSearchTerm)
-    );
+      submission.message.toLowerCase().includes(normalizedSearchTerm);
     const matchesStatus = statusFilter === 'all' || submission.status === statusFilter;
 
     return matchesSearch && matchesStatus;
   });
 
   const updateStatus = async (id: string, status: ContactSubmissionStatus) => {
-    const { error } = await supabase
-      .from('contact_submissions')
-      .update({ status })
-      .eq('id', id);
+    const { error } = await supabase.from('contact_submissions').update({ status }).eq('id', id);
 
     if (error) {
       toast({
         title: 'Error',
         description: 'Failed to update status',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } else {
       toast({
         title: 'Success',
-        description: 'Status updated successfully'
+        description: 'Status updated successfully',
       });
       await fetchSubmissions();
     }
   };
 
   const deleteSubmission = async (id: string) => {
-    const { error } = await supabase
-      .from('contact_submissions')
-      .delete()
-      .eq('id', id);
+    const { error } = await supabase.from('contact_submissions').delete().eq('id', id);
 
     if (error) {
       toast({
         title: 'Error',
         description: 'Failed to delete submission',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } else {
       toast({
         title: 'Success',
-        description: 'Submission deleted successfully'
+        description: 'Submission deleted successfully',
       });
       await fetchSubmissions();
     }
@@ -153,10 +155,14 @@ const ContactInboxPage = () => {
 
   const getStatusColor = (status: ContactSubmissionStatus) => {
     switch (status) {
-      case 'responded': return 'bg-green-500/20 text-green-400';
-      case 'read': return 'bg-blue-500/20 text-blue-400';
-      case 'pending': return 'bg-yellow-500/20 text-yellow-400';
-      default: return 'bg-gray-500/20 text-gray-400';
+      case 'responded':
+        return 'bg-green-500/20 text-green-400';
+      case 'read':
+        return 'bg-blue-500/20 text-blue-400';
+      case 'pending':
+        return 'bg-yellow-500/20 text-yellow-400';
+      default:
+        return 'bg-gray-500/20 text-gray-400';
     }
   };
 
@@ -198,177 +204,181 @@ const ContactInboxPage = () => {
           </p>
         </div>
 
-      {/* Filters */}
-      <Card className="glass border-0 mb-6">
-        <CardContent className="p-6">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                placeholder="Search by name, email, or message..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(sanitizeSearchInput(e.target.value))}
-                className="pl-10"
-              />
+        {/* Filters */}
+        <Card className="glass border-0 mb-6">
+          <CardContent className="p-6">
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search by name, email, or message..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(sanitizeSearchInput(e.target.value))}
+                  className="pl-10"
+                />
+              </div>
+              <div className="flex gap-2 items-center">
+                <Filter className="w-4 h-4 text-muted-foreground" />
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Filter by status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="read">Read</SelectItem>
+                    <SelectItem value="responded">Responded</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-            <div className="flex gap-2 items-center">
-              <Filter className="w-4 h-4 text-muted-foreground" />
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Filter by status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="read">Read</SelectItem>
-                  <SelectItem value="responded">Responded</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          
-          <div className="flex items-center justify-between mt-4">
-            <p className="text-sm text-muted-foreground">
-              Showing {filteredSubmissions.length} of {submissions.length} submissions
-            </p>
-            <Button variant="outline" size="sm" onClick={fetchSubmissions}>
-              Refresh
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
 
-      {/* Submissions List */}
-      <div className="space-y-4">
-        {filteredSubmissions.length === 0 ? (
-          <Card className="glass border-0">
-            <CardContent className="p-12 text-center">
-              <Mail className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-              <h3 className="text-lg font-semibold mb-2">No Submissions Found</h3>
-              <p className="text-muted-foreground">
-                {searchTerm || statusFilter !== 'all' 
-                  ? 'Try adjusting your filters' 
-                  : 'No contact form submissions yet'}
+            <div className="flex items-center justify-between mt-4">
+              <p className="text-sm text-muted-foreground">
+                Showing {filteredSubmissions.length} of {submissions.length} submissions
               </p>
-            </CardContent>
-          </Card>
-        ) : (
-          filteredSubmissions.map((submission) => (
-            <Card key={submission.id} className="glass border-0 hover:shadow-md transition-shadow">
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      {submission.name}
-                      <Badge className={getStatusColor(submission.status)}>
-                        {submission.status}
-                      </Badge>
-                    </CardTitle>
-                    <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
-                      <a 
-                        href={`mailto:${submission.email}`}
-                        className="flex items-center gap-1 hover:text-primary transition-colors"
-                      >
-                        <Mail className="w-4 h-4" />
-                        {submission.email}
-                      </a>
-                      <div className="flex items-center gap-1">
-                        <Calendar className="w-4 h-4" />
-                        {new Date(submission.created_at).toLocaleString()}
+              <Button variant="outline" size="sm" onClick={fetchSubmissions}>
+                Refresh
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Submissions List */}
+        <div className="space-y-4">
+          {filteredSubmissions.length === 0 ? (
+            <Card className="glass border-0">
+              <CardContent className="p-12 text-center">
+                <Mail className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                <h3 className="text-lg font-semibold mb-2">No Submissions Found</h3>
+                <p className="text-muted-foreground">
+                  {searchTerm || statusFilter !== 'all'
+                    ? 'Try adjusting your filters'
+                    : 'No contact form submissions yet'}
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            filteredSubmissions.map((submission) => (
+              <Card
+                key={submission.id}
+                className="glass border-0 hover:shadow-md transition-shadow"
+              >
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        {submission.name}
+                        <Badge className={getStatusColor(submission.status)}>
+                          {submission.status}
+                        </Badge>
+                      </CardTitle>
+                      <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+                        <a
+                          href={`mailto:${submission.email}`}
+                          className="flex items-center gap-1 hover:text-primary transition-colors"
+                        >
+                          <Mail className="w-4 h-4" />
+                          {submission.email}
+                        </a>
+                        <div className="flex items-center gap-1">
+                          <Calendar className="w-4 h-4" />
+                          {new Date(submission.created_at).toLocaleString()}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="bg-muted/30 rounded-lg p-4 mb-4">
-                  <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                    {submission.message}
-                  </p>
-                </div>
-                
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => window.open(`mailto:${submission.email}`, '_blank')}
-                  >
-                    <ExternalLink className="w-4 h-4 mr-2" />
-                    Reply via Email
-                  </Button>
-                  
-                  {submission.status === 'pending' && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => updateStatus(submission.id, 'read')}
-                      className="text-blue-600 hover:text-blue-700"
-                    >
-                      <MailOpen className="w-4 h-4 mr-2" />
-                      Mark as Read
-                    </Button>
-                  )}
+                </CardHeader>
+                <CardContent>
+                  <div className="bg-muted/30 rounded-lg p-4 mb-4">
+                    <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                      {submission.message}
+                    </p>
+                  </div>
 
-                  {submission.status !== 'responded' && (
+                  <div className="flex flex-wrap gap-2">
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => updateStatus(submission.id, 'responded')}
-                      className="text-green-600 hover:text-green-700"
+                      onClick={() => window.open(`mailto:${submission.email}`, '_blank')}
                     >
-                      <CheckCircle className="w-4 h-4 mr-2" />
-                      Mark as Responded
+                      <ExternalLink className="w-4 h-4 mr-2" />
+                      Reply via Email
                     </Button>
-                  )}
-                  
-                  {submission.status !== 'pending' && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => updateStatus(submission.id, 'pending')}
-                      className="text-yellow-600 hover:text-yellow-700"
-                    >
-                      <XCircle className="w-4 h-4 mr-2" />
-                      Mark as Pending
-                    </Button>
-                  )}
-                  
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
+
+                    {submission.status === 'pending' && (
                       <Button
                         size="sm"
                         variant="outline"
-                        className="text-destructive hover:text-destructive"
+                        onClick={() => updateStatus(submission.id, 'read')}
+                        className="text-blue-600 hover:text-blue-700"
                       >
-                        <Trash2 className="w-4 h-4 mr-2" />
-                        Delete
+                        <MailOpen className="w-4 h-4 mr-2" />
+                        Mark as Read
                       </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Delete Submission?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This action cannot be undone. This will permanently delete the contact submission from {submission.name}.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction 
-                          onClick={() => deleteSubmission(submission.id)}
-                          className="bg-destructive hover:bg-destructive/90"
+                    )}
+
+                    {submission.status !== 'responded' && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => updateStatus(submission.id, 'responded')}
+                        className="text-green-600 hover:text-green-700"
+                      >
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        Mark as Responded
+                      </Button>
+                    )}
+
+                    {submission.status !== 'pending' && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => updateStatus(submission.id, 'pending')}
+                        className="text-yellow-600 hover:text-yellow-700"
+                      >
+                        <XCircle className="w-4 h-4 mr-2" />
+                        Mark as Pending
+                      </Button>
+                    )}
+
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="text-destructive hover:text-destructive"
                         >
+                          <Trash2 className="w-4 h-4 mr-2" />
                           Delete
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </div>
-              </CardContent>
-            </Card>
-          ))
-        )}
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete Submission?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This action cannot be undone. This will permanently delete the contact
+                            submission from {submission.name}.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => deleteSubmission(submission.id)}
+                            className="bg-destructive hover:bg-destructive/90"
+                          >
+                            Delete
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          )}
+        </div>
       </div>
-    </div>
     </>
   );
 };

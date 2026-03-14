@@ -98,8 +98,11 @@ const sortGitHubRepos = (repos: GitHubRepo[]) =>
         return 1;
       }
 
-      return (b.stargazers_count * 2 + new Date(b.updated_at).getTime()) -
-        (a.stargazers_count * 2 + new Date(a.updated_at).getTime());
+      return (
+        b.stargazers_count * 2 +
+        new Date(b.updated_at).getTime() -
+        (a.stargazers_count * 2 + new Date(a.updated_at).getTime())
+      );
     });
 
 export const getGitHubProfileUrl = () => `https://github.com/${GITHUB_USERNAME}`;
@@ -209,6 +212,6 @@ export const getLanguageColor = (language: string | null): string => {
     Angular: '#DD0031',
     Svelte: '#ff3e00',
   };
-  
+
   return colors[language || ''] || '#6b7280';
 };

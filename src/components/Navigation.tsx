@@ -11,16 +11,16 @@ import { useSectionNavigation } from '@/hooks/useSectionNavigation';
 // Hook to detect reduced motion preference
 const useReducedMotion = () => {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-  
+
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     setPrefersReducedMotion(mediaQuery.matches);
-    
+
     const handler = () => setPrefersReducedMotion(mediaQuery.matches);
     mediaQuery.addEventListener('change', handler);
     return () => mediaQuery.removeEventListener('change', handler);
   }, []);
-  
+
   return prefersReducedMotion;
 };
 
@@ -112,13 +112,13 @@ const Navigation = () => {
     <>
       {/* Background overlay for mobile menu */}
       {isMobileMenuOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-40" 
+        <div
+          className="fixed inset-0 bg-black/50 z-40"
           onClick={() => setIsMobileMenuOpen(false)}
           aria-hidden="true"
         />
       )}
-      
+
       <motion.nav
         className={`fixed top-0 w-full z-50 transition-all duration-300 ${
           isScrolled ? 'glass backdrop-blur-lg py-2' : 'bg-transparent py-6'
@@ -128,149 +128,144 @@ const Navigation = () => {
         transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.5 }}
         role="banner"
       >
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <motion.button
-            type="button"
-            className="rounded-md bg-gradient-to-r from-primary to-secondary bg-clip-text text-2xl font-bold text-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-            onClick={() => scrollToSection('hero')}
-            whileHover={{ y: -1 }}
-            aria-label="Go to home section"
-          >
-            Tonderai
-          </motion.button>
-
-          {/* Desktop Menu - Hidden below 1024px */}
-          <div className="hidden lg:flex items-center space-x-2">
-            {menuItems.map((item) => 
-              item.type === 'link' ? (
-                <Link
-                  key={item.name}
-                  to={`/${item.id}`}
-                  className="text-foreground hover:text-primary transition-colors relative focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md px-2 py-1"
-                >
-                  {item.name}
-                </Link>
-              ) : (
-                <motion.button
-                  key={item.name}
-                  onClick={() => scrollToSection(item.id)}
-                  className="text-foreground hover:text-primary transition-colors relative focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md px-2 py-1"
-                  whileHover={{ scale: 1.05 }}
-                  aria-label={`Navigate to ${item.name} section`}
-                >
-                  {item.name}
-                  <motion.div
-                    className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary"
-                    whileHover={{ width: '100%' }}
-                    transition={{ duration: 0.2 }}
-                  />
-                </motion.button>
-              )
-            )}
-            <CommandPaletteTrigger />
-            <ThemeSwitch />
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={downloadCv}
-              className="glass"
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between">
+            {/* Logo */}
+            <motion.button
+              type="button"
+              className="rounded-md bg-gradient-to-r from-primary to-secondary bg-clip-text text-2xl font-bold text-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              onClick={() => scrollToSection('hero')}
+              whileHover={{ y: -1 }}
+              aria-label="Go to home section"
             >
-              <Download className="w-4 h-4 mr-2" />
-              CV
-            </Button>
-            <Button
-              onClick={() => scrollToSection('contact')}
-              className="gradient-primary"
-              aria-label="Navigate to contact section"
-            >
-              Hire Me
-            </Button>
-          </div>
+              Tonderai
+            </motion.button>
 
-          {/* Mobile & Tablet Menu Button - Shows below 1024px */}
-          <div className="lg:hidden flex items-center space-x-2">
-            <CommandPaletteTrigger mobile />
-            <ThemeSwitch />
-            <Button
-              ref={menuButtonRef}
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="glass"
-              aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-              aria-expanded={isMobileMenuOpen}
-              aria-controls="mobile-menu"
-            >
-              {isMobileMenuOpen ? <X className="w-5 h-5 icon-primary" /> : <Menu className="w-5 h-5 icon-primary" />}
-            </Button>
-          </div>
-        </div>
-
-        {/* Mobile & Tablet Menu */}
-        {isMobileMenuOpen && (
-          <motion.div
-            ref={mobileMenuRef}
-            id="mobile-menu"
-            className="lg:hidden mt-4 relative z-50"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="mobile-menu-title"
-            initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, height: 0 }}
-            animate={{ 
-              opacity: 1, 
-              height: 'auto' 
-            }}
-            exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, height: 0 }}
-            transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.3 }}
-          >
-            <div className="glass rounded-lg p-4 space-y-3">
-              <h2 id="mobile-menu-title" className="sr-only">
-                Navigation Menu
-              </h2>
-              {menuItems.map((item) => 
+            {/* Desktop Menu - Hidden below 1024px */}
+            <div className="hidden lg:flex items-center space-x-2">
+              {menuItems.map((item) =>
                 item.type === 'link' ? (
                   <Link
                     key={item.name}
                     to={`/${item.id}`}
-                    className="block w-full text-left text-foreground hover:text-primary transition-colors py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    aria-label={`Navigate to ${item.name} page`}
+                    className="text-foreground hover:text-primary transition-colors relative focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md px-2 py-1"
                   >
                     {item.name}
                   </Link>
                 ) : (
-                  <button
+                  <motion.button
                     key={item.name}
                     onClick={() => scrollToSection(item.id)}
-                    className="block w-full text-left text-foreground hover:text-primary transition-colors py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md"
+                    className="text-foreground hover:text-primary transition-colors relative focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md px-2 py-1"
+                    whileHover={{ scale: 1.05 }}
                     aria-label={`Navigate to ${item.name} section`}
                   >
                     {item.name}
-                  </button>
+                    <motion.div
+                      className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary"
+                      whileHover={{ width: '100%' }}
+                      transition={{ duration: 0.2 }}
+                    />
+                  </motion.button>
                 )
               )}
-              <Button
-                variant="outline"
-                onClick={downloadCv}
-                className="w-full glass mt-4"
-              >
+              <CommandPaletteTrigger />
+              <ThemeSwitch />
+              <Button variant="outline" size="sm" onClick={downloadCv} className="glass">
                 <Download className="w-4 h-4 mr-2" />
-                Download CV
+                CV
               </Button>
               <Button
                 onClick={() => scrollToSection('contact')}
-                className="w-full gradient-primary mt-2 focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                className="gradient-primary"
                 aria-label="Navigate to contact section"
               >
                 Hire Me
               </Button>
             </div>
-          </motion.div>
-        )}
-      </div>
-    </motion.nav>
+
+            {/* Mobile & Tablet Menu Button - Shows below 1024px */}
+            <div className="lg:hidden flex items-center space-x-2">
+              <CommandPaletteTrigger mobile />
+              <ThemeSwitch />
+              <Button
+                ref={menuButtonRef}
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="glass"
+                aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+                aria-expanded={isMobileMenuOpen}
+                aria-controls="mobile-menu"
+              >
+                {isMobileMenuOpen ? (
+                  <X className="w-5 h-5 icon-primary" />
+                ) : (
+                  <Menu className="w-5 h-5 icon-primary" />
+                )}
+              </Button>
+            </div>
+          </div>
+
+          {/* Mobile & Tablet Menu */}
+          {isMobileMenuOpen && (
+            <motion.div
+              ref={mobileMenuRef}
+              id="mobile-menu"
+              className="lg:hidden mt-4 relative z-50"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="mobile-menu-title"
+              initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, height: 0 }}
+              animate={{
+                opacity: 1,
+                height: 'auto',
+              }}
+              exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, height: 0 }}
+              transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.3 }}
+            >
+              <div className="glass rounded-lg p-4 space-y-3">
+                <h2 id="mobile-menu-title" className="sr-only">
+                  Navigation Menu
+                </h2>
+                {menuItems.map((item) =>
+                  item.type === 'link' ? (
+                    <Link
+                      key={item.name}
+                      to={`/${item.id}`}
+                      className="block w-full text-left text-foreground hover:text-primary transition-colors py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      aria-label={`Navigate to ${item.name} page`}
+                    >
+                      {item.name}
+                    </Link>
+                  ) : (
+                    <button
+                      key={item.name}
+                      onClick={() => scrollToSection(item.id)}
+                      className="block w-full text-left text-foreground hover:text-primary transition-colors py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md"
+                      aria-label={`Navigate to ${item.name} section`}
+                    >
+                      {item.name}
+                    </button>
+                  )
+                )}
+                <Button variant="outline" onClick={downloadCv} className="w-full glass mt-4">
+                  <Download className="w-4 h-4 mr-2" />
+                  Download CV
+                </Button>
+                <Button
+                  onClick={() => scrollToSection('contact')}
+                  className="w-full gradient-primary mt-2 focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                  aria-label="Navigate to contact section"
+                >
+                  Hire Me
+                </Button>
+              </div>
+            </motion.div>
+          )}
+        </div>
+      </motion.nav>
     </>
   );
 };

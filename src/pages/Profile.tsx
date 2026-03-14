@@ -154,12 +154,7 @@ const AccountWorkspacePage = () => {
             transition={{ duration: 0.5 }}
           >
             <div className="mb-6">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => navigate('/')}
-                className="mb-4"
-              >
+              <Button variant="ghost" size="sm" onClick={() => navigate('/')} className="mb-4">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Home
               </Button>
@@ -175,9 +170,15 @@ const AccountWorkspacePage = () => {
               <CardHeader>
                 <div className="mb-4 flex items-center gap-4">
                   <Avatar className="h-20 w-20 ring-2 ring-primary/20">
-                    <AvatarImage src={profile?.avatar_url || ''} alt={formData.full_name || 'User'} />
+                    <AvatarImage
+                      src={profile?.avatar_url || ''}
+                      alt={formData.full_name || 'User'}
+                    />
                     <AvatarFallback className="bg-primary/10 text-2xl">
-                      {formData.full_name?.split(' ').map((name) => name[0]).join('') || user?.email?.charAt(0).toUpperCase()}
+                      {formData.full_name
+                        ?.split(' ')
+                        .map((name) => name[0])
+                        .join('') || user?.email?.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div>
@@ -201,9 +202,7 @@ const AccountWorkspacePage = () => {
                     disabled
                     className="bg-muted"
                   />
-                  <p className="text-xs text-muted-foreground">
-                    Email cannot be changed here.
-                  </p>
+                  <p className="text-xs text-muted-foreground">Email cannot be changed here.</p>
                 </div>
 
                 <div className="space-y-2">
@@ -215,7 +214,10 @@ const AccountWorkspacePage = () => {
                     id="full_name"
                     value={formData.full_name}
                     onChange={(event) =>
-                      setFormData({ ...formData, full_name: sanitizeSingleLineInput(event.target.value) })
+                      setFormData({
+                        ...formData,
+                        full_name: sanitizeSingleLineInput(event.target.value),
+                      })
                     }
                     placeholder="John Doe"
                   />
@@ -246,7 +248,10 @@ const AccountWorkspacePage = () => {
                     id="company"
                     value={formData.company}
                     onChange={(event) =>
-                      setFormData({ ...formData, company: sanitizeSingleLineInput(event.target.value) })
+                      setFormData({
+                        ...formData,
+                        company: sanitizeSingleLineInput(event.target.value),
+                      })
                     }
                     placeholder="Your Company Name"
                   />
@@ -254,7 +259,9 @@ const AccountWorkspacePage = () => {
 
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Calendar className="w-4 h-4" />
-                  <span>Member since {new Date(profile?.created_at || '').toLocaleDateString()}</span>
+                  <span>
+                    Member since {new Date(profile?.created_at || '').toLocaleDateString()}
+                  </span>
                 </div>
 
                 <Button onClick={handleSave} disabled={saving} className="w-full gradient-primary">

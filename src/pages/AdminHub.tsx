@@ -24,9 +24,7 @@ const OperationsWorkspacePage = () => {
   const fetchStats = useCallback(async () => {
     setLoading(true);
 
-    const { data: contacts } = await supabase
-      .from('contact_submissions')
-      .select('status');
+    const { data: contacts } = await supabase.from('contact_submissions').select('status');
 
     const pendingContacts = contacts?.filter((contact) => contact.status === 'pending').length || 0;
     const totalContacts = contacts?.length || 0;
@@ -111,7 +109,8 @@ const OperationsWorkspacePage = () => {
                 Operations Workspace
               </h1>
               <p className="text-muted-foreground">
-                Review inbound contact submissions and jump into the private workspace tools that still matter.
+                Review inbound contact submissions and jump into the private workspace tools that
+                still matter.
               </p>
             </div>
 
@@ -123,11 +122,7 @@ const OperationsWorkspacePage = () => {
                     <div className="rounded-lg bg-primary/10 p-3">
                       <Mail className="w-6 h-6 text-primary" />
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => navigate('/admin/contacts')}
-                    >
+                    <Button variant="ghost" size="sm" onClick={() => navigate('/admin/contacts')}>
                       Open Inbox
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
@@ -140,7 +135,9 @@ const OperationsWorkspacePage = () => {
                 <CardContent>
                   <div className="flex gap-6">
                     <div className="flex-1">
-                      <div className="mb-1 text-3xl font-bold text-primary">{stats.pendingContacts}</div>
+                      <div className="mb-1 text-3xl font-bold text-primary">
+                        {stats.pendingContacts}
+                      </div>
                       <div className="text-sm text-muted-foreground">Pending</div>
                     </div>
                     <div className="flex-1">

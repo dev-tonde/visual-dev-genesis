@@ -1,10 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
-import {
-  useSectionHashScroll,
-  useSectionNavigation,
-} from '@/hooks/useSectionNavigation';
+import { useSectionHashScroll, useSectionNavigation } from '@/hooks/useSectionNavigation';
 
 const scrollIntoViewMock = vi.fn();
 
@@ -33,7 +30,8 @@ const HomeRoute = () => {
 describe('useSectionNavigation', () => {
   beforeEach(() => {
     scrollIntoViewMock.mockReset();
-    HTMLElement.prototype.scrollIntoView = scrollIntoViewMock as typeof HTMLElement.prototype.scrollIntoView;
+    HTMLElement.prototype.scrollIntoView =
+      scrollIntoViewMock as typeof HTMLElement.prototype.scrollIntoView;
   });
 
   it('navigates from a non-home route to the home hash and scrolls after the section exists', async () => {
@@ -44,12 +42,12 @@ describe('useSectionNavigation', () => {
           <Route path="/games" element={<SectionTrigger />} />
           <Route
             path="/"
-            element={(
+            element={
               <>
                 <SectionTrigger />
                 <HomeRoute />
               </>
-            )}
+            }
           />
         </Routes>
       </MemoryRouter>
@@ -73,12 +71,12 @@ describe('useSectionNavigation', () => {
         <Routes>
           <Route
             path="/"
-            element={(
+            element={
               <>
                 <SectionTrigger />
                 <div id="projects">Projects section</div>
               </>
-            )}
+            }
           />
         </Routes>
       </MemoryRouter>

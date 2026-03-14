@@ -28,7 +28,7 @@ const ContactInfo = ({ variants }: ContactInfoProps) => {
       value: PROFILE.locationDisplay,
       link: PROFILE.locationHref,
       external: true,
-    }
+    },
   ];
 
   const socialLinks = [
@@ -52,7 +52,7 @@ const ContactInfo = ({ variants }: ContactInfoProps) => {
       url: PROFILE.emailHref,
       color: 'hover:text-red-400',
       external: false,
-    }
+    },
   ];
 
   return (
@@ -102,13 +102,11 @@ const ContactInfo = ({ variants }: ContactInfoProps) => {
         </div>
       </div>
 
-      <motion.div
-        className="p-6 glass rounded-lg"
-        variants={variants}
-      >
+      <motion.div className="p-6 glass rounded-lg" variants={variants}>
         <h4 className="text-lg font-semibold mb-3">Quick Response</h4>
         <p className="text-muted-foreground">
-          Typical reply time is within one business day. If the brief is time-sensitive, email or LinkedIn is the fastest route.
+          Typical reply time is within one business day. If the brief is time-sensitive, email or
+          LinkedIn is the fastest route.
         </p>
       </motion.div>
     </motion.div>

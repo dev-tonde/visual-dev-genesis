@@ -6,7 +6,7 @@ const DynamicGreeting = () => {
   useEffect(() => {
     const updateGreeting = () => {
       const hour = new Date().getHours();
-      
+
       if (hour >= 5 && hour < 12) {
         setGreeting('Good morning');
       } else if (hour >= 12 && hour < 17) {
@@ -19,10 +19,10 @@ const DynamicGreeting = () => {
     };
 
     updateGreeting();
-    
+
     // Update greeting every minute
     const interval = setInterval(updateGreeting, 60000);
-    
+
     return () => clearInterval(interval);
   }, []);
 

@@ -36,7 +36,7 @@ class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('Error caught by boundary:', error, errorInfo);
-    
+
     // Log error to analytics if available
     if (typeof window !== 'undefined') {
       const analytics = (window as Window & typeof globalThis & { gtag?: GtagEvent }).gtag;
@@ -58,7 +58,8 @@ class ErrorBoundary extends Component<Props, State> {
               </div>
               <CardTitle>Oops! Something went wrong</CardTitle>
               <CardDescription>
-                We're sorry, but an unexpected error occurred. This has been logged and we'll look into it.
+                We're sorry, but an unexpected error occurred. This has been logged and we'll look
+                into it.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -77,7 +78,7 @@ class ErrorBoundary extends Component<Props, State> {
                   Reload Page
                 </Button>
                 <Button
-                  onClick={() => window.location.href = '/'}
+                  onClick={() => (window.location.href = '/')}
                   variant="outline"
                   className="flex-1"
                 >

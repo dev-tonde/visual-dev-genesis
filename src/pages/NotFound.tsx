@@ -31,7 +31,8 @@ const floatingObjects = [
     duration: 12,
   },
   {
-    className: 'left-1/2 bottom-[9%] h-10 w-10 -translate-x-1/2 rounded-full border border-primary/25 bg-primary/10',
+    className:
+      'left-1/2 bottom-[9%] h-10 w-10 -translate-x-1/2 rounded-full border border-primary/25 bg-primary/10',
     animation: { x: [0, 10, -10, 0], y: [0, 8, -8, 0] },
     duration: 13,
   },
@@ -73,8 +74,8 @@ const NotFound = () => {
             </h1>
 
             <p className="mt-5 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">
-              The page may have moved, the link may be outdated, or the URL may have been typed incorrectly.
-              The rest of the portfolio is still available.
+              The page may have moved, the link may be outdated, or the URL may have been typed
+              incorrectly. The rest of the portfolio is still available.
             </p>
 
             <div className="mt-6 inline-flex max-w-full items-center gap-3 rounded-full border border-border/70 bg-background/75 px-4 py-2 text-sm text-muted-foreground shadow-sm">
@@ -191,7 +192,8 @@ const NotFound = () => {
                       Low overhead
                     </p>
                     <p className="mt-2 text-sm text-muted-foreground">
-                      The motion uses a few transform-only elements and respects reduced-motion settings.
+                      The motion uses a few transform-only elements and respects reduced-motion
+                      settings.
                     </p>
                   </div>
                 </div>

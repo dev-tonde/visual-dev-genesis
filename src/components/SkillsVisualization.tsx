@@ -24,7 +24,12 @@ const SkillsVisualization = () => {
     { name: 'Circle CI', level: 82, category: 'tools', color: 'hsl(var(--secondary))' },
     { name: 'AdobeXD', level: 88, category: 'tools', color: 'hsl(var(--accent))' },
     { name: 'Python', level: 78, category: 'backend', color: 'hsl(var(--primary))' },
-    { name: 'Artificial Intelligence', level: 80, category: 'backend', color: 'hsl(var(--secondary))' },
+    {
+      name: 'Artificial Intelligence',
+      level: 80,
+      category: 'backend',
+      color: 'hsl(var(--secondary))',
+    },
     { name: 'Git', level: 90, category: 'tools', color: 'hsl(var(--accent))' },
     { name: 'Docker', level: 70, category: 'tools', color: 'hsl(var(--primary))' },
     { name: 'AWS', level: 65, category: 'tools', color: 'hsl(var(--secondary))' },
@@ -39,9 +44,9 @@ const SkillsVisualization = () => {
       opacity: 1,
       transition: {
         delayChildren: 0.2,
-        staggerChildren: 0.1
-      }
-    }
+        staggerChildren: 0.1,
+      },
+    },
   };
 
   const itemVariants = {
@@ -50,9 +55,9 @@ const SkillsVisualization = () => {
       y: 0,
       opacity: 1,
       transition: {
-        duration: 0.6
-      }
-    }
+        duration: 0.6,
+      },
+    },
   };
 
   return (
@@ -61,7 +66,7 @@ const SkillsVisualization = () => {
         ref={ref}
         variants={containerVariants}
         initial="hidden"
-        animate={inView ? "visible" : "hidden"}
+        animate={inView ? 'visible' : 'hidden'}
         className="max-w-6xl mx-auto"
       >
         <motion.div variants={itemVariants} className="text-center mb-12">
@@ -84,16 +89,11 @@ const SkillsVisualization = () => {
                     <div className="flex justify-between items-center">
                       <span className="font-medium flex items-center gap-2">
                         {skill.name}
-                        <Badge 
-                          variant="outline" 
-                          className="text-xs"
-                        >
+                        <Badge variant="outline" className="text-xs">
                           {skill.category}
                         </Badge>
                       </span>
-                      <span className="text-sm text-muted-foreground">
-                        {skill.level}%
-                      </span>
+                      <span className="text-sm text-muted-foreground">{skill.level}%</span>
                     </div>
                     <div className="relative h-3 bg-muted rounded-full overflow-hidden">
                       <motion.div
@@ -101,20 +101,20 @@ const SkillsVisualization = () => {
                         style={{ backgroundColor: skill.color }}
                         initial={{ width: 0 }}
                         animate={inView ? { width: `${skill.level}%` } : { width: 0 }}
-                        transition={{ 
-                          duration: 1.5, 
+                        transition={{
+                          duration: 1.5,
                           delay: index * 0.1,
-                          ease: "easeOut" 
+                          ease: 'easeOut',
                         }}
                       />
                       <motion.div
                         className="absolute top-0 left-0 h-full w-full bg-gradient-to-r from-transparent to-white/20 rounded-full"
                         initial={{ x: '-100%' }}
                         animate={inView ? { x: '100%' } : { x: '-100%' }}
-                        transition={{ 
-                          duration: 1.5, 
+                        transition={{
+                          duration: 1.5,
                           delay: index * 0.1 + 0.5,
-                          ease: "easeOut" 
+                          ease: 'easeOut',
                         }}
                       />
                     </div>
@@ -130,11 +130,12 @@ const SkillsVisualization = () => {
               <h4 className="text-xl font-semibold mb-6">Category Overview</h4>
               <div className="grid grid-cols-3 gap-6">
                 {categories.map((category) => {
-                  const categorySkills = skills.filter(s => s.category === category);
+                  const categorySkills = skills.filter((s) => s.category === category);
                   const averageLevel = Math.round(
-                    categorySkills.reduce((sum, skill) => sum + skill.level, 0) / categorySkills.length
+                    categorySkills.reduce((sum, skill) => sum + skill.level, 0) /
+                      categorySkills.length
                   );
-                  
+
                   return (
                     <div key={category} className="text-center">
                       <div className="relative w-20 h-20 mx-auto mb-3">
@@ -158,11 +159,13 @@ const SkillsVisualization = () => {
                             strokeWidth="4"
                             strokeLinecap="round"
                             initial={{ pathLength: 0 }}
-                            animate={inView ? { pathLength: averageLevel / 100 } : { pathLength: 0 }}
+                            animate={
+                              inView ? { pathLength: averageLevel / 100 } : { pathLength: 0 }
+                            }
                             transition={{ duration: 2, delay: 0.5 }}
                             style={{
                               pathLength: averageLevel / 100,
-                              strokeDasharray: "201.06 201.06"
+                              strokeDasharray: '201.06 201.06',
                             }}
                           />
                         </svg>

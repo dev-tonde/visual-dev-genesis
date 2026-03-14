@@ -59,7 +59,7 @@ const Index = () => {
           </Suspense>
           <Contact />
         </main>
-      
+
         <Footer />
       </div>
     </>

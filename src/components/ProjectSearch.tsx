@@ -21,13 +21,13 @@ const ProjectSearch = ({
   selectedTags,
   onTagToggle,
   availableTags,
-  resultsCount
+  resultsCount,
 }: ProjectSearchProps) => {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   const handleClearSearch = () => {
     onSearchChange('');
-    selectedTags.forEach(tag => onTagToggle(tag));
+    selectedTags.forEach((tag) => onTagToggle(tag));
   };
 
   const hasActiveFilters = searchTerm || selectedTags.length > 0;
@@ -40,7 +40,9 @@ const ProjectSearch = ({
     >
       {/* Search Input */}
       <div className="relative max-w-md mx-auto">
-        <div className={`relative transition-all duration-300 ${isSearchFocused ? 'scale-105' : ''}`}>
+        <div
+          className={`relative transition-all duration-300 ${isSearchFocused ? 'scale-105' : ''}`}
+        >
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
           <Input
             type="text"
@@ -80,10 +82,10 @@ const ProjectSearch = ({
                   whileTap={{ scale: 0.95 }}
                 >
                   <Badge
-                    variant={isSelected ? "default" : "outline"}
+                    variant={isSelected ? 'default' : 'outline'}
                     className={`cursor-pointer transition-all duration-300 hover-lift ${
-                      isSelected 
-                        ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/25' 
+                      isSelected
+                        ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/25'
                         : 'hover:bg-primary/10'
                     }`}
                     onClick={() => onTagToggle(tag)}
@@ -109,7 +111,7 @@ const ProjectSearch = ({
             <span>
               {resultsCount} project{resultsCount !== 1 ? 's' : ''} found
             </span>
-            
+
             <Button
               size="sm"
               variant="ghost"

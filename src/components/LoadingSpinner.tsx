@@ -1,10 +1,13 @@
 import { motion } from 'framer-motion';
 
-const LoadingSpinner = ({ className = "", size = "md" }: { className?: string; size?: "sm" | "md" | "lg" }) => {
-  const sizeClass =
-    size === "sm" ? "w-4 h-4" :
-    size === "lg" ? "w-12 h-12" :
-    "w-8 h-8";
+const LoadingSpinner = ({
+  className = '',
+  size = 'md',
+}: {
+  className?: string;
+  size?: 'sm' | 'md' | 'lg';
+}) => {
+  const sizeClass = size === 'sm' ? 'w-4 h-4' : size === 'lg' ? 'w-12 h-12' : 'w-8 h-8';
 
   return (
     <div className={`flex items-center justify-center ${className}`}>
@@ -14,7 +17,7 @@ const LoadingSpinner = ({ className = "", size = "md" }: { className?: string; s
         transition={{
           duration: 1,
           repeat: Infinity,
-          ease: "linear"
+          ease: 'linear',
         }}
       />
     </div>

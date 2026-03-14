@@ -18,20 +18,20 @@ const ProjectSkeleton = () => {
           <Skeleton className="h-3 w-16 ml-auto" />
         </div>
       </CardHeader>
-      
+
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <Skeleton className="h-4 w-full" />
           <Skeleton className="h-4 w-full" />
           <Skeleton className="h-4 w-3/4" />
         </div>
-        
+
         <div className="flex flex-wrap gap-2">
           <Skeleton className="h-6 w-16" />
           <Skeleton className="h-6 w-20" />
           <Skeleton className="h-6 w-14" />
         </div>
-        
+
         <div className="flex space-x-3 pt-4">
           <Skeleton className="h-9 flex-1" />
           <Skeleton className="h-9 flex-1" />

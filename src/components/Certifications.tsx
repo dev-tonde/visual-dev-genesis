@@ -3,7 +3,13 @@ import { useInView } from 'react-intersection-observer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Award, Calendar, ExternalLink, BookOpen } from 'lucide-react';
 import SectionHeading from '@/components/SectionHeading';
@@ -33,7 +39,8 @@ const Certifications = () => {
         title: 'Machine Learning Specialist',
         issuer: 'Google Cloud',
         date: '2024',
-        description: 'Comprehensive certification covering advanced machine learning techniques, neural networks, and AI model deployment.',
+        description:
+          'Comprehensive certification covering advanced machine learning techniques, neural networks, and AI model deployment.',
         skills: ['TensorFlow', 'PyTorch', 'Neural Networks', 'Deep Learning', 'Computer Vision'],
         modules: [
           'Introduction to Machine Learning',
@@ -42,17 +49,18 @@ const Certifications = () => {
           'Deep Learning with Neural Networks',
           'Computer Vision Applications',
           'Natural Language Processing',
-          'Model Deployment and MLOps'
+          'Model Deployment and MLOps',
         ],
         credentialUrl: 'https://cloud.google.com/certification',
-        level: 'Expert' as const
+        level: 'Expert' as const,
       },
       {
         id: 'ai-2',
         title: 'AI Ethics and Responsible AI',
         issuer: 'Stanford University',
         date: '2024',
-        description: 'Focus on ethical AI development, bias mitigation, and responsible deployment of AI systems.',
+        description:
+          'Focus on ethical AI development, bias mitigation, and responsible deployment of AI systems.',
         skills: ['AI Ethics', 'Bias Detection', 'Fairness', 'Transparency', 'Accountability'],
         modules: [
           'Foundations of AI Ethics',
@@ -60,10 +68,10 @@ const Certifications = () => {
           'Fairness and Accountability',
           'Transparency in AI',
           'Privacy and Security',
-          'Regulatory Compliance'
+          'Regulatory Compliance',
         ],
-        level: 'Advanced' as const
-      }
+        level: 'Advanced' as const,
+      },
     ],
     development: [
       {
@@ -71,7 +79,8 @@ const Certifications = () => {
         title: 'Full Stack Developer Professional',
         issuer: 'Meta',
         date: '2023',
-        description: 'Comprehensive full-stack development certification covering modern web technologies and best practices.',
+        description:
+          'Comprehensive full-stack development certification covering modern web technologies and best practices.',
         skills: ['React', 'Node.js', 'MongoDB', 'GraphQL', 'TypeScript', 'AWS'],
         modules: [
           'Frontend Development with React',
@@ -80,17 +89,18 @@ const Certifications = () => {
           'API Development and GraphQL',
           'Authentication and Security',
           'Cloud Deployment and DevOps',
-          'Testing and Quality Assurance'
+          'Testing and Quality Assurance',
         ],
         credentialUrl: 'https://developers.facebook.com/programs/',
-        level: 'Expert' as const
+        level: 'Expert' as const,
       },
       {
         id: 'dev-2',
         title: 'Cloud Native Developer',
         issuer: 'AWS',
         date: '2023',
-        description: 'Specialized in cloud-native application development using containerization and microservices.',
+        description:
+          'Specialized in cloud-native application development using containerization and microservices.',
         skills: ['Docker', 'Kubernetes', 'AWS Lambda', 'Microservices', 'DevOps'],
         modules: [
           'Containerization with Docker',
@@ -98,10 +108,10 @@ const Certifications = () => {
           'Serverless Architecture',
           'Microservices Design Patterns',
           'CI/CD Pipelines',
-          'Monitoring and Observability'
+          'Monitoring and Observability',
         ],
-        level: 'Advanced' as const
-      }
+        level: 'Advanced' as const,
+      },
     ],
     frontend: [
       {
@@ -109,7 +119,8 @@ const Certifications = () => {
         title: 'React Expert Certification',
         issuer: 'React Training',
         date: '2023',
-        description: 'Advanced React development certification covering hooks, context, performance optimization, and testing.',
+        description:
+          'Advanced React development certification covering hooks, context, performance optimization, and testing.',
         skills: ['React', 'TypeScript', 'Testing', 'Performance', 'State Management'],
         modules: [
           'Advanced React Patterns',
@@ -117,29 +128,36 @@ const Certifications = () => {
           'Testing Strategies',
           'State Management Solutions',
           'Server-Side Rendering',
-          'React Native Development'
+          'React Native Development',
         ],
         credentialUrl: 'https://reacttraining.com',
-        level: 'Expert' as const
+        level: 'Expert' as const,
       },
       {
         id: 'fe-2',
         title: 'UI/UX Design Systems',
         issuer: 'Design Systems University',
         date: '2024',
-        description: 'Comprehensive training in creating and maintaining scalable design systems for modern applications.',
-        skills: ['Design Systems', 'Figma', 'Component Libraries', 'Accessibility', 'Design Tokens'],
+        description:
+          'Comprehensive training in creating and maintaining scalable design systems for modern applications.',
+        skills: [
+          'Design Systems',
+          'Figma',
+          'Component Libraries',
+          'Accessibility',
+          'Design Tokens',
+        ],
         modules: [
           'Design System Fundamentals',
           'Component Design Principles',
           'Accessibility Guidelines',
           'Design Token Management',
           'Documentation and Governance',
-          'Cross-Platform Consistency'
+          'Cross-Platform Consistency',
         ],
-        level: 'Advanced' as const
-      }
-    ]
+        level: 'Advanced' as const,
+      },
+    ],
   };
 
   const containerVariants = {
@@ -148,9 +166,9 @@ const Certifications = () => {
       opacity: 1,
       transition: {
         delayChildren: 0.2,
-        staggerChildren: 0.1
-      }
-    }
+        staggerChildren: 0.1,
+      },
+    },
   };
 
   const itemVariants = {
@@ -159,27 +177,28 @@ const Certifications = () => {
       y: 0,
       opacity: 1,
       transition: {
-        duration: 0.6
-      }
-    }
+        duration: 0.6,
+      },
+    },
   };
 
   const getLevelColor = (level: string) => {
     switch (level) {
-      case 'Beginner': return 'bg-accent/20 text-accent-foreground';
-      case 'Intermediate': return 'bg-primary/20 text-primary-foreground';
-      case 'Advanced': return 'bg-secondary/20 text-secondary-foreground';
-      case 'Expert': return 'bg-primary/30 text-primary-foreground';
-      default: return 'bg-muted text-muted-foreground';
+      case 'Beginner':
+        return 'bg-accent/20 text-accent-foreground';
+      case 'Intermediate':
+        return 'bg-primary/20 text-primary-foreground';
+      case 'Advanced':
+        return 'bg-secondary/20 text-secondary-foreground';
+      case 'Expert':
+        return 'bg-primary/30 text-primary-foreground';
+      default:
+        return 'bg-muted text-muted-foreground';
     }
   };
 
   const CertificationCard = ({ cert }: { cert: Certification }) => (
-    <motion.div
-      variants={itemVariants}
-      whileHover={{ y: -4 }}
-      className="group"
-    >
+    <motion.div variants={itemVariants} whileHover={{ y: -4 }} className="group">
       <Card className="glass-vibrant border-0 flex h-full flex-col transition-shadow duration-300 hover:shadow-md hover-glow">
         <CardHeader className="pb-3">
           <div className="flex items-start justify-between mb-2">
@@ -197,12 +216,10 @@ const Certifications = () => {
           </CardTitle>
           <p className="text-sm text-muted-foreground font-medium">{cert.issuer}</p>
         </CardHeader>
-        
+
         <CardContent className="flex flex-1 flex-col space-y-4">
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            {cert.description}
-          </p>
-          
+          <p className="text-sm text-muted-foreground leading-relaxed">{cert.description}</p>
+
           <div className="flex flex-wrap gap-1">
             {cert.skills.slice(0, 3).map((skill) => (
               <Badge key={skill} variant="secondary" className="text-xs">
@@ -219,9 +236,9 @@ const Certifications = () => {
           <div className="mt-auto flex flex-col gap-2 pt-2 sm:flex-row">
             <Dialog>
               <DialogTrigger asChild>
-                <Button 
-                  size="sm" 
-                  variant="outline" 
+                <Button
+                  size="sm"
+                  variant="outline"
                   className="w-full sm:flex-1"
                   aria-label={`View details for ${cert.title}`}
                 >
@@ -236,7 +253,7 @@ const Certifications = () => {
                     {cert.title}
                   </DialogTitle>
                 </DialogHeader>
-                
+
                 <div className="space-y-6">
                   <div>
                     <div className="flex justify-between items-center mb-2">
@@ -271,16 +288,12 @@ const Certifications = () => {
 
                   {cert.credentialUrl && (
                     <div className="pt-4 border-t">
-                      <Button 
-                        asChild 
+                      <Button
+                        asChild
                         className="w-full gradient-primary"
                         aria-label={`Verify ${cert.title} certification`}
                       >
-                        <a 
-                          href={cert.credentialUrl} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                        >
+                        <a href={cert.credentialUrl} target="_blank" rel="noopener noreferrer">
                           <ExternalLink className="w-4 h-4 mr-2" aria-hidden="true" />
                           Verify Certification
                         </a>
@@ -292,14 +305,10 @@ const Certifications = () => {
             </Dialog>
 
             {cert.credentialUrl && (
-              <Button 
-                size="sm" 
-                className="w-full sm:flex-1 gradient-primary" 
-                asChild
-              >
-                <a 
-                  href={cert.credentialUrl} 
-                  target="_blank" 
+              <Button size="sm" className="w-full sm:flex-1 gradient-primary" asChild>
+                <a
+                  href={cert.credentialUrl}
+                  target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Verify ${cert.title} certification`}
                 >
@@ -321,7 +330,7 @@ const Certifications = () => {
           ref={ref}
           variants={containerVariants}
           initial="hidden"
-          animate={inView ? "visible" : "hidden"}
+          animate={inView ? 'visible' : 'hidden'}
           className="max-w-6xl mx-auto"
         >
           <motion.div variants={itemVariants} className="mb-16">

@@ -33,7 +33,7 @@ const PongGame = ({ onBack }: PongGameProps) => {
 
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.code === 'Space') {
-        setIsPaused(prev => !prev);
+        setIsPaused((prev) => !prev);
       }
     };
 
@@ -46,7 +46,10 @@ const PongGame = ({ onBack }: PongGameProps) => {
       const { ball, player, ai } = gameStateRef.current;
 
       // Move player paddle to follow mouse
-      player.y = Math.max(0, Math.min(600 - player.height, gameStateRef.current.mouseY - player.height / 2));
+      player.y = Math.max(
+        0,
+        Math.min(600 - player.height, gameStateRef.current.mouseY - player.height / 2)
+      );
 
       // Simple AI: follow the ball
       const aiCenter = ai.y + ai.height / 2;
@@ -75,18 +78,14 @@ const PongGame = ({ onBack }: PongGameProps) => {
         ball.dy += (ball.y - (player.y + player.height / 2)) * 0.1;
       }
 
-      if (
-        ball.x + ball.radius > ai.x &&
-        ball.y > ai.y &&
-        ball.y < ai.y + ai.height
-      ) {
+      if (ball.x + ball.radius > ai.x && ball.y > ai.y && ball.y < ai.y + ai.height) {
         ball.dx = -Math.abs(ball.dx);
         ball.dy += (ball.y - (ai.y + ai.height / 2)) * 0.1;
       }
 
       // Score points
       if (ball.x - ball.radius < 0) {
-        setScore(prev => ({ ...prev, ai: prev.ai + 1 }));
+        setScore((prev) => ({ ...prev, ai: prev.ai + 1 }));
         ball.x = 400;
         ball.y = 300;
         ball.dx = 4;
@@ -95,7 +94,7 @@ const PongGame = ({ onBack }: PongGameProps) => {
       }
 
       if (ball.x + ball.radius > 800) {
-        setScore(prev => ({ ...prev, player: prev.player + 1 }));
+        setScore((prev) => ({ ...prev, player: prev.player + 1 }));
         ball.x = 400;
         ball.y = 300;
         ball.dx = -4;
@@ -183,19 +182,23 @@ const PongGame = ({ onBack }: PongGameProps) => {
                   className="border border-border rounded-lg max-w-full"
                   style={{ cursor: 'none' }}
                 />
-                
+
                 {isPaused && (
                   <div className="text-center">
                     <p className="text-lg text-muted-foreground mb-4">
-                      {score.player === 0 && score.ai === 0 
-                        ? 'Move your mouse to control the paddle. Press Space or click Start to begin!' 
+                      {score.player === 0 && score.ai === 0
+                        ? 'Move your mouse to control the paddle. Press Space or click Start to begin!'
                         : 'Game Paused - Press Space or click Resume to continue'}
                     </p>
                   </div>
                 )}
 
                 <div className="flex gap-3">
-                  <Button onClick={() => setIsPaused(!isPaused)} size="lg" className="gradient-primary">
+                  <Button
+                    onClick={() => setIsPaused(!isPaused)}
+                    size="lg"
+                    className="gradient-primary"
+                  >
                     {isPaused ? 'Start Game' : 'Pause'}
                   </Button>
                   <Button onClick={resetGame} variant="outline" size="lg">

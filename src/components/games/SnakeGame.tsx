@@ -28,14 +28,17 @@ const SnakeGame = ({ onBack }: SnakeGameProps) => {
     return newFood;
   }, []);
 
-  const checkCollision = useCallback((head: { x: number; y: number }) => {
-    // Wall collision
-    if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) {
-      return true;
-    }
-    // Self collision
-    return snake.some(segment => segment.x === head.x && segment.y === head.y);
-  }, [snake]);
+  const checkCollision = useCallback(
+    (head: { x: number; y: number }) => {
+      // Wall collision
+      if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) {
+        return true;
+      }
+      // Self collision
+      return snake.some((segment) => segment.x === head.x && segment.y === head.y);
+    },
+    [snake]
+  );
 
   const moveSnake = useCallback(() => {
     if (gameOver || isPaused) return;
@@ -54,7 +57,7 @@ const SnakeGame = ({ onBack }: SnakeGameProps) => {
 
     // Check if snake ate food
     if (newHead.x === food.x && newHead.y === food.y) {
-      setScore(prev => prev + 10);
+      setScore((prev) => prev + 10);
       setFood(generateFood());
     } else {
       newSnake.pop();
@@ -71,9 +74,9 @@ const SnakeGame = ({ onBack }: SnakeGameProps) => {
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       e.preventDefault();
-      
+
       if (e.key === ' ') {
-        setIsPaused(prev => !prev);
+        setIsPaused((prev) => !prev);
         return;
       }
 
@@ -144,14 +147,14 @@ const SnakeGame = ({ onBack }: SnakeGameProps) => {
             )}
 
             <div className="flex justify-center mb-6">
-              <div 
+              <div
                 className="inline-block p-2 bg-muted/30 rounded-lg"
                 style={{
                   width: GRID_SIZE * CELL_SIZE + 16,
                   height: GRID_SIZE * CELL_SIZE + 16,
                 }}
               >
-                <div 
+                <div
                   className="relative bg-background/50 rounded"
                   style={{
                     width: GRID_SIZE * CELL_SIZE,
@@ -168,13 +171,12 @@ const SnakeGame = ({ onBack }: SnakeGameProps) => {
                         top: segment.y * CELL_SIZE,
                         width: CELL_SIZE - 2,
                         height: CELL_SIZE - 2,
-                        backgroundColor: index === 0 
-                          ? 'hsl(var(--primary))' 
-                          : 'hsl(var(--secondary))',
+                        backgroundColor:
+                          index === 0 ? 'hsl(var(--primary))' : 'hsl(var(--secondary))',
                       }}
                     />
                   ))}
-                  
+
                   {/* Food */}
                   <div
                     className="absolute rounded-full"

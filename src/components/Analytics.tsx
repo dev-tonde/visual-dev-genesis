@@ -7,14 +7,19 @@ export const useEnhancedAnalytics = () => {
 
   const trackPerformance = () => {
     if ('performance' in window) {
-      const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-      
+      const navigation = performance.getEntriesByType(
+        'navigation'
+      )[0] as PerformanceNavigationTiming;
+
       trackEvent('performance', {
         loadTime: navigation.loadEventEnd - navigation.loadEventStart,
-        domContentLoaded: navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart,
+        domContentLoaded:
+          navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart,
         firstPaint: performance.getEntriesByName('first-paint')[0]?.startTime || 0,
-        firstContentfulPaint: performance.getEntriesByName('first-contentful-paint')[0]?.startTime || 0,
-        largestContentfulPaint: performance.getEntriesByType('largest-contentful-paint')[0]?.startTime || 0,
+        firstContentfulPaint:
+          performance.getEntriesByName('first-contentful-paint')[0]?.startTime || 0,
+        largestContentfulPaint:
+          performance.getEntriesByType('largest-contentful-paint')[0]?.startTime || 0,
       });
     }
   };

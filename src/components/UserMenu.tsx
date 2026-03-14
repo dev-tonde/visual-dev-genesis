@@ -21,7 +21,7 @@ const UserMenu = () => {
   useEffect(() => {
     const checkAdminStatus = async () => {
       if (!user) return;
-      
+
       try {
         const { data, error } = await supabase.rpc('is_admin');
         if (!error && data) {

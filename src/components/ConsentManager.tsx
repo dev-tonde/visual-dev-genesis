@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { X, Shield, BarChart, Cookie } from "lucide-react";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { X, Shield, BarChart, Cookie } from 'lucide-react';
 
 interface ConsentManagerProps {
   onConsentChange: (consent: ConsentPreferences) => void;
@@ -37,7 +37,7 @@ export const ConsentManager = ({ onConsentChange }: ConsentManagerProps) => {
     // Check if consent has been given before
     const savedConsent = localStorage.getItem(CONSENT_KEY);
     const bannerShown = localStorage.getItem(CONSENT_SHOWN_KEY);
-    
+
     if (savedConsent) {
       try {
         const consent = JSON.parse(savedConsent);
@@ -69,7 +69,7 @@ export const ConsentManager = ({ onConsentChange }: ConsentManagerProps) => {
     saveConsent({
       analytics: true,
       performance: true,
-      functional: true
+      functional: true,
     });
   };
 
@@ -77,7 +77,7 @@ export const ConsentManager = ({ onConsentChange }: ConsentManagerProps) => {
     saveConsent({
       analytics: false,
       performance: true,
-      functional: true
+      functional: true,
     });
   };
 
@@ -98,9 +98,9 @@ export const ConsentManager = ({ onConsentChange }: ConsentManagerProps) => {
               <Shield className="h-5 w-5 text-primary" />
               <CardTitle className="text-lg">Privacy Preferences</CardTitle>
             </div>
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={handleAcceptEssential}
               className="h-6 w-6 p-0"
               aria-label="Close banner"
@@ -118,7 +118,9 @@ export const ConsentManager = ({ onConsentChange }: ConsentManagerProps) => {
               <Cookie className="h-4 w-4 text-muted-foreground" />
               <div>
                 <div className="font-medium">Essential</div>
-                <div className="text-xs text-muted-foreground">Required for basic functionality</div>
+                <div className="text-xs text-muted-foreground">
+                  Required for basic functionality
+                </div>
               </div>
               <div className="ml-auto text-xs text-green-600 font-medium">Always Active</div>
             </div>
@@ -126,11 +128,13 @@ export const ConsentManager = ({ onConsentChange }: ConsentManagerProps) => {
               <BarChart className="h-4 w-4 text-muted-foreground" />
               <div>
                 <div className="font-medium">Analytics</div>
-                <div className="text-xs text-muted-foreground">Help us improve by sharing usage data</div>
+                <div className="text-xs text-muted-foreground">
+                  Help us improve by sharing usage data
+                </div>
               </div>
             </div>
           </div>
-          
+
           <div className="flex flex-col gap-2">
             <Button onClick={handleAcceptAll} className="w-full">
               Accept All

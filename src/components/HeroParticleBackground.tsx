@@ -51,9 +51,7 @@ const HeroParticleBackground = ({
 
     const updateEligibility = () => {
       setIsEnabled(
-        !reducedMotionQuery.matches &&
-          !coarsePointerQuery.matches &&
-          !noHoverQuery.matches
+        !reducedMotionQuery.matches && !coarsePointerQuery.matches && !noHoverQuery.matches
       );
     };
 
@@ -130,10 +128,7 @@ const HeroParticleBackground = ({
     });
 
     const recreateParticles = () => {
-      particlesRef.current = Array.from(
-        { length: resolvedParticleCount },
-        createParticle
-      );
+      particlesRef.current = Array.from({ length: resolvedParticleCount }, createParticle);
     };
 
     const syncCanvasSize = () => {
@@ -165,12 +160,7 @@ const HeroParticleBackground = ({
         context.arc(0, 0, particle.size, 0, Math.PI * 2);
         context.fill();
       } else if (particle.shape === 'square') {
-        context.fillRect(
-          -particle.size,
-          -particle.size,
-          particle.size * 2,
-          particle.size * 2
-        );
+        context.fillRect(-particle.size, -particle.size, particle.size * 2, particle.size * 2);
       } else {
         context.beginPath();
         context.moveTo(0, -particle.size * 1.4);
