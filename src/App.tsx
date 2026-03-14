@@ -1,14 +1,12 @@
-import { useState, lazy, Suspense } from "react";
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SafeThemeProvider } from "@/components/SafeThemeProvider";
 import { HelmetProvider } from 'react-helmet-async';
-import CommandPalette from "@/components/CommandPalette";
+import { CommandPaletteProvider } from "@/components/CommandPalette";
 import ErrorBoundary from "@/components/ErrorBoundary";
-import PerformanceOptimizer from "@/components/PerformanceOptimizer";
-import PerformanceMonitor from "@/components/PerformanceMonitor";
 import AccessibilityEnhancer from "@/components/AccessibilityEnhancer";
 import Analytics from "@/components/Analytics";
 import ConsentManager, { ConsentPreferences } from "@/components/ConsentManager";
@@ -22,27 +20,21 @@ import ProtectedRoute from "./components/ProtectedRoute";
 const Privacy = lazy(() => import("./pages/Privacy"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Games = lazy(() => import("./pages/Games"));
-const Auth = lazy(() => import("./pages/Auth"));
-const SubmitTestimonial = lazy(() => import("./pages/SubmitTestimonial"));
-const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
-const AdminHub = lazy(() => import("./pages/AdminHub"));
-const AdminContacts = lazy(() => import("./pages/AdminContacts"));
-const Profile = lazy(() => import("./pages/Profile"));
+const AccountAccessPage = lazy(() => import("./pages/Auth"));
+const OperationsWorkspacePage = lazy(() => import("./pages/AdminHub"));
+const ContactInboxPage = lazy(() => import("./pages/AdminContacts"));
+const AccountWorkspacePage = lazy(() => import("./pages/Profile"));
 
 const AppContent = () => {
   useAnalytics();
-  const [consentPreferences, setConsentPreferences] = useState<ConsentPreferences | null>(null);
 
-  const handleConsentChange = (consent: ConsentPreferences) => {
-    setConsentPreferences(consent);
+  const handleConsentChange = (_consent: ConsentPreferences) => {
     // Store consent in localStorage (already handled by ConsentManager)
     // You can also send this to your analytics service if needed
   };
 
   return (
     <>
-      <PerformanceOptimizer />
-      <PerformanceMonitor />
       <AccessibilityEnhancer />
       <Analytics />
       <ConsentManager onConsentChange={handleConsentChange} />
@@ -51,26 +43,20 @@ const AppContent = () => {
           <Route path="/" element={<Index />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/games" element={<Games />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/submit-testimonial" element={<SubmitTestimonial />} />
+          <Route path="/auth" element={<AccountAccessPage />} />
           <Route path="/profile" element={
             <ProtectedRoute>
-              <Profile />
+              <AccountWorkspacePage />
             </ProtectedRoute>
           } />
           <Route path="/admin" element={
             <ProtectedRoute>
-              <AdminHub />
-            </ProtectedRoute>
-          } />
-          <Route path="/admin/testimonials" element={
-            <ProtectedRoute>
-              <AdminDashboard />
+              <OperationsWorkspacePage />
             </ProtectedRoute>
           } />
           <Route path="/admin/contacts" element={
             <ProtectedRoute>
-              <AdminContacts />
+              <ContactInboxPage />
             </ProtectedRoute>
           } />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
@@ -88,10 +74,11 @@ const App = () => (
         <TooltipProvider delayDuration={0} skipDelayDuration={0}>
           <BrowserRouter>
             <AuthProvider>
-              <Toaster />
-              <Sonner />
-              <CommandPalette />
-              <AppContent />
+              <CommandPaletteProvider>
+                <Toaster />
+                <Sonner />
+                <AppContent />
+              </CommandPaletteProvider>
             </AuthProvider>
           </BrowserRouter>
         </TooltipProvider>

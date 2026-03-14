@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 import { Send, Loader2, CheckCircle, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,22 +7,26 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-
-
-const contactFormSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters').max(50, 'Name must be less than 50 characters'),
-  email: z.string().email('Please enter a valid email address'),
-  message: z.string().min(10, 'Message must be at least 10 characters').max(1000, 'Message must be less than 1000 characters')
-});
-
-type ContactFormData = z.infer<typeof contactFormSchema>;
+import {
+  contactFormSchema,
+  CONTACT_MESSAGE_MAX_LENGTH,
+  CONTACT_NAME_MAX_LENGTH,
+  type ContactFormData,
+  isContactFunctionErrorPayload,
+  isContactFunctionSuccessPayload,
+  parseContactFunctionError,
+} from '@/lib/contact';
+import {
+  sanitizeEmailInput,
+  sanitizeMultilineInput,
+  sanitizeSingleLineInput,
+} from '@/lib/sanitize';
 
 interface ContactFormProps {
-  variants: any;
+  variants: Variants;
 }
 
 const ContactForm = ({ variants }: ContactFormProps) => {
@@ -42,20 +46,24 @@ const ContactForm = ({ variants }: ContactFormProps) => {
 
   // Real-time validation states
   const watchedValues = form.watch();
-  const { errors, isValid } = form.formState;
+  const { errors } = form.formState;
 
   const submitWithRetry = async (data: ContactFormData, retryCount = 0) => {
     setIsSubmitting(true);
 
     try {
       // ONLY call edge function - it handles database insert and email sending
-      const { data: emailResponse, error: emailError } = await supabase.functions.invoke('send-contact-email', {
+      const { data: responseData, error: functionError } = await supabase.functions.invoke('send-contact-email', {
         body: data
       });
 
-      if (emailError) {
-        const errorData = emailError.message ? JSON.parse(emailError.message) : emailError;
-        
+      const errorData = functionError
+        ? parseContactFunctionError(functionError)
+        : isContactFunctionErrorPayload(responseData)
+          ? responseData
+          : null;
+
+      if (errorData) {
         // Handle specific error types with retry logic
         if (errorData.error === 'RATE_LIMIT_EXCEEDED' && retryCount < 2) {
           const retryAfter = errorData.retryAfter || 60000;
@@ -74,7 +82,7 @@ const ContactForm = ({ variants }: ContactFormProps) => {
           
           return;
         }
-        
+
         if ((errorData.error === 'NETWORK_ERROR' || errorData.error === 'CONTACT_SEND_FAILED') && retryCount < 3) {
           const delay = Math.pow(2, retryCount) * 1000; // Exponential backoff
           
@@ -87,20 +95,24 @@ const ContactForm = ({ variants }: ContactFormProps) => {
           setTimeout(() => submitWithRetry(data, retryCount + 1), delay);
           return;
         }
-        
-        // Final error handling
+
         toast({
           title: errorData.error === 'VALIDATION_ERROR' ? "Invalid input" : "Failed to send message",
-          description: errorData.message || "Please try again or contact me directly via email.",
+          description: errorData.details?.[0] || errorData.message,
           variant: "destructive",
         });
-        
-        throw emailError;
+
+        return;
       }
 
+      const successMessage = isContactFunctionSuccessPayload(responseData)
+        ? responseData.message
+        : "Thank you for your message. I'll get back to you soon.";
+
+      setRetryTimeout(null);
       toast({
         title: "Message sent successfully!",
-        description: "Thank you for your message. I'll get back to you soon.",
+        description: successMessage,
       });
 
       form.reset();
@@ -150,6 +162,7 @@ const ContactForm = ({ variants }: ContactFormProps) => {
                     <FormControl>
                       <Input
                         placeholder="Your Name"
+                        maxLength={CONTACT_NAME_MAX_LENGTH}
                         className={`glass border-0 shadow-sm transition-all duration-300 ${
                           watchedValues.name && !errors.name 
                             ? 'ring-1 ring-green-500/30 bg-green-500/5' 
@@ -158,6 +171,7 @@ const ContactForm = ({ variants }: ContactFormProps) => {
                               : ''
                         }`}
                         {...field}
+                        onChange={(event) => field.onChange(sanitizeSingleLineInput(event.target.value))}
                       />
                     </FormControl>
                     <FormMessage className="text-xs mt-1" />
@@ -191,6 +205,7 @@ const ContactForm = ({ variants }: ContactFormProps) => {
                               : ''
                         }`}
                         {...field}
+                        onChange={(event) => field.onChange(sanitizeEmailInput(event.target.value))}
                       />
                     </FormControl>
                     <FormMessage className="text-xs mt-1" />
@@ -216,6 +231,7 @@ const ContactForm = ({ variants }: ContactFormProps) => {
                       <Textarea
                         placeholder="Tell me about your project..."
                         rows={5}
+                        maxLength={CONTACT_MESSAGE_MAX_LENGTH}
                         className={`glass border-0 resize-none shadow-sm transition-all duration-300 ${
                           watchedValues.message && !errors.message 
                             ? 'ring-1 ring-green-500/30 bg-green-500/5' 
@@ -224,6 +240,7 @@ const ContactForm = ({ variants }: ContactFormProps) => {
                               : ''
                         }`}
                         {...field}
+                        onChange={(event) => field.onChange(sanitizeMultilineInput(event.target.value))}
                       />
                     </FormControl>
                     <FormMessage className="text-xs mt-1" />

@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import { motion } from 'framer-motion';
 import { Moon, Sun } from 'lucide-react';
 import { useSafeTheme } from '@/components/SafeThemeProvider';
@@ -6,6 +7,7 @@ import { Label } from '@/components/ui/label';
 
 const ThemeSwitch = () => {
   const { theme, setTheme, mounted } = useSafeTheme();
+  const switchId = useId();
 
   if (!mounted) {
     return (
@@ -20,7 +22,7 @@ const ThemeSwitch = () => {
   return (
     <div className="flex items-center gap-3">
       <Label 
-        htmlFor="theme-switch" 
+        htmlFor={switchId}
         className="flex items-center gap-2 cursor-pointer text-sm font-medium"
       >
         <motion.div
@@ -39,7 +41,7 @@ const ThemeSwitch = () => {
       </Label>
       
       <Switch 
-        id="theme-switch"
+        id={switchId}
         checked={isDark}
         onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
         aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}

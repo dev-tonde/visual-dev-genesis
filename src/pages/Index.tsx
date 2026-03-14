@@ -4,74 +4,62 @@ import About from '@/components/About';
 import AboutMe from '@/components/AboutMe';
 import Contact from '@/components/Contact';
 import Navigation from '@/components/Navigation';
-import Testimonials from '@/components/Testimonials';
 import Footer from '@/components/Footer';
 import SEOHead from '@/components/SEOHead';
-import SEOEnhancements from '@/components/SEOEnhancements';
-import StructuredData from '@/components/StructuredData';
-import InteractiveBackground from '@/components/InteractiveBackground';
-import FloatingElements from '@/components/FloatingElements';
+import heroBg from '@/assets/programmer-hero-bg.jpg';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import BackToTop from '@/components/BackToTop';
 import AboutSkeleton from '@/components/AboutSkeleton';
 import AboutMeSkeleton from '@/components/AboutMeSkeleton';
 import CertificationsSkeleton from '@/components/CertificationsSkeleton';
+import { useSectionHashScroll } from '@/hooks/useSectionNavigation';
 
 // Lazy load heavy components for better performance
 import { ProjectsLazy } from '@/components/Projects.lazy';
 import { CertificationsLazy } from '@/components/Certifications.lazy';
 
 const Index = () => {
+  useSectionHashScroll();
+
   return (
     <>
       <SEOHead />
-      <SEOEnhancements />
-      <StructuredData />
-      <InteractiveBackground />
-      <FloatingElements />
       <BackToTop />
-      <div className="min-h-screen bg-background text-foreground custom-scrollbar relative z-20">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 rounded-md bg-primary px-4 py-2 text-primary-foreground"
+      >
+        Skip to main content
+      </a>
+      <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-20 overflow-hidden">
+        <img
+          src={heroBg}
+          alt=""
+          className="h-full w-full object-cover object-center"
+          loading="eager"
+        />
+        <div className="absolute inset-0 bg-background/90 supports-[backdrop-filter]:backdrop-blur-[3px]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/78 via-background/90 to-background/97" />
+      </div>
+      <div className="min-h-screen bg-transparent text-foreground custom-scrollbar relative z-10">
         <Navigation />
         <main role="main" aria-label="Main content" id="main-content">
-          <section id="hero" aria-labelledby="hero-heading">
-            <h1 id="hero-heading" className="sr-only">Tonderai Matanga - Full Stack Developer Portfolio</h1>
-            <Hero />
-          </section>
-          <section id="about" aria-labelledby="about-heading" className="py-16">
-            <h2 id="about-heading" className="sr-only">Skills and Expertise</h2>
-            <Suspense fallback={<AboutSkeleton />}>
-              <About />
-            </Suspense>
-          </section>
-          <section id="journey" aria-labelledby="journey-heading" className="py-16">
-            <h2 id="journey-heading" className="sr-only">My Journey and Background</h2>
-            <Suspense fallback={<AboutMeSkeleton />}>
-              <AboutMe />
-            </Suspense>
-          </section>
-          <section id="projects" aria-labelledby="projects-heading" className="py-16">
-            <h2 id="projects-heading" className="sr-only">Featured Projects</h2>
-            <Suspense fallback={<LoadingSpinner />}>
-              <ProjectsLazy />
-            </Suspense>
-          </section>
-          <section id="certifications" aria-labelledby="certifications-heading" className="py-16">
-            <h2 id="certifications-heading" className="sr-only">Certifications and Achievements</h2>
-            <Suspense fallback={<CertificationsSkeleton />}>
-              <CertificationsLazy />
-            </Suspense>
-          </section>
-          <section id="testimonials" aria-labelledby="testimonials-heading" className="py-16">
-            <h2 id="testimonials-heading" className="sr-only">Client Testimonials</h2>
-            <Testimonials />
-          </section>
-          <section id="contact" aria-labelledby="contact-heading" className="py-16">
-            <h2 id="contact-heading" className="sr-only">Contact Information</h2>
-            <Contact />
-          </section>
+          <Hero />
+          <Suspense fallback={<AboutSkeleton />}>
+            <About />
+          </Suspense>
+          <Suspense fallback={<AboutMeSkeleton />}>
+            <AboutMe />
+          </Suspense>
+          <Suspense fallback={<LoadingSpinner />}>
+            <ProjectsLazy />
+          </Suspense>
+          <Suspense fallback={<CertificationsSkeleton />}>
+            <CertificationsLazy />
+          </Suspense>
+          <Contact />
         </main>
       
-        {/* Footer with full tech stack */}
         <Footer />
       </div>
     </>

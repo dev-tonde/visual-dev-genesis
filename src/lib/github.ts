@@ -14,83 +14,176 @@ export interface GitHubRepo {
   fork: boolean;
 }
 
-const GITHUB_USERNAME = import.meta.env.VITE_GITHUB_USERNAME || 'dev-tonde';
+export type GitHubRepoFetchErrorKind = 'api' | 'network' | 'rate_limit' | 'invalid_response';
+
+interface GitHubRepoFetchErrorOptions {
+  kind: GitHubRepoFetchErrorKind;
+  message: string;
+  status?: number;
+  resetAt?: string;
+}
+
+export class GitHubRepoFetchError extends Error {
+  kind: GitHubRepoFetchErrorKind;
+  status?: number;
+  resetAt?: string;
+
+  constructor({ kind, message, status, resetAt }: GitHubRepoFetchErrorOptions) {
+    super(message);
+    this.name = 'GitHubRepoFetchError';
+    this.kind = kind;
+    this.status = status;
+    this.resetAt = resetAt;
+  }
+}
+
+export const GITHUB_USERNAME = import.meta.env.VITE_GITHUB_USERNAME || 'dev-tonde';
 const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_TOKEN || '';
+const GITHUB_API_URL = `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=20`;
+const MAX_RETRIES = 3;
+const BASE_DELAY_MS = 1000;
+const MAX_RATE_LIMIT_WAIT_MS = 300000;
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const getRateLimitResetDate = (response: Response) => {
+  const resetTime = response.headers.get('X-RateLimit-Reset');
+  if (!resetTime) {
+    return new Date(Date.now() + 3600000);
+  }
+
+  const parsedResetTime = Number.parseInt(resetTime, 10);
+  return Number.isNaN(parsedResetTime)
+    ? new Date(Date.now() + 3600000)
+    : new Date(parsedResetTime * 1000);
+};
+
+const normalizeGitHubRepoError = (error: unknown) => {
+  if (error instanceof GitHubRepoFetchError) {
+    return error;
+  }
+
+  if (error instanceof TypeError) {
+    return new GitHubRepoFetchError({
+      kind: 'network',
+      message: 'GitHub could not be reached. Please check the connection and try again.',
+    });
+  }
+
+  if (error instanceof Error) {
+    return new GitHubRepoFetchError({
+      kind: 'api',
+      message: error.message,
+    });
+  }
+
+  return new GitHubRepoFetchError({
+    kind: 'api',
+    message: 'GitHub projects could not be loaded right now.',
+  });
+};
+
+const sortGitHubRepos = (repos: GitHubRepo[]) =>
+  repos
+    .filter((repo) => !repo.fork)
+    .sort((a, b) => {
+      const aIsFeatured = a.topics?.includes('featured') || a.topics?.includes('portfolio');
+      const bIsFeatured = b.topics?.includes('featured') || b.topics?.includes('portfolio');
+
+      if (aIsFeatured && !bIsFeatured) {
+        return -1;
+      }
+
+      if (!aIsFeatured && bIsFeatured) {
+        return 1;
+      }
+
+      return (b.stargazers_count * 2 + new Date(b.updated_at).getTime()) -
+        (a.stargazers_count * 2 + new Date(a.updated_at).getTime());
+    });
+
+export const getGitHubProfileUrl = () => `https://github.com/${GITHUB_USERNAME}`;
 
 export const fetchGitHubRepos = async (retryCount = 0): Promise<GitHubRepo[]> => {
-  const maxRetries = 3;
-  const baseDelay = 1000;
-  
   try {
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      throw new GitHubRepoFetchError({
+        kind: 'network',
+        message: 'GitHub is unavailable while the device is offline.',
+      });
+    }
+
     const headers: HeadersInit = {
-      'Accept': 'application/vnd.github.v3+json',
+      Accept: 'application/vnd.github.v3+json',
     };
-    
+
     if (GITHUB_TOKEN) {
       headers.Authorization = `token ${GITHUB_TOKEN}`;
     }
 
-    const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=20`, {
-      headers,
-    });
+    const response = await fetch(GITHUB_API_URL, { headers });
 
     if (response.status === 403) {
-      // Rate limit exceeded
-      const resetTime = response.headers.get('X-RateLimit-Reset');
-      const resetDate = resetTime ? new Date(parseInt(resetTime) * 1000) : new Date(Date.now() + 3600000);
+      const resetDate = getRateLimitResetDate(response);
       const waitTime = Math.max(0, resetDate.getTime() - Date.now());
-      
-      console.warn(`GitHub API rate limit exceeded. Reset at ${resetDate.toLocaleTimeString()}`);
-      
-      if (retryCount < maxRetries && waitTime < 300000) { // Don't wait more than 5 minutes
-        await new Promise(resolve => setTimeout(resolve, Math.min(waitTime, 60000)));
+
+      if (retryCount < MAX_RETRIES && waitTime < MAX_RATE_LIMIT_WAIT_MS) {
+        console.warn(`GitHub API rate limit exceeded. Retrying after ${waitTime}ms.`);
+        await sleep(Math.min(waitTime, 60000));
         return fetchGitHubRepos(retryCount + 1);
       }
-      
-      throw new Error(`GitHub API rate limit exceeded. Try again after ${resetDate.toLocaleTimeString()}`);
+
+      throw new GitHubRepoFetchError({
+        kind: 'rate_limit',
+        message: `GitHub API rate limit exceeded. Try again after ${resetDate.toLocaleTimeString()}.`,
+        status: response.status,
+        resetAt: resetDate.toISOString(),
+      });
     }
 
-    if (response.status >= 500 && retryCount < maxRetries) {
-      // Server error, retry with exponential backoff
-      const delay = baseDelay * Math.pow(2, retryCount);
-      console.warn(`GitHub API server error (${response.status}). Retrying in ${delay}ms...`);
-      await new Promise(resolve => setTimeout(resolve, delay));
+    if (response.status >= 500 && retryCount < MAX_RETRIES) {
+      const delay = BASE_DELAY_MS * Math.pow(2, retryCount);
+      console.warn(`GitHub API server error (${response.status}). Retrying in ${delay}ms.`);
+      await sleep(delay);
       return fetchGitHubRepos(retryCount + 1);
     }
 
     if (!response.ok) {
-      throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
+      throw new GitHubRepoFetchError({
+        kind: 'api',
+        message: `GitHub API error: ${response.status} ${response.statusText}`,
+        status: response.status,
+      });
     }
 
-    const repos: GitHubRepo[] = await response.json();
-    
-    // Filter out forks and sort by stars/recency
-    return repos
-      .filter(repo => !repo.fork)
-      .sort((a, b) => {
-        // Prioritize pinned repos (those with topics including 'featured' or 'portfolio')
-        const aIsFeatured = a.topics?.includes('featured') || a.topics?.includes('portfolio');
-        const bIsFeatured = b.topics?.includes('featured') || b.topics?.includes('portfolio');
-        
-        if (aIsFeatured && !bIsFeatured) return -1;
-        if (!aIsFeatured && bIsFeatured) return 1;
-        
-        // Then sort by stars and recency
-        return (b.stargazers_count * 2 + new Date(b.updated_at).getTime()) - 
-               (a.stargazers_count * 2 + new Date(a.updated_at).getTime());
+    const payload: unknown = await response.json();
+
+    if (!Array.isArray(payload)) {
+      throw new GitHubRepoFetchError({
+        kind: 'invalid_response',
+        message: 'GitHub returned an unexpected response format.',
       });
+    }
+
+    return sortGitHubRepos(payload as GitHubRepo[]);
   } catch (error) {
-    console.error('Failed to fetch GitHub repos:', error);
-    
-    if (retryCount < maxRetries && error instanceof Error && error.message.includes('fetch')) {
-      // Network error, retry with exponential backoff
-      const delay = baseDelay * Math.pow(2, retryCount);
-      console.warn(`Network error. Retrying in ${delay}ms...`);
-      await new Promise(resolve => setTimeout(resolve, delay));
+    const normalizedError = normalizeGitHubRepoError(error);
+
+    if (retryCount < MAX_RETRIES && normalizedError.kind === 'network') {
+      const delay = BASE_DELAY_MS * Math.pow(2, retryCount);
+      console.warn(`GitHub network error. Retrying in ${delay}ms.`);
+      await sleep(delay);
       return fetchGitHubRepos(retryCount + 1);
     }
-    
-    return [];
+
+    console.error('Failed to fetch GitHub repos', {
+      kind: normalizedError.kind,
+      message: normalizedError.message,
+      resetAt: normalizedError.resetAt,
+      status: normalizedError.status,
+    });
+
+    throw normalizedError;
   }
 };
 

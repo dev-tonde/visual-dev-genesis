@@ -1,4 +1,5 @@
 import { Helmet } from 'react-helmet-async';
+import { PROFILE, PROFILE_SAME_AS_URLS } from '@/config/profile';
 
 interface SEOHeadProps {
   title?: string;
@@ -7,16 +8,21 @@ interface SEOHeadProps {
   image?: string;
   type?: string;
   keywords?: string;
+  noIndex?: boolean;
 }
 
 const SEOHead = ({ 
-  title = "Tonderai Matanga - Full-Stack Developer & UI/UX Designer | React & TypeScript Expert",
-  description = "Expert full-stack developer in Cape Town, South Africa. Specializing in React, TypeScript, Node.js, Python, and modern web technologies. Available for freelance projects, consulting, and remote development work. Portfolio showcasing innovative web applications and UI/UX design.",
+  title = "Tonderai Matanga | Full-Stack Developer",
+  description = "Full-stack developer building React, TypeScript, and product-focused web applications. Case studies, live GitHub work, and contact details.",
   url = "https://iamtonde.co.za",
   image = "/og-image.jpg",
   type = "website",
-  keywords = "full-stack developer Cape Town, React developer South Africa, TypeScript expert, Node.js developer, Python programmer, UI/UX designer, freelance developer, remote work, web development portfolio, modern web technologies, JavaScript developer, frontend backend developer"
+  keywords = "full-stack developer, React developer, TypeScript developer, web application developer, developer portfolio, case studies",
+  noIndex = false,
 }: SEOHeadProps) => {
+  const robotsContent = noIndex
+    ? 'noindex, nofollow, noarchive'
+    : 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1';
   
   // Enhanced Person Schema with GEO and professional details
   const personSchema = {
@@ -40,11 +46,9 @@ const SEOHead = ({
       "addressRegion": "Western Cape",
       "addressCountry": "ZA"
     },
-    "email": "hello@iamtonde.co.za",
+    "email": PROFILE.email,
     "sameAs": [
-      "https://github.com/dev-tonde",
-      "https://www.linkedin.com/in/tonderai-matanga/",
-      "https://twitter.com/dev_tonde"
+      ...PROFILE_SAME_AS_URLS
     ],
     "worksFor": {
       "@type": "Organization",
@@ -138,21 +142,7 @@ const SEOHead = ({
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />
       <meta name="author" content="Tonderai Matanga" />
-      <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-      <meta name="language" content="en" />
-      <meta name="revisit-after" content="7 days" />
-      <meta name="distribution" content="global" />
-      <meta name="rating" content="general" />
-      
-      {/* Geographic SEO */}
-      <meta name="geo.region" content="ZA-WC" />
-      <meta name="geo.placename" content="Cape Town" />
-      <meta name="geo.position" content="-33.9249;18.4241" />
-      <meta name="ICBM" content="-33.9249, 18.4241" />
-      <meta name="DC.title" content={title} />
-      <meta name="DC.creator" content="Tonderai Matanga" />
-      <meta name="DC.subject" content="Full Stack Development, Web Development, React, TypeScript" />
-      <meta name="DC.description" content={description} />
+      <meta name="robots" content={robotsContent} />
       
       {/* Canonical and Hreflang */}
       <link rel="canonical" href={url} />
@@ -172,7 +162,6 @@ const SEOHead = ({
       <meta property="og:image:type" content="image/jpeg" />
       <meta property="og:site_name" content="Tonderai Matanga Portfolio" />
       <meta property="og:locale" content="en_US" />
-      <meta property="og:updated_time" content={new Date().toISOString()} />
       
       {/* Enhanced Twitter Cards */}
       <meta name="twitter:card" content="summary_large_image" />
@@ -181,49 +170,31 @@ const SEOHead = ({
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={`${url}${image}`} />
       <meta name="twitter:image:alt" content="Tonderai Matanga - Full Stack Developer Portfolio" />
-      <meta name="twitter:creator" content="@dev_tonde" />
-      <meta name="twitter:site" content="@dev_tonde" />
-      
-      {/* LinkedIn */}
-      <meta property="linkedin:owner" content="tonderai-matanga" />
       
       {/* App and Performance Meta Tags */}
       <meta name="theme-color" content="#8B5CF6" />
       <meta name="color-scheme" content="dark light" />
-      <meta name="mobile-web-app-capable" content="yes" />
-      <meta name="apple-mobile-web-app-capable" content="yes" />
-      <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       <meta name="apple-mobile-web-app-title" content="Tonderai Portfolio" />
       <meta name="application-name" content="Tonderai Portfolio" />
-      <meta name="msapplication-TileColor" content="#8B5CF6" />
-      <meta name="msapplication-config" content="/browserconfig.xml" />
       
       {/* Accessibility and Performance */}
       <meta name="format-detection" content="telephone=no" />
       <meta name="referrer" content="origin-when-cross-origin" />
-      <meta httpEquiv="x-ua-compatible" content="ie=edge" />
-      <meta httpEquiv="Content-Security-Policy" content="upgrade-insecure-requests" />
-      
-      {/* Preconnect and DNS Prefetch for Performance */}
-      <link rel="preconnect" href="//fonts.googleapis.com" crossOrigin="anonymous" />
-      <link rel="preconnect" href="//api.github.com" crossOrigin="anonymous" />
-      <link rel="dns-prefetch" href="//supabase.co" />
-      <link rel="dns-prefetch" href="//cdnjs.cloudflare.com" />
-      
-      {/* Resource Hints */}
-      <link rel="prefetch" href="/cv.pdf" />
-      <link rel="preload" href="/assets/hero-bg.jpg" as="image" />
       
       {/* Structured Data Schemas */}
-      <script type="application/ld+json">
-        {JSON.stringify(personSchema)}
-      </script>
-      <script type="application/ld+json">
-        {JSON.stringify(websiteSchema)}
-      </script>
-      <script type="application/ld+json">
-        {JSON.stringify(faqSchema)}
-      </script>
+      {!noIndex && (
+        <>
+          <script type="application/ld+json">
+            {JSON.stringify(personSchema)}
+          </script>
+          <script type="application/ld+json">
+            {JSON.stringify(websiteSchema)}
+          </script>
+          <script type="application/ld+json">
+            {JSON.stringify(faqSchema)}
+          </script>
+        </>
+      )}
     </Helmet>
   );
 };

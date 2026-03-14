@@ -144,7 +144,7 @@ const TicTacToeGame = ({ onBack }: TicTacToeGameProps) => {
           <div className="flex items-center justify-between">
             <Button onClick={onBack} variant="outline" size="lg">
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Games
+              Back to Demos
             </Button>
             <div className="text-center">
               <div className="text-sm text-muted-foreground">

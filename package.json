@@ -3,17 +3,18 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "packageManager": "npm@10.8.2",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "build:dev": "vite build --mode development",
+    "type-check": "tsc --noEmit",
     "lint": "eslint .",
+    "test": "vitest run",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@axe-core/cli": "^4.10.2",
     "@hookform/resolvers": "^5.1.1",
-    "@lhci/cli": "^0.15.1",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-alert-dialog": "^1.1.1",
     "@radix-ui/react-aspect-ratio": "^1.1.0",
@@ -76,7 +77,6 @@
     "vaul": "^0.9.3",
     "vite-bundle-analyzer": "^1.2.3",
     "vitest": "^3.2.4",
-    "workbox-window": "^7.3.0",
     "zod": "^3.25.76"
   },
   "devDependencies": {

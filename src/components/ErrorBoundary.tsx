@@ -1,4 +1,4 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { Component, ErrorInfo, ReactNode } from 'react';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,6 +11,15 @@ interface State {
   hasError: boolean;
   error?: Error;
 }
+
+type GtagEvent = (
+  command: 'event',
+  action: 'exception',
+  params: {
+    description: string;
+    fatal: boolean;
+  }
+) => void;
 
 class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
@@ -29,8 +38,9 @@ class ErrorBoundary extends Component<Props, State> {
     console.error('Error caught by boundary:', error, errorInfo);
     
     // Log error to analytics if available
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'exception', {
+    if (typeof window !== 'undefined') {
+      const analytics = (window as Window & typeof globalThis & { gtag?: GtagEvent }).gtag;
+      analytics?.('event', 'exception', {
         description: error.message,
         fatal: false,
       });

@@ -1,8 +1,9 @@
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 import { Mail, Phone, MapPin, Github, Linkedin } from 'lucide-react';
+import { PROFILE } from '@/config/profile';
 
 interface ContactInfoProps {
-  variants: any;
+  variants: Variants;
 }
 
 const ContactInfo = ({ variants }: ContactInfoProps) => {
@@ -10,20 +11,23 @@ const ContactInfo = ({ variants }: ContactInfoProps) => {
     {
       icon: Mail,
       title: 'Email',
-      value: 'hello@iamtonde.co.za',
-      link: 'mailto:hello@iamtonde.co.za'
+      value: PROFILE.email,
+      link: PROFILE.emailHref,
+      external: false,
     },
     {
       icon: Phone,
       title: 'Phone',
-      value: '+27 (0)81 432 1220',
-      link: 'tel:+27814321220'
+      value: PROFILE.phoneDisplay,
+      link: PROFILE.phoneHref,
+      external: false,
     },
     {
       icon: MapPin,
       title: 'Location',
-      value: 'Johannesburg and Cape Town, South Africa',
-      link: 'https://maps.google.com/?q=Johannesburg,South+Africa'
+      value: PROFILE.locationDisplay,
+      link: PROFILE.locationHref,
+      external: true,
     }
   ];
 
@@ -31,20 +35,23 @@ const ContactInfo = ({ variants }: ContactInfoProps) => {
     {
       icon: Github,
       name: 'GitHub',
-      url: 'https://github.com/dev-tonde',
-      color: 'hover:text-gray-300'
+      url: PROFILE.githubUrl,
+      color: 'hover:text-gray-300',
+      external: true,
     },
     {
       icon: Linkedin,
       name: 'LinkedIn',
-      url: 'https://www.linkedin.com/in/tonderai-matanga/',
-      color: 'hover:text-blue-400'
+      url: PROFILE.linkedinUrl,
+      color: 'hover:text-blue-400',
+      external: true,
     },
     {
       icon: Mail,
       name: 'Email',
-      url: 'mailto:hello@iamtonde.co.za',
-      color: 'hover:text-red-400'
+      url: PROFILE.emailHref,
+      color: 'hover:text-red-400',
+      external: false,
     }
   ];
 
@@ -53,12 +60,12 @@ const ContactInfo = ({ variants }: ContactInfoProps) => {
       <div>
         <h3 className="text-2xl font-semibold mb-6 text-primary">Get in Touch</h3>
         <div className="space-y-4">
-          {contactInfo.map((info, index) => (
+          {contactInfo.map((info) => (
             <motion.a
               key={info.title}
               href={info.link}
-              target="_blank"
-              rel="noopener noreferrer"
+              target={info.external ? '_blank' : undefined}
+              rel={info.external ? 'noopener noreferrer' : undefined}
               className="flex items-center space-x-4 p-4 glass rounded-lg hover:bg-primary/10 transition-all duration-300 group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               whileHover={{ x: 5 }}
               aria-label={`Contact via ${info.title}: ${info.value}`}
@@ -76,15 +83,15 @@ const ContactInfo = ({ variants }: ContactInfoProps) => {
       </div>
 
       <div>
-        <h3 className="text-2xl font-semibold mb-6 text-primary">Follow Me</h3>
+        <h3 className="text-2xl font-semibold mb-6 text-primary">Profiles</h3>
         <div className="flex space-x-4">
-          {socialLinks.map((social, index) => (
+          {socialLinks.map((social) => (
             <motion.a
               key={social.name}
               href={social.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`p-4 glass rounded-lg ${social.color} transition-all duration-300 group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2`}
+              target={social.external ? '_blank' : undefined}
+              rel={social.external ? 'noopener noreferrer' : undefined}
+              className={`interactive-icon-button glass h-14 w-14 rounded-lg ${social.color} group`}
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
               aria-label={`Visit my ${social.name} profile`}
@@ -101,8 +108,7 @@ const ContactInfo = ({ variants }: ContactInfoProps) => {
       >
         <h4 className="text-lg font-semibold mb-3">Quick Response</h4>
         <p className="text-muted-foreground">
-          I typically respond to emails within 24 hours. For urgent matters, 
-          feel free to reach out via phone or LinkedIn.
+          Typical reply time is within one business day. If the brief is time-sensitive, email or LinkedIn is the fastest route.
         </p>
       </motion.div>
     </motion.div>

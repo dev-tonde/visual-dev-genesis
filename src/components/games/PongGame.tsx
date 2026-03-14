@@ -158,7 +158,7 @@ const PongGame = ({ onBack }: PongGameProps) => {
           <div className="flex items-center justify-between">
             <Button onClick={onBack} variant="outline" size="lg">
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Games
+              Back to Demos
             </Button>
             <div className="flex gap-4 items-center">
               <div className="text-center">

@@ -224,7 +224,7 @@ const TetrisGame = ({ onBack }: TetrisGameProps) => {
       <div className="container mx-auto max-w-2xl">
         <Button onClick={onBack} variant="outline" className="mb-6" size="sm">
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Games
+          Back to Demos
         </Button>
 
         <Card className="glass-vibrant border-0 shadow-sm">

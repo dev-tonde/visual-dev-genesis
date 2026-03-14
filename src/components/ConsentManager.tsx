@@ -16,13 +16,22 @@ export interface ConsentPreferences {
 const CONSENT_KEY = 'user-consent-preferences';
 const CONSENT_SHOWN_KEY = 'consent-banner-shown';
 
+const isConsentPreferences = (value: unknown): value is ConsentPreferences => {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+
+  const candidate = value as Partial<ConsentPreferences>;
+
+  return (
+    typeof candidate.analytics === 'boolean' &&
+    typeof candidate.performance === 'boolean' &&
+    typeof candidate.functional === 'boolean'
+  );
+};
+
 export const ConsentManager = ({ onConsentChange }: ConsentManagerProps) => {
   const [showBanner, setShowBanner] = useState(false);
-  const [preferences, setPreferences] = useState<ConsentPreferences>({
-    analytics: false,
-    performance: true, // Essential for functionality
-    functional: true   // Essential for functionality
-  });
 
   useEffect(() => {
     // Check if consent has been given before
@@ -30,10 +39,21 @@ export const ConsentManager = ({ onConsentChange }: ConsentManagerProps) => {
     const bannerShown = localStorage.getItem(CONSENT_SHOWN_KEY);
     
     if (savedConsent) {
-      const consent = JSON.parse(savedConsent);
-      setPreferences(consent);
-      onConsentChange(consent);
-    } else if (!bannerShown) {
+      try {
+        const consent = JSON.parse(savedConsent);
+
+        if (isConsentPreferences(consent)) {
+          onConsentChange(consent);
+          return;
+        }
+
+        localStorage.removeItem(CONSENT_KEY);
+      } catch {
+        localStorage.removeItem(CONSENT_KEY);
+      }
+    }
+
+    if (!bannerShown) {
       setShowBanner(true);
     }
   }, [onConsentChange]);
@@ -41,7 +61,6 @@ export const ConsentManager = ({ onConsentChange }: ConsentManagerProps) => {
   const saveConsent = (newPreferences: ConsentPreferences) => {
     localStorage.setItem(CONSENT_KEY, JSON.stringify(newPreferences));
     localStorage.setItem(CONSENT_SHOWN_KEY, 'true');
-    setPreferences(newPreferences);
     onConsentChange(newPreferences);
     setShowBanner(false);
   };

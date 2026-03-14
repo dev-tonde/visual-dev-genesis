@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '@/components/AuthProvider';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,9 +7,10 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import type { Tables } from '@/integrations/supabase/types';
 import { 
   Mail, Calendar, Search, Filter, CheckCircle, 
-  XCircle, Loader2, ExternalLink, Trash2 
+  XCircle, Loader2, ExternalLink, Trash2, MailOpen
 } from 'lucide-react';
 import {
   Select,
@@ -29,63 +30,24 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import type { ContactSubmissionStatus } from '@/lib/contact';
+import SEOHead from '@/components/SEOHead';
+import Navigation from '@/components/Navigation';
+import { sanitizeSearchInput } from '@/lib/sanitize';
 
-interface ContactSubmission {
-  id: string;
-  name: string;
-  email: string;
-  message: string;
-  status: string;
-  created_at: string;
-}
+type ContactSubmission = Tables<'contact_submissions'>;
 
-const AdminContacts = () => {
+const ContactInboxPage = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [submissions, setSubmissions] = useState<ContactSubmission[]>([]);
-  const [filteredSubmissions, setFilteredSubmissions] = useState<ContactSubmission[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [statusFilter, setStatusFilter] = useState<ContactSubmissionStatus | 'all'>('all');
 
-  useEffect(() => {
-    checkAdmin();
-  }, [user]);
-
-  useEffect(() => {
-    filterSubmissions();
-  }, [submissions, searchTerm, statusFilter]);
-
-  const checkAdmin = async () => {
-    if (!user) {
-      navigate('/auth');
-      return;
-    }
-
-    try {
-      const { data, error } = await supabase.rpc('is_admin');
-
-      if (error || !data) {
-        toast({
-          title: 'Access Denied',
-          description: 'Admin privileges required.',
-          variant: 'destructive'
-        });
-        navigate('/');
-        return;
-      }
-
-      setIsAdmin(true);
-      fetchSubmissions();
-    } catch (err) {
-      console.error('Unexpected error:', err);
-      navigate('/');
-    }
-  };
-
-  const fetchSubmissions = async () => {
+  const fetchSubmissions = useCallback(async () => {
     setLoading(true);
     const { data, error } = await supabase
       .from('contact_submissions')
@@ -102,29 +64,52 @@ const AdminContacts = () => {
       setSubmissions(data || []);
     }
     setLoading(false);
-  };
+  }, [toast]);
 
-  const filterSubmissions = () => {
-    let filtered = submissions;
+  useEffect(() => {
+    const checkAdmin = async () => {
+      if (!user) {
+        navigate('/auth');
+        return;
+      }
 
-    // Filter by search term
-    if (searchTerm) {
-      filtered = filtered.filter(sub => 
-        sub.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        sub.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        sub.message.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
+      try {
+        const { data, error } = await supabase.rpc('is_admin');
 
-    // Filter by status
-    if (statusFilter !== 'all') {
-      filtered = filtered.filter(sub => sub.status === statusFilter);
-    }
+        if (error || !data) {
+          toast({
+            title: 'Access Denied',
+            description: 'Admin privileges required.',
+            variant: 'destructive'
+          });
+          navigate('/');
+          return;
+        }
 
-    setFilteredSubmissions(filtered);
-  };
+        setIsAdmin(true);
+        await fetchSubmissions();
+      } catch (err) {
+        console.error('Unexpected error:', err);
+        navigate('/');
+      }
+    };
 
-  const updateStatus = async (id: string, status: string) => {
+    void checkAdmin();
+  }, [fetchSubmissions, navigate, toast, user]);
+
+  const normalizedSearchTerm = searchTerm.toLowerCase();
+  const filteredSubmissions = submissions.filter((submission) => {
+    const matchesSearch = normalizedSearchTerm === '' || (
+      submission.name.toLowerCase().includes(normalizedSearchTerm) ||
+      submission.email.toLowerCase().includes(normalizedSearchTerm) ||
+      submission.message.toLowerCase().includes(normalizedSearchTerm)
+    );
+    const matchesStatus = statusFilter === 'all' || submission.status === statusFilter;
+
+    return matchesSearch && matchesStatus;
+  });
+
+  const updateStatus = async (id: string, status: ContactSubmissionStatus) => {
     const { error } = await supabase
       .from('contact_submissions')
       .update({ status })
@@ -141,7 +126,7 @@ const AdminContacts = () => {
         title: 'Success',
         description: 'Status updated successfully'
       });
-      fetchSubmissions();
+      await fetchSubmissions();
     }
   };
 
@@ -162,13 +147,14 @@ const AdminContacts = () => {
         title: 'Success',
         description: 'Submission deleted successfully'
       });
-      fetchSubmissions();
+      await fetchSubmissions();
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: ContactSubmissionStatus) => {
     switch (status) {
       case 'responded': return 'bg-green-500/20 text-green-400';
+      case 'read': return 'bg-blue-500/20 text-blue-400';
       case 'pending': return 'bg-yellow-500/20 text-yellow-400';
       default: return 'bg-gray-500/20 text-gray-400';
     }
@@ -176,24 +162,41 @@ const AdminContacts = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-      </div>
+      <>
+        <SEOHead
+          title="Contact Inbox - Tonderai Matanga"
+          description="Private inbox for inbound contact submissions."
+          url="https://iamtonde.co.za/admin/contacts"
+          noIndex
+        />
+        <Navigation />
+        <div className="flex items-center justify-center min-h-screen">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      </>
     );
   }
 
   if (!isAdmin) return null;
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-          Contact Submissions
-        </h1>
-        <p className="text-muted-foreground">
-          Manage and respond to contact form submissions
-        </p>
-      </div>
+    <>
+      <SEOHead
+        title="Contact Inbox - Tonderai Matanga"
+        description="Private inbox for inbound contact submissions."
+        url="https://iamtonde.co.za/admin/contacts"
+        noIndex
+      />
+      <Navigation />
+      <div className="container mx-auto px-4 py-8 pt-24 max-w-6xl">
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            Contact Inbox
+          </h1>
+          <p className="text-muted-foreground">
+            Review, triage, and respond to inbound project inquiries.
+          </p>
+        </div>
 
       {/* Filters */}
       <Card className="glass border-0 mb-6">
@@ -204,7 +207,7 @@ const AdminContacts = () => {
               <Input
                 placeholder="Search by name, email, or message..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => setSearchTerm(sanitizeSearchInput(e.target.value))}
                 className="pl-10"
               />
             </div>
@@ -217,6 +220,7 @@ const AdminContacts = () => {
                 <SelectContent>
                   <SelectItem value="all">All Status</SelectItem>
                   <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="read">Read</SelectItem>
                   <SelectItem value="responded">Responded</SelectItem>
                 </SelectContent>
               </Select>
@@ -297,6 +301,18 @@ const AdminContacts = () => {
                     <Button
                       size="sm"
                       variant="outline"
+                      onClick={() => updateStatus(submission.id, 'read')}
+                      className="text-blue-600 hover:text-blue-700"
+                    >
+                      <MailOpen className="w-4 h-4 mr-2" />
+                      Mark as Read
+                    </Button>
+                  )}
+
+                  {submission.status !== 'responded' && (
+                    <Button
+                      size="sm"
+                      variant="outline"
                       onClick={() => updateStatus(submission.id, 'responded')}
                       className="text-green-600 hover:text-green-700"
                     >
@@ -305,7 +321,7 @@ const AdminContacts = () => {
                     </Button>
                   )}
                   
-                  {submission.status === 'responded' && (
+                  {submission.status !== 'pending' && (
                     <Button
                       size="sm"
                       variant="outline"
@@ -353,7 +369,8 @@ const AdminContacts = () => {
         )}
       </div>
     </div>
+    </>
   );
 };
 
-export default AdminContacts;
+export default ContactInboxPage;

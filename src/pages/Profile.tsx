@@ -1,19 +1,22 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '@/components/AuthProvider';
 import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
-import { User, Mail, Building, Phone, Calendar, Save, Loader2, FileText, ArrowLeft } from 'lucide-react';
+import { User, Mail, Building, Phone, Calendar, Save, Loader2, ArrowLeft } from 'lucide-react';
 import SEOHead from '@/components/SEOHead';
 import Navigation from '@/components/Navigation';
 import { motion } from 'framer-motion';
+import {
+  sanitizePhoneInput,
+  sanitizeSingleLineForSubmission,
+  sanitizeSingleLineInput,
+} from '@/lib/sanitize';
 
 interface Profile {
   user_id: string;
@@ -26,39 +29,23 @@ interface Profile {
   updated_at: string;
 }
 
-interface Testimonial {
-  id: string;
-  name: string;
-  title: string;
-  company: string;
-  content: string;
-  status: 'pending' | 'approved' | 'rejected';
-  created_at: string;
-}
-
-const Profile = () => {
+const AccountWorkspacePage = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
     full_name: '',
     phone: '',
-    company: ''
+    company: '',
   });
 
-  useEffect(() => {
-    if (user) {
-      fetchProfile();
-      fetchTestimonials();
+  const fetchProfile = useCallback(async () => {
+    if (!user) {
+      return;
     }
-  }, [user]);
-
-  const fetchProfile = async () => {
-    if (!user) return;
 
     const { data, error } = await supabase
       .from('profiles')
@@ -70,45 +57,50 @@ const Profile = () => {
       toast({
         title: 'Error',
         description: 'Failed to load profile',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } else if (data) {
       setProfile(data);
       setFormData({
         full_name: data.full_name || '',
         phone: data.phone || '',
-        company: data.company || ''
+        company: data.company || '',
       });
     }
+
     setLoading(false);
-  };
+  }, [toast, user]);
 
-  const fetchTestimonials = async () => {
-    if (!user) return;
-
-    const { data, error } = await supabase
-      .from('testimonials')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false });
-
-    if (!error && data) {
-      setTestimonials(data as Testimonial[]);
+  useEffect(() => {
+    if (!user) {
+      return;
     }
-  };
+
+    void fetchProfile();
+  }, [fetchProfile, user]);
 
   const handleSave = async () => {
-    if (!user) return;
+    if (!user) {
+      return;
+    }
 
     setSaving(true);
+
+    const sanitizedProfile = {
+      full_name: sanitizeSingleLineForSubmission(formData.full_name),
+      phone: sanitizePhoneInput(formData.phone).trim(),
+      company: sanitizeSingleLineForSubmission(formData.company),
+    };
+
+    setFormData(sanitizedProfile);
 
     const { error } = await supabase
       .from('profiles')
       .update({
-        full_name: formData.full_name,
-        phone: formData.phone,
-        company: formData.company,
-        updated_at: new Date().toISOString()
+        full_name: sanitizedProfile.full_name,
+        phone: sanitizedProfile.phone,
+        company: sanitizedProfile.company,
+        updated_at: new Date().toISOString(),
       })
       .eq('user_id', user.id);
 
@@ -116,34 +108,26 @@ const Profile = () => {
       toast({
         title: 'Error',
         description: 'Failed to update profile',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } else {
       toast({
         title: 'Success',
-        description: 'Profile updated successfully'
+        description: 'Profile updated successfully',
       });
-      fetchProfile();
+      await fetchProfile();
     }
 
     setSaving(false);
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'approved': return 'bg-green-500/20 text-green-400';
-      case 'rejected': return 'bg-red-500/20 text-red-400';
-      case 'pending': return 'bg-yellow-500/20 text-yellow-400';
-      default: return 'bg-gray-500/20 text-gray-400';
-    }
-  };
-
   if (loading) {
     return (
       <>
-        <SEOHead 
-          title="Profile - Tonderai Matanga"
-          description="Manage your profile and view your testimonials"
+        <SEOHead
+          title="Account Workspace - Tonderai Matanga"
+          description="Private workspace for account details."
+          noIndex
         />
         <Navigation />
         <div className="min-h-screen flex items-center justify-center">
@@ -155,13 +139,14 @@ const Profile = () => {
 
   return (
     <>
-      <SEOHead 
-        title="Profile - Tonderai Matanga"
-        description="Manage your profile and view your testimonials"
+      <SEOHead
+        title="Account Workspace - Tonderai Matanga"
+        description="Private workspace for account details."
+        noIndex
       />
       <Navigation />
-      
-      <div className="min-h-screen pt-24 pb-16 px-4 bg-background">
+
+      <div className="min-h-screen bg-background px-4 pb-16 pt-24">
         <div className="container mx-auto max-w-4xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -178,172 +163,115 @@ const Profile = () => {
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Home
               </Button>
-              <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                My Profile
+              <h1 className="mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-4xl font-bold text-transparent">
+                Account Workspace
               </h1>
               <p className="text-muted-foreground">
-                Manage your account information and view your testimonials
+                Update the account details used across private workspace and admin tools.
               </p>
             </div>
 
-            <Tabs defaultValue="profile" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-6">
-                <TabsTrigger value="profile">Profile Information</TabsTrigger>
-                <TabsTrigger value="testimonials">
-                  My Testimonials ({testimonials.length})
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="profile">
-                <Card className="glass border-0">
-                  <CardHeader>
-                    <div className="flex items-center gap-4 mb-4">
-                      <Avatar className="w-20 h-20 ring-2 ring-primary/20">
-                        <AvatarImage src={profile?.avatar_url || ''} alt={formData.full_name || 'User'} />
-                        <AvatarFallback className="bg-primary/10 text-2xl">
-                          {formData.full_name?.split(' ').map(n => n[0]).join('') || user?.email?.charAt(0).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <CardTitle>Account Information</CardTitle>
-                        <CardDescription>
-                          Update your personal details
-                        </CardDescription>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="email" className="flex items-center gap-2">
-                        <Mail className="w-4 h-4" />
-                        Email Address
-                      </Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={user?.email || ''}
-                        disabled
-                        className="bg-muted"
-                      />
-                      <p className="text-xs text-muted-foreground">
-                        Email cannot be changed. Contact support if needed.
-                      </p>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="full_name" className="flex items-center gap-2">
-                        <User className="w-4 h-4" />
-                        Full Name
-                      </Label>
-                      <Input
-                        id="full_name"
-                        value={formData.full_name}
-                        onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                        placeholder="John Doe"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="phone" className="flex items-center gap-2">
-                        <Phone className="w-4 h-4" />
-                        Phone Number
-                      </Label>
-                      <Input
-                        id="phone"
-                        type="tel"
-                        value={formData.phone}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        placeholder="+27 XX XXX XXXX"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="company" className="flex items-center gap-2">
-                        <Building className="w-4 h-4" />
-                        Company
-                      </Label>
-                      <Input
-                        id="company"
-                        value={formData.company}
-                        onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                        placeholder="Your Company Name"
-                      />
-                    </div>
-
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Calendar className="w-4 h-4" />
-                      <span>
-                        Member since {new Date(profile?.created_at || '').toLocaleDateString()}
-                      </span>
-                    </div>
-
-                    <Button 
-                      onClick={handleSave} 
-                      disabled={saving}
-                      className="w-full gradient-primary"
-                    >
-                      {saving ? (
-                        <>
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          Saving...
-                        </>
-                      ) : (
-                        <>
-                          <Save className="w-4 h-4 mr-2" />
-                          Save Changes
-                        </>
-                      )}
-                    </Button>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              <TabsContent value="testimonials">
-                <div className="space-y-4">
-                  {testimonials.length === 0 ? (
-                    <Card className="glass border-0">
-                      <CardContent className="p-12 text-center">
-                        <FileText className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                        <h3 className="text-lg font-semibold mb-2">No Testimonials Yet</h3>
-                        <p className="text-muted-foreground mb-4">
-                          You haven't submitted any testimonials. Share your experience!
-                        </p>
-                        <Button onClick={() => navigate('/submit-testimonial')}>
-                          Submit Testimonial
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  ) : (
-                    testimonials.map((testimonial) => (
-                      <Card key={testimonial.id} className="glass border-0">
-                        <CardHeader>
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <CardTitle className="text-lg">{testimonial.title}</CardTitle>
-                              <CardDescription>{testimonial.company}</CardDescription>
-                            </div>
-                            <Badge className={getStatusColor(testimonial.status)}>
-                              {testimonial.status.charAt(0).toUpperCase() + testimonial.status.slice(1)}
-                            </Badge>
-                          </div>
-                        </CardHeader>
-                        <CardContent>
-                          <p className="text-muted-foreground mb-4 leading-relaxed">
-                            "{testimonial.content}"
-                          </p>
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Calendar className="w-4 h-4" />
-                            <span>
-                              Submitted {new Date(testimonial.created_at).toLocaleDateString()}
-                            </span>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))
-                  )}
+            <Card className="glass border-0">
+              <CardHeader>
+                <div className="mb-4 flex items-center gap-4">
+                  <Avatar className="h-20 w-20 ring-2 ring-primary/20">
+                    <AvatarImage src={profile?.avatar_url || ''} alt={formData.full_name || 'User'} />
+                    <AvatarFallback className="bg-primary/10 text-2xl">
+                      {formData.full_name?.split(' ').map((name) => name[0]).join('') || user?.email?.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <CardTitle>Account Information</CardTitle>
+                    <CardDescription>
+                      Maintain the contact and company details tied to your account.
+                    </CardDescription>
+                  </div>
                 </div>
-              </TabsContent>
-            </Tabs>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="flex items-center gap-2">
+                    <Mail className="w-4 h-4" />
+                    Email Address
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={user?.email || ''}
+                    disabled
+                    className="bg-muted"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Email cannot be changed here.
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="full_name" className="flex items-center gap-2">
+                    <User className="w-4 h-4" />
+                    Full Name
+                  </Label>
+                  <Input
+                    id="full_name"
+                    value={formData.full_name}
+                    onChange={(event) =>
+                      setFormData({ ...formData, full_name: sanitizeSingleLineInput(event.target.value) })
+                    }
+                    placeholder="John Doe"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="phone" className="flex items-center gap-2">
+                    <Phone className="w-4 h-4" />
+                    Phone Number
+                  </Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(event) =>
+                      setFormData({ ...formData, phone: sanitizePhoneInput(event.target.value) })
+                    }
+                    placeholder="+27 XX XXX XXXX"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="company" className="flex items-center gap-2">
+                    <Building className="w-4 h-4" />
+                    Company
+                  </Label>
+                  <Input
+                    id="company"
+                    value={formData.company}
+                    onChange={(event) =>
+                      setFormData({ ...formData, company: sanitizeSingleLineInput(event.target.value) })
+                    }
+                    placeholder="Your Company Name"
+                  />
+                </div>
+
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Calendar className="w-4 h-4" />
+                  <span>Member since {new Date(profile?.created_at || '').toLocaleDateString()}</span>
+                </div>
+
+                <Button onClick={handleSave} disabled={saving} className="w-full gradient-primary">
+                  {saving ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-4 h-4 mr-2" />
+                      Save Changes
+                    </>
+                  )}
+                </Button>
+              </CardContent>
+            </Card>
           </motion.div>
         </div>
       </div>
@@ -351,4 +279,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default AccountWorkspacePage;

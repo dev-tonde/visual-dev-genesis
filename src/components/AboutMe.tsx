@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Code2, Palette, Gamepad2, Music, Coffee, Plane } from 'lucide-react';
+import SectionHeading from '@/components/SectionHeading';
 
 const AboutMe = () => {
   const [ref, inView] = useInView({
@@ -42,7 +42,7 @@ const AboutMe = () => {
   };
 
   return (
-    <section id="journey" className="px-4">
+    <section id="journey" className="section-shell section-anchor px-4">
       <motion.div
         ref={ref}
         variants={containerVariants}
@@ -50,13 +50,12 @@ const AboutMe = () => {
         animate={inView ? "visible" : "hidden"}
         className="max-w-4xl mx-auto"
       >
-        <motion.div variants={itemVariants} className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            My Journey
-          </h2>
-          <p className="text-lg text-muted-foreground">
-            Get to know the person behind the code
-          </p>
+        <motion.div variants={itemVariants} className="mb-12">
+          <SectionHeading
+            label="Background"
+            title="My Journey"
+            description="The product thinking, engineering focus, and habits behind the work."
+          />
         </motion.div>
 
         <motion.div variants={itemVariants}>
@@ -87,7 +86,7 @@ const AboutMe = () => {
         <motion.div variants={itemVariants}>
           <h3 className="text-2xl font-bold mb-6 text-center">My Hobbies & Interests</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {hobbies.map((hobby, index) => (
+            {hobbies.map((hobby) => (
               <motion.div
                 key={hobby.name}
                 variants={itemVariants}

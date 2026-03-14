@@ -255,7 +255,6 @@ src/
 - Performance testing
 
 ### Accessibility Tests
-- Automated axe-core scans
 - Manual keyboard navigation
 - Screen reader testing
 - Color contrast validation

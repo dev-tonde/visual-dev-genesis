@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Award, Calendar, ExternalLink, BookOpen } from 'lucide-react';
+import SectionHeading from '@/components/SectionHeading';
 
 interface Certification {
   id: string;
@@ -176,10 +177,10 @@ const Certifications = () => {
   const CertificationCard = ({ cert }: { cert: Certification }) => (
     <motion.div
       variants={itemVariants}
-      whileHover={{ y: -5, scale: 1.02 }}
+      whileHover={{ y: -4 }}
       className="group"
     >
-      <Card className="glass-vibrant border-0 h-full hover-glow transition-all duration-300">
+      <Card className="glass-vibrant border-0 flex h-full flex-col transition-shadow duration-300 hover:shadow-md hover-glow">
         <CardHeader className="pb-3">
           <div className="flex items-start justify-between mb-2">
             <div className="flex items-center gap-2">
@@ -197,7 +198,7 @@ const Certifications = () => {
           <p className="text-sm text-muted-foreground font-medium">{cert.issuer}</p>
         </CardHeader>
         
-        <CardContent className="space-y-4">
+        <CardContent className="flex flex-1 flex-col space-y-4">
           <p className="text-sm text-muted-foreground leading-relaxed">
             {cert.description}
           </p>
@@ -215,13 +216,13 @@ const Certifications = () => {
             )}
           </div>
 
-          <div className="flex gap-2 pt-2">
+          <div className="mt-auto flex flex-col gap-2 pt-2 sm:flex-row">
             <Dialog>
               <DialogTrigger asChild>
                 <Button 
                   size="sm" 
                   variant="outline" 
-                  className="flex-1 hover-lift"
+                  className="w-full sm:flex-1"
                   aria-label={`View details for ${cert.title}`}
                 >
                   <BookOpen className="w-4 h-4 mr-2" aria-hidden="true" />
@@ -293,7 +294,7 @@ const Certifications = () => {
             {cert.credentialUrl && (
               <Button 
                 size="sm" 
-                className="flex-1 gradient-primary hover-lift" 
+                className="w-full sm:flex-1 gradient-primary" 
                 asChild
               >
                 <a 
@@ -314,7 +315,7 @@ const Certifications = () => {
   );
 
   return (
-    <section id="certifications" className="py-16 px-4">
+    <section id="certifications" className="section-shell section-anchor px-4">
       <div className="container mx-auto">
         <motion.div
           ref={ref}
@@ -323,24 +324,35 @@ const Certifications = () => {
           animate={inView ? "visible" : "hidden"}
           className="max-w-6xl mx-auto"
         >
-          <motion.div variants={itemVariants} className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Certifications & Achievements
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Continuous learning and professional development across multiple domains
-            </p>
+          <motion.div variants={itemVariants} className="mb-16">
+            <SectionHeading
+              label="Credentials"
+              title="Certifications & Achievements"
+              description="Continuous learning and professional development across product engineering, frontend systems, and adjacent disciplines."
+            />
           </motion.div>
 
           <Tabs defaultValue="ai" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mb-8">
-              <TabsTrigger value="ai" aria-label="AI and Machine Learning certifications">
+            <TabsList className="mb-8 grid h-auto w-full grid-cols-1 gap-2 bg-transparent p-0 sm:grid-cols-3">
+              <TabsTrigger
+                value="ai"
+                aria-label="AI and Machine Learning certifications"
+                className="rounded-xl border border-border/60 bg-background/50 px-4 py-3 data-[state=active]:border-primary/60 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+              >
                 AI & Machine Learning
               </TabsTrigger>
-              <TabsTrigger value="development" aria-label="App Development certifications">
+              <TabsTrigger
+                value="development"
+                aria-label="App Development certifications"
+                className="rounded-xl border border-border/60 bg-background/50 px-4 py-3 data-[state=active]:border-primary/60 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+              >
                 App Development
               </TabsTrigger>
-              <TabsTrigger value="frontend" aria-label="Frontend and Design certifications">
+              <TabsTrigger
+                value="frontend"
+                aria-label="Frontend and Design certifications"
+                className="rounded-xl border border-border/60 bg-background/50 px-4 py-3 data-[state=active]:border-primary/60 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+              >
                 Frontend & Design
               </TabsTrigger>
             </TabsList>

@@ -2,10 +2,11 @@ import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Code, GitCommit, Users, Trophy } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ElementType } from 'react';
+import type { Variants } from 'framer-motion';
 
 interface Stat {
-  icon: React.ElementType;
+  icon: ElementType;
   label: string;
   value: number;
   suffix: string;
@@ -109,7 +110,7 @@ interface StatCardProps {
   stat: Stat;
   delay: number;
   inView: boolean;
-  variants: any;
+  variants: Variants;
 }
 
 const StatCard = ({ stat, delay, inView, variants }: StatCardProps) => {

@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Menu, X, Download } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import ThemeSwitch from '@/components/ThemeSwitch';
-import SearchDialog from '@/components/SearchDialog';
+import { CommandPaletteTrigger } from '@/components/CommandPalette';
+import { downloadCv } from '@/config/profile';
+import { useSectionNavigation } from '@/hooks/useSectionNavigation';
 
 // Hook to detect reduced motion preference
 const useReducedMotion = () => {
@@ -28,8 +30,7 @@ const Navigation = () => {
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const prefersReducedMotion = useReducedMotion();
-  const location = useLocation();
-  const isGamesPage = location.pathname === '/games';
+  const navigateToSection = useSectionNavigation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -43,6 +44,16 @@ const Navigation = () => {
   // Focus trap and escape handling for mobile menu
   useEffect(() => {
     if (!isMobileMenuOpen) return;
+
+    const frameId = window.requestAnimationFrame(() => {
+      const firstFocusable = mobileMenuRef.current?.querySelector(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+
+      if (firstFocusable instanceof HTMLElement) {
+        firstFocusable.focus();
+      }
+    });
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -73,24 +84,15 @@ const Navigation = () => {
     document.addEventListener('keydown', handleKeyDown);
 
     return () => {
+      window.cancelAnimationFrame(frameId);
       document.body.style.overflow = '';
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [isMobileMenuOpen]);
 
   const scrollToSection = (sectionId: string) => {
-    // If we're on games page and trying to go to a section, navigate home first
-    if (isGamesPage && sectionId !== 'games') {
-      // Use React Router navigation to prevent full page reload
-      setTimeout(() => {
-        const element = document.getElementById(sectionId);
-        element?.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth' });
-      }, 100);
-      return;
-    }
-    
-    const element = document.getElementById(sectionId);
-    element?.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+    navigateToSection(sectionId);
+
     if (isMobileMenuOpen) {
       setIsMobileMenuOpen(false);
       menuButtonRef.current?.focus();
@@ -102,7 +104,7 @@ const Navigation = () => {
     { name: 'About', id: 'about', type: 'scroll' as const },
     { name: 'Projects', id: 'projects', type: 'scroll' as const },
     { name: 'Certifications', id: 'certifications', type: 'scroll' as const },
-    { name: 'Games', id: 'games', type: 'link' as const },
+    { name: 'Demos', id: 'games', type: 'link' as const },
     { name: 'Contact', id: 'contact', type: 'scroll' as const },
   ];
 
@@ -129,17 +131,15 @@ const Navigation = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <motion.div
-            className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent cursor-pointer"
+          <motion.button
+            type="button"
+            className="rounded-md bg-gradient-to-r from-primary to-secondary bg-clip-text text-2xl font-bold text-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             onClick={() => scrollToSection('hero')}
-            whileHover={{ scale: 1.05 }}
-            role="button"
+            whileHover={{ y: -1 }}
             aria-label="Go to home section"
-            tabIndex={0}
-            onKeyDown={(e) => e.key === 'Enter' && scrollToSection('hero')}
           >
             Tonderai
-          </motion.div>
+          </motion.button>
 
           {/* Desktop Menu - Hidden below 1024px */}
           <div className="hidden lg:flex items-center space-x-2">
@@ -169,17 +169,12 @@ const Navigation = () => {
                 </motion.button>
               )
             )}
-            <SearchDialog />
+            <CommandPaletteTrigger />
             <ThemeSwitch />
             <Button
               variant="outline"
               size="sm"
-              onClick={() => {
-                const link = document.createElement('a');
-                link.href = '/cv.pdf';
-                link.download = 'Tonderai_CV.pdf';
-                link.click();
-              }}
+              onClick={downloadCv}
               className="glass"
             >
               <Download className="w-4 h-4 mr-2" />
@@ -187,7 +182,7 @@ const Navigation = () => {
             </Button>
             <Button
               onClick={() => scrollToSection('contact')}
-              className="gradient-primary hover:scale-105 transition-transform focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              className="gradient-primary"
               aria-label="Navigate to contact section"
             >
               Hire Me
@@ -196,7 +191,7 @@ const Navigation = () => {
 
           {/* Mobile & Tablet Menu Button - Shows below 1024px */}
           <div className="lg:hidden flex items-center space-x-2">
-            <SearchDialog />
+            <CommandPaletteTrigger mobile />
             <ThemeSwitch />
             <Button
               ref={menuButtonRef}
@@ -234,7 +229,7 @@ const Navigation = () => {
               <h2 id="mobile-menu-title" className="sr-only">
                 Navigation Menu
               </h2>
-              {menuItems.map((item, index) => 
+              {menuItems.map((item) => 
                 item.type === 'link' ? (
                   <Link
                     key={item.name}
@@ -251,7 +246,6 @@ const Navigation = () => {
                     onClick={() => scrollToSection(item.id)}
                     className="block w-full text-left text-foreground hover:text-primary transition-colors py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md"
                     aria-label={`Navigate to ${item.name} section`}
-                    autoFocus={index === 0}
                   >
                     {item.name}
                   </button>
@@ -259,12 +253,7 @@ const Navigation = () => {
               )}
               <Button
                 variant="outline"
-                onClick={() => {
-                  const link = document.createElement('a');
-                  link.href = '/cv.pdf';
-                  link.download = 'Tonderai_CV.pdf';
-                  link.click();
-                }}
+                onClick={downloadCv}
                 className="w-full glass mt-4"
               >
                 <Download className="w-4 h-4 mr-2" />

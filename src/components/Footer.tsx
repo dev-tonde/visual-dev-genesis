@@ -1,42 +1,33 @@
 import { motion } from 'framer-motion';
-import { 
+import {
   Code2, 
   Palette, 
-  Zap, 
   Database,
-  Cloud,
   Shield,
-  Boxes,
-  Sparkles
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { PROFILE } from '@/config/profile';
+import { getSectionHref, useSectionNavigation } from '@/hooks/useSectionNavigation';
 
 const Footer = () => {
-  const location = useLocation();
-  const isHomePage = location.pathname === '/';
+  const navigateToSection = useSectionNavigation();
 
   const handleSectionClick = (e: React.MouseEvent<HTMLAnchorElement>, sectionId: string) => {
     e.preventDefault();
-    if (isHomePage) {
-      const element = document.getElementById(sectionId);
-      element?.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      // Navigate to home page first, then scroll to section
-      window.location.href = `/#${sectionId}`;
-    }
+    navigateToSection(sectionId);
   };
 
   const technologies = [
     {
       category: 'Frontend',
       icon: Code2,
-      items: ['React 18', 'TypeScript', 'Tailwind CSS', 'Framer Motion', 'Vite']
+      items: ['React 18', 'TypeScript', 'Tailwind CSS', 'Framer Motion']
     },
     {
-      category: 'UI/UX',
+      category: 'UI System',
       icon: Palette,
-      items: ['Shadcn/ui', 'Radix UI', 'Lucide Icons', 'Next Themes']
+      items: ['shadcn/ui', 'Radix UI', 'Lucide', 'next-themes']
     },
     {
       category: 'Backend',
@@ -44,29 +35,9 @@ const Footer = () => {
       items: ['Supabase', 'PostgreSQL', 'Edge Functions', 'Row Level Security']
     },
     {
-      category: 'DevOps',
-      icon: Cloud,
-      items: ['GitHub Actions', 'Vercel', 'PWA', 'Service Workers']
-    },
-    {
-      category: 'Performance',
-      icon: Zap,
-      items: ['Code Splitting', 'Lazy Loading', 'React Query', 'Lighthouse']
-    },
-    {
-      category: 'Security',
+      category: 'Quality & Delivery',
       icon: Shield,
-      items: ['Auth', 'HTTPS', 'CORS', 'Input Validation']
-    },
-    {
-      category: 'Testing',
-      icon: Boxes,
-      items: ['Vitest', 'Testing Library', 'Axe Core', 'E2E Tests']
-    },
-    {
-      category: 'Features',
-      icon: Sparkles,
-      items: ['SEO Optimized', 'Accessibility', 'Dark Mode', 'Responsive']
+      items: ['Vitest', 'Testing Library', 'GitHub Actions', 'Vercel']
     }
   ];
 
@@ -79,7 +50,6 @@ const Footer = () => {
       aria-label="Site footer"
     >
       <div className="container mx-auto">
-        {/* Technologies Section */}
         <motion.div 
           className="mb-12"
           initial={{ opacity: 0, y: 20 }}
@@ -88,7 +58,7 @@ const Footer = () => {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-3xl font-bold text-center mb-8 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-            Built With Modern Technologies
+            Current Stack
           </h2>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -123,27 +93,27 @@ const Footer = () => {
           <ul className="flex flex-wrap justify-center gap-4 sm:gap-6 text-sm">
             <li>
               <a 
-                href="#about" 
+                href={getSectionHref('about')}
                 onClick={(e) => handleSectionClick(e, 'about')}
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="rounded-sm px-1 py-1 text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               >
                 About
               </a>
             </li>
             <li>
               <a 
-                href="#projects" 
+                href={getSectionHref('projects')}
                 onClick={(e) => handleSectionClick(e, 'projects')}
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="rounded-sm px-1 py-1 text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               >
                 Projects
               </a>
             </li>
             <li>
               <a 
-                href="#certifications" 
+                href={getSectionHref('certifications')}
                 onClick={(e) => handleSectionClick(e, 'certifications')}
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="rounded-sm px-1 py-1 text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               >
                 Certifications
               </a>
@@ -151,16 +121,16 @@ const Footer = () => {
             <li>
               <Link 
                 to="/games" 
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="rounded-sm px-1 py-1 text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               >
-                Games
+                Demos
               </Link>
             </li>
             <li>
               <a 
-                href="#contact" 
+                href={getSectionHref('contact')}
                 onClick={(e) => handleSectionClick(e, 'contact')}
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="rounded-sm px-1 py-1 text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               >
                 Contact
               </a>
@@ -168,17 +138,17 @@ const Footer = () => {
             <li>
               <Link 
                 to="/privacy" 
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="rounded-sm px-1 py-1 text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               >
                 Privacy
               </Link>
             </li>
             <li>
               <a 
-                href="/cv.pdf" 
+                href={PROFILE.cvHref} 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="rounded-sm px-1 py-1 text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               >
                 Download CV
               </a>
@@ -192,7 +162,7 @@ const Footer = () => {
             © {currentYear} Tonderai Matanga. All rights reserved.
           </p>
           <p className="text-xs text-muted-foreground mt-2">
-            Designed & Built with ❤️ using React, TypeScript & Modern Web Standards
+            Built with React, TypeScript, and Supabase.
           </p>
         </div>
       </div>

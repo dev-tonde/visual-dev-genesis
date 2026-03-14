@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from './AuthProvider';
 import { Button } from './ui/button';
 import {
@@ -67,7 +67,7 @@ const UserMenu = () => {
           <>
             <DropdownMenuItem onClick={() => navigate('/admin')}>
               <Shield className="mr-2 h-4 w-4" />
-              Admin Dashboard
+              Operations Workspace
             </DropdownMenuItem>
             <DropdownMenuSeparator />
           </>

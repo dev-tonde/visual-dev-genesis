@@ -4,6 +4,8 @@ import { supabase } from '@/integrations/supabase/client';
 import type { ConsentPreferences } from '@/components/ConsentManager';
 
 const CONSENT_KEY = 'user-consent-preferences';
+type EventData = Record<string, unknown>;
+type WindowWithDoNotTrack = Window & typeof globalThis & { doNotTrack?: string };
 
 // Simple analytics hook for tracking page views with consent and DNT respect
 export const useAnalytics = () => {
@@ -13,9 +15,10 @@ export const useAnalytics = () => {
 
   useEffect(() => {
     // Check Do Not Track setting
+    const windowDoNotTrack = (window as WindowWithDoNotTrack).doNotTrack;
     const dntEnabled = navigator.doNotTrack === "1" || 
                       navigator.doNotTrack === "yes" ||
-                      (window as any).doNotTrack === "1";
+                      windowDoNotTrack === "1";
     setIsDNTEnabled(dntEnabled);
     
     if (dntEnabled) {
@@ -87,7 +90,7 @@ export const useAnalytics = () => {
   }, [location, hasConsent, isDNTEnabled]);
 
   // Function to track custom events with retry logic
-  const trackEvent = async (eventName: string, eventData?: Record<string, any>, retryCount = 0) => {
+  const trackEvent = async (eventName: string, eventData?: EventData, retryCount = 0) => {
     // Respect DNT and user consent
     if (isDNTEnabled || !hasConsent) return;
     

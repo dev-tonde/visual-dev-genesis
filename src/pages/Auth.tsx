@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/components/AuthProvider';
 import { Button } from '@/components/ui/button';
@@ -13,21 +13,36 @@ import { z } from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import SEOHead from '@/components/SEOHead';
 import Navigation from '@/components/Navigation';
+import { sanitizeEmailInput, sanitizePasswordInput } from '@/lib/sanitize';
 
 // Secure validation schema
+const sanitizeString = <T extends z.ZodTypeAny>(
+  sanitizer: (value: string) => string,
+  schema: T,
+) =>
+  z.preprocess(
+    (value) => (typeof value === 'string' ? sanitizer(value) : value),
+    schema,
+  );
+
 const authSchema = z.object({
-  email: z.string()
-    .trim()
-    .email('Please enter a valid email address')
-    .max(255, 'Email must be less than 255 characters'),
-  password: z.string()
-    .min(8, 'Password must be at least 8 characters')
-    .max(72, 'Password must be less than 72 characters')
+  email: sanitizeString(
+    sanitizeEmailInput,
+    z.string()
+      .email('Please enter a valid email address')
+      .max(255, 'Email must be less than 255 characters'),
+  ),
+  password: sanitizeString(
+    sanitizePasswordInput,
+    z.string()
+      .min(8, 'Password must be at least 8 characters')
+      .max(72, 'Password must be less than 72 characters'),
+  ),
 });
 
 type AuthFormData = z.infer<typeof authSchema>;
 
-const Auth = () => {
+const AccountAccessPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'signin' | 'signup'>('signin');
@@ -95,17 +110,18 @@ const Auth = () => {
   return (
     <>
       <SEOHead 
-        title="Sign In - Tonderai Matanga"
-        description="Sign in to submit testimonials and access your account"
+        title="Account Access - Tonderai Matanga"
+        description="Private account access for workspace and admin tools."
         url="https://iamtonde.co.za/auth"
+        noIndex
       />
       <Navigation />
       <div className="min-h-screen flex items-center justify-center bg-background px-4 py-20">
         <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">Welcome</CardTitle>
+          <CardTitle className="text-2xl font-bold">Account Access</CardTitle>
           <CardDescription>
-            Sign in to your account or create a new one
+            Sign in to access private workspace and admin tools.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -140,6 +156,7 @@ const Auth = () => {
                             placeholder="your.email@example.com"
                             disabled={loading}
                             {...field}
+                            onChange={(event) => field.onChange(sanitizeEmailInput(event.target.value))}
                           />
                         </FormControl>
                         <FormMessage />
@@ -158,6 +175,7 @@ const Auth = () => {
                             placeholder="Enter your password"
                             disabled={loading}
                             {...field}
+                            onChange={(event) => field.onChange(sanitizePasswordInput(event.target.value))}
                           />
                         </FormControl>
                         <FormMessage />
@@ -186,6 +204,7 @@ const Auth = () => {
                             placeholder="your.email@example.com"
                             disabled={loading}
                             {...field}
+                            onChange={(event) => field.onChange(sanitizeEmailInput(event.target.value))}
                           />
                         </FormControl>
                         <FormMessage />
@@ -204,6 +223,7 @@ const Auth = () => {
                             placeholder="Min 8 characters"
                             disabled={loading}
                             {...field}
+                            onChange={(event) => field.onChange(sanitizePasswordInput(event.target.value))}
                           />
                         </FormControl>
                         <FormMessage />
@@ -227,4 +247,4 @@ const Auth = () => {
   );
 };
 
-export default Auth;
+export default AccountAccessPage;

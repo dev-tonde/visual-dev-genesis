@@ -3,6 +3,7 @@ import { useInView } from 'react-intersection-observer';
 import { Code, Palette, Zap, Users } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import SkillsVisualization from '@/components/SkillsVisualization';
+import SectionHeading from '@/components/SectionHeading';
 
 const About = () => {
   const [ref, inView] = useInView({
@@ -57,7 +58,7 @@ const About = () => {
   ];
 
   return (
-    <section id="about" className="px-4">
+    <section id="about" className="section-shell section-anchor px-4">
       <div className="container mx-auto">
         <motion.div
           ref={ref}
@@ -66,20 +67,18 @@ const About = () => {
           animate={inView ? "visible" : "hidden"}
           className="max-w-4xl mx-auto"
         >
-          <motion.div variants={itemVariants} className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Skills & Expertise
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              I specialize in modern web technologies and have a keen eye for design and user experience.
-              Here's what I bring to the table.
-            </p>
+          <motion.div variants={itemVariants} className="mb-16">
+            <SectionHeading
+              label="Core Capabilities"
+              title="Skills & Expertise"
+              description="I specialize in modern web technologies and have a keen eye for design and user experience. Here is what I bring to the table."
+            />
           </motion.div>
 
           <motion.div variants={itemVariants}>
             <h3 className="text-2xl font-semibold mb-6 text-primary">What I Do</h3>
             <div className="grid md:grid-cols-2 gap-4">
-              {highlights.map((highlight, index) => (
+              {highlights.map((highlight) => (
                 <motion.div
                   key={highlight.title}
                   variants={itemVariants}

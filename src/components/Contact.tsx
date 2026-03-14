@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import ContactForm from '@/components/ContactForm';
 import ContactInfo from '@/components/ContactInfo';
+import SectionHeading from '@/components/SectionHeading';
 
 const Contact = () => {
   const [ref, inView] = useInView({
@@ -32,7 +33,7 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="px-4">
+    <section id="contact" className="section-shell section-anchor px-4">
       <div className="container mx-auto">
         <motion.div
           ref={ref}
@@ -41,13 +42,12 @@ const Contact = () => {
           animate={inView ? "visible" : "hidden"}
           className="max-w-6xl mx-auto"
         >
-          <motion.div variants={itemVariants} className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Let's Work Together
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Have a project in mind? I'd love to hear about it. Let's discuss how we can bring your ideas to life.
-            </p>
+          <motion.div variants={itemVariants} className="mb-16">
+            <SectionHeading
+              label="Contact"
+              title="Start a Conversation"
+              description="If you need a product-minded engineer for a web app, front-end rebuild, or working prototype, send the brief. I reply with scope, tradeoffs, and next steps."
+            />
           </motion.div>
 
           <div className="grid lg:grid-cols-2 gap-12">

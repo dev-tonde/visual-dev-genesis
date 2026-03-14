@@ -19,7 +19,7 @@ const RetryButton = ({ onRetry, disabled = false, className = "" }: RetryButtonP
         onClick={onRetry}
         disabled={disabled}
         variant="outline"
-        className={`transition-all hover:scale-105 ${className}`}
+        className={className}
       >
         <RefreshCw className={`w-4 h-4 mr-2 ${disabled ? 'animate-spin' : ''}`} />
         Try Again

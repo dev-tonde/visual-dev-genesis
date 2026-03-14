@@ -1,41 +1,45 @@
 /**
- * Manual Demo URL Configuration
- * 
- * To add demo URLs for your projects:
- * 1. Find the project name from your GitHub repos
- * 2. Add an entry below with the project name as the key
- * 3. Provide the live demo URL as the value
- * 
- * Example:
- * 'my-project-name': 'https://my-project.vercel.app'
+ * Curated project demo links layered on top of live GitHub repo data.
+ *
+ * Keys should match the repo name in lowercase. Only add real public URLs here.
  */
+export const PROJECT_DEMO_URLS: Record<string, string> = {};
 
-export const PROJECT_DEMO_URLS: Record<string, string> = {
-  // Add your project demo URLs here
-  // Format: 'project-name': 'https://demo-url.com'
-  
-  // Example entries (replace these with your actual projects):
-  // 'portfolio-website': 'https://portfolio.example.com',
-  // 'e-commerce-app': 'https://shop.example.com',
-  // 'task-manager': 'https://tasks.example.com',
+export type ProjectLinkSource = 'curated_demo' | 'repository_homepage';
+
+export interface ProjectDemoLink {
+  url: string;
+  source: ProjectLinkSource;
+  label: string;
+}
+
+const getConfiguredDemoUrl = (projectName: string, demoUrls: Record<string, string>) => {
+  const normalizedProjectName = projectName.trim().toLowerCase();
+  const configuredEntry = Object.entries(demoUrls).find(([name]) => name === normalizedProjectName);
+  return configuredEntry?.[1] ?? null;
 };
 
-/**
- * Get demo URL for a project
- * Falls back to GitHub homepage or a default URL if not configured
- */
-export const getDemoUrl = (projectName: string, githubHomepage?: string | null): string => {
-  // Check if manually configured
-  const configuredUrl = PROJECT_DEMO_URLS[projectName];
+export const resolveProjectDemoLink = (
+  projectName: string,
+  githubHomepage?: string | null,
+  demoUrls: Record<string, string> = PROJECT_DEMO_URLS
+): ProjectDemoLink | null => {
+  const configuredUrl = getConfiguredDemoUrl(projectName, demoUrls);
   if (configuredUrl) {
-    return configuredUrl;
+    return {
+      url: configuredUrl,
+      source: 'curated_demo',
+      label: 'Curated demo',
+    };
   }
-  
-  // Fallback to GitHub homepage if available
-  if (githubHomepage) {
-    return githubHomepage;
+
+  if (githubHomepage?.trim()) {
+    return {
+      url: githubHomepage,
+      source: 'repository_homepage',
+      label: 'Repo homepage',
+    };
   }
-  
-  // Default fallback
-  return `https://${projectName.toLowerCase()}.dev-tonde.dev`;
+
+  return null;
 };

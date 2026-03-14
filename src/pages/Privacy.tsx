@@ -94,9 +94,10 @@ const Privacy = () => {
                     <li>Email address</li>
                     <li>Message content</li>
                     <li>Submission timestamp</li>
+                    <li>A one-way hash of your IP address when available, used only for abuse prevention and rate limiting</li>
                   </ul>
                   <p className="text-sm text-muted-foreground mt-2">
-                    This information is stored securely and used solely to respond to your inquiry.
+                    This information is stored securely and used solely to respond to your inquiry. Raw IP addresses are not stored with contact submissions.
                   </p>
                 </div>
 

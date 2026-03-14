@@ -543,25 +543,28 @@ export type Database = {
           created_at: string
           email: string
           id: string
+          ip_hash: string | null
           message: string
           name: string
-          status: string | null
+          status: "pending" | "read" | "responded"
         }
         Insert: {
           created_at?: string
           email: string
           id?: string
+          ip_hash?: string | null
           message: string
           name: string
-          status?: string | null
+          status?: "pending" | "read" | "responded"
         }
         Update: {
           created_at?: string
           email?: string
           id?: string
+          ip_hash?: string | null
           message?: string
           name?: string
-          status?: string | null
+          status?: "pending" | "read" | "responded"
         }
         Relationships: []
       }

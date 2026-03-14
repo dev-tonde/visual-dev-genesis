@@ -11,9 +11,9 @@ afterEach(() => {
 });
 
 // Mock IntersectionObserver
-global.IntersectionObserver = class IntersectionObserver {
+class MockIntersectionObserver implements IntersectionObserver {
   root: Element | null = null;
-  rootMargin: string = '';
+  rootMargin = '';
   thresholds: ReadonlyArray<number> = [];
   
   constructor(_callback: IntersectionObserverCallback, _options?: IntersectionObserverInit) {}
@@ -23,15 +23,41 @@ global.IntersectionObserver = class IntersectionObserver {
   takeRecords(): IntersectionObserverEntry[] {
     return [];
   }
-} as any;
+}
+
+global.IntersectionObserver = MockIntersectionObserver;
 
 // Mock ResizeObserver
-global.ResizeObserver = class ResizeObserver {
+class MockResizeObserver implements ResizeObserver {
   constructor(_callback: ResizeObserverCallback) {}
   disconnect() {}
   observe() {}
   unobserve() {}
-} as any;
+}
+
+global.ResizeObserver = MockResizeObserver;
+
+const mockCanvasContext = {
+  setTransform: () => {},
+  clearRect: () => {},
+  beginPath: () => {},
+  arc: () => {},
+  fill: () => {},
+  fillRect: () => {},
+  moveTo: () => {},
+  lineTo: () => {},
+  closePath: () => {},
+  translate: () => {},
+  rotate: () => {},
+  save: () => {},
+  restore: () => {},
+} as Partial<CanvasRenderingContext2D>;
+
+Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
+  configurable: true,
+  writable: true,
+  value: () => mockCanvasContext,
+});
 
 // Mock matchMedia
 Object.defineProperty(window, 'matchMedia', {
@@ -46,4 +72,10 @@ Object.defineProperty(window, 'matchMedia', {
     removeEventListener: () => {},
     dispatchEvent: () => {},
   }),
+});
+
+Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
+  configurable: true,
+  writable: true,
+  value: () => {},
 });

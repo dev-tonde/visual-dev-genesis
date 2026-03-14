@@ -1,11 +1,21 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { version as ReactVersion } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react';
+import { ThemeProvider, useTheme } from 'next-themes';
 
-type Theme = 'dark' | 'light' | 'system';
+type ResolvedTheme = 'dark' | 'light';
+type ThemePreference = 'system' | 'dark' | 'light';
+export const THEME_STORAGE_KEY = 'portfolio-theme';
 
 interface ThemeContextType {
-  theme: Theme;
-  setTheme: (theme: Theme) => void;
+  theme: ResolvedTheme;
+  preference: ThemePreference;
+  setTheme: (theme: ThemePreference) => void;
   mounted: boolean;
 }
 
@@ -15,69 +25,56 @@ interface SafeThemeProviderProps {
   children: ReactNode;
 }
 
-export function SafeThemeProvider({ children }: SafeThemeProviderProps) {
-  const [theme, setThemeState] = useState<Theme>('system');
+const SafeThemeStateProvider = ({ children }: SafeThemeProviderProps) => {
+  const { theme, resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    
-    // Check for saved theme or default to system
-    const savedTheme = localStorage.getItem('theme') as Theme;
-    const systemPreference = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    const initialTheme = savedTheme || systemPreference;
-    
-    setThemeState(savedTheme || 'system');
-    
-    // Apply theme to document
-    const applyTheme = (newTheme: Theme) => {
-      const root = document.documentElement;
-      
-      if (newTheme === 'system') {
-        root.classList.toggle('dark', systemPreference === 'dark');
-      } else {
-        root.classList.toggle('dark', newTheme === 'dark');
-      }
-    };
-
-    applyTheme(initialTheme);
   }, []);
 
-  const setTheme = (newTheme: Theme) => {
-    setThemeState(newTheme);
-    localStorage.setItem('theme', newTheme);
-    
-    const root = document.documentElement;
-    if (newTheme === 'system') {
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      root.classList.toggle('dark', systemTheme === 'dark');
-    } else {
-      root.classList.toggle('dark', newTheme === 'dark');
-    }
-  };
+  const value = useMemo<ThemeContextType>(
+    () => ({
+      theme: resolvedTheme === 'dark' ? 'dark' : 'light',
+      preference:
+        theme === 'dark' || theme === 'light' || theme === 'system'
+          ? theme
+          : 'system',
+      setTheme: (nextTheme) => setTheme(nextTheme),
+      mounted,
+    }),
+    [mounted, resolvedTheme, setTheme, theme],
+  );
 
-  const value = {
-    theme,
-    setTheme,
-    mounted
-  };
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
+};
 
+export function SafeThemeProvider({ children }: SafeThemeProviderProps) {
   return (
-    <ThemeContext.Provider value={value}>
-      {children}
-    </ThemeContext.Provider>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      enableColorScheme
+      disableTransitionOnChange
+      storageKey={THEME_STORAGE_KEY}
+    >
+      <SafeThemeStateProvider>{children}</SafeThemeStateProvider>
+    </ThemeProvider>
   );
 }
 
 export function useSafeTheme() {
   const context = useContext(ThemeContext);
-  if (context === undefined) {
-    // Fallback for when context is not available
+
+  if (!context) {
     return {
-      theme: 'system' as Theme,
+      theme: 'light' as ResolvedTheme,
+      preference: 'system' as ThemePreference,
       setTheme: () => {},
-      mounted: false
+      mounted: false,
     };
   }
+
   return context;
 }

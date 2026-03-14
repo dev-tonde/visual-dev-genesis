@@ -1,9 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { Search, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { motion, AnimatePresence } from 'framer-motion';
+import { sanitizeSearchInput } from '@/lib/sanitize';
 
 interface ProjectSearchProps {
   searchTerm: string;
@@ -45,7 +46,7 @@ const ProjectSearch = ({
             type="text"
             placeholder="Search projects..."
             value={searchTerm}
-            onChange={(e) => onSearchChange(e.target.value)}
+            onChange={(e) => onSearchChange(sanitizeSearchInput(e.target.value))}
             onFocus={() => setIsSearchFocused(true)}
             onBlur={() => setIsSearchFocused(false)}
             className="pl-10 pr-10 glass-vibrant border-0 focus:ring-2 focus:ring-primary/50 transition-all duration-300"

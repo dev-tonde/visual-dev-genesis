@@ -2,19 +2,17 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.3';
 
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
-
-// Initialize Supabase client with service role key for server-side operations
-const supabaseServiceRole = createClient(
-  Deno.env.get('SUPABASE_URL') ?? '',
-  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-);
-
 // Rate limiting configuration
 const RATE_LIMITS = {
   PER_IP_HOUR: 5,
   PER_EMAIL_HOUR: 3,
 } as const;
+
+const CONTACT_NAME_MIN_LENGTH = 2;
+const CONTACT_NAME_MAX_LENGTH = 50;
+const CONTACT_MESSAGE_MIN_LENGTH = 10;
+const CONTACT_MESSAGE_MAX_LENGTH = 1000;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Only allow specific origins in production
 const corsHeaders = {
@@ -29,65 +27,214 @@ interface ContactEmailRequest {
   message: string;
 }
 
-// Input validation and sanitization functions
-const sanitizeInput = (input: string): string => {
-  return input
-    .replace(/[<>]/g, '') // Remove potential HTML tags
-    .replace(/javascript:/gi, '') // Remove javascript: protocol
-    .replace(/on\w+=/gi, '') // Remove event handlers
-    .trim();
+type EmailDeliveryStatus = 'sent' | 'failed' | 'skipped';
+
+const getSupabaseServiceRoleClient = () => {
+  const supabaseUrl = Deno.env.get('SUPABASE_URL');
+  const supabaseServiceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+
+  if (!supabaseUrl || !supabaseServiceRoleKey) {
+    throw new Error('Missing Supabase service role configuration');
+  }
+
+  return createClient(supabaseUrl, supabaseServiceRoleKey);
 };
 
-const validateEmail = (email: string): boolean => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
+const getResendClient = () => {
+  const resendApiKey = Deno.env.get("RESEND_API_KEY");
+  return resendApiKey ? new Resend(resendApiKey) : null;
 };
 
-const validateInput = (data: ContactEmailRequest): { isValid: boolean; errors: string[] } => {
+const jsonResponse = (body: unknown, status: number, headers: HeadersInit = {}) =>
+  new Response(JSON.stringify(body), {
+    status,
+    headers: {
+      "Content-Type": "application/json",
+      ...corsHeaders,
+      ...headers,
+    },
+  });
+
+const normalizeText = (value: unknown): string => (
+  typeof value === 'string'
+    ? value.replace(/\r\n/g, '\n').split('\0').join('').trim()
+    : ''
+);
+
+const escapeHtml = (value: string): string => (
+  value.replace(/[&<>"']/g, (character) => {
+    switch (character) {
+      case '&':
+        return '&amp;';
+      case '<':
+        return '&lt;';
+      case '>':
+        return '&gt;';
+      case '"':
+        return '&quot;';
+      case '\'':
+        return '&#39;';
+      default:
+        return character;
+    }
+  })
+);
+
+const formatMessageForEmail = (message: string): string => escapeHtml(message).replace(/\n/g, '<br>');
+
+const validateInput = (payload: unknown): { data?: ContactEmailRequest; errors: string[] } => {
+  if (typeof payload !== 'object' || payload === null) {
+    return {
+      errors: ['Request body must be a JSON object.'],
+    };
+  }
+
+  const candidate = payload as Record<string, unknown>;
+  const data = {
+    name: normalizeText(candidate.name),
+    email: normalizeText(candidate.email).toLowerCase(),
+    message: normalizeText(candidate.message),
+  };
   const errors: string[] = [];
-  
-  if (!data.name || data.name.length < 2 || data.name.length > 100) {
-    errors.push('Name must be between 2 and 100 characters');
+
+  if (data.name.length < CONTACT_NAME_MIN_LENGTH || data.name.length > CONTACT_NAME_MAX_LENGTH) {
+    errors.push(`Name must be between ${CONTACT_NAME_MIN_LENGTH} and ${CONTACT_NAME_MAX_LENGTH} characters.`);
   }
-  
-  if (!data.email || !validateEmail(data.email)) {
-    errors.push('Valid email address is required');
+
+  if (!EMAIL_REGEX.test(data.email)) {
+    errors.push('A valid email address is required.');
   }
-  
-  if (!data.message || data.message.length < 10 || data.message.length > 2000) {
-    errors.push('Message must be between 10 and 2000 characters');
+
+  if (
+    data.message.length < CONTACT_MESSAGE_MIN_LENGTH ||
+    data.message.length > CONTACT_MESSAGE_MAX_LENGTH
+  ) {
+    errors.push(`Message must be between ${CONTACT_MESSAGE_MIN_LENGTH} and ${CONTACT_MESSAGE_MAX_LENGTH} characters.`);
   }
-  
-  return { isValid: errors.length === 0, errors };
+
+  if (errors.length > 0) {
+    return { errors };
+  }
+
+  return { data, errors };
 };
 
-// Rate limiting functions
-const checkRateLimit = async (identifier: string, type: 'ip' | 'email'): Promise<boolean> => {
+const getClientIp = (req: Request): string | null => {
+  const forwardedFor = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim();
+  const realIp = req.headers.get('x-real-ip')?.trim();
+  const clientIp = forwardedFor || realIp || null;
+
+  return clientIp && clientIp !== 'unknown' ? clientIp : null;
+};
+
+const hashValue = async (value: string): Promise<string> => {
+  const encodedValue = new TextEncoder().encode(value);
+  const digest = await crypto.subtle.digest('SHA-256', encodedValue);
+
+  return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('');
+};
+
+const checkRateLimit = async (identifier: string | null, type: 'ip' | 'email'): Promise<boolean> => {
+  if (!identifier) {
+    return true;
+  }
+
+  const supabaseServiceRole = getSupabaseServiceRoleClient();
   const limit = type === 'ip' ? RATE_LIMITS.PER_IP_HOUR : RATE_LIMITS.PER_EMAIL_HOUR;
   const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
-  
-  const { count } = await supabaseServiceRole
+  const column = type === 'ip' ? 'ip_hash' : 'email';
+
+  const { count, error } = await supabaseServiceRole
     .from('contact_submissions')
-    .select('*', { count: 'exact', head: true })
-    .eq(type === 'ip' ? 'ip_address' : 'email', identifier)
+    .select('id', { count: 'exact', head: true })
+    .eq(column, identifier)
     .gte('created_at', oneHourAgo);
-    
+
+  if (error) {
+    throw new Error(`Rate limit check failed: ${error.message}`);
+  }
+
   return (count || 0) < limit;
 };
 
-const logSubmission = async (data: ContactEmailRequest & { ip_address?: string }) => {
-  // Log minimal, non-PII data for monitoring
-  const logData = {
-    name: data.name,
-    email: data.email,
-    message: '[REDACTED]', // Redact user message for privacy
-    ip_address: data.ip_address,
-    status: 'pending'
-  };
-  
-  await supabaseServiceRole
+const createSubmission = async (data: ContactEmailRequest & { ip_hash: string | null }) => {
+  const supabaseServiceRole = getSupabaseServiceRoleClient();
+  const { data: insertedSubmission, error } = await supabaseServiceRole
     .from('contact_submissions')
-    .insert([logData]);
+    .insert([{
+      name: data.name,
+      email: data.email,
+      message: data.message,
+      ip_hash: data.ip_hash,
+      status: 'pending',
+    }])
+    .select('id')
+    .single();
+
+  if (error || !insertedSubmission) {
+    throw new Error(`Contact submission insert failed: ${error?.message || 'Unknown insert error'}`);
+  }
+
+  return insertedSubmission.id as string;
+};
+
+const sendNotificationEmail = async (resend: Resend, data: ContactEmailRequest) => {
+  await resend.emails.send({
+    from: "Portfolio Contact <onboarding@resend.dev>",
+    to: ["hello@iamtonde.co.za"],
+    subject: `New Contact Form Message from ${escapeHtml(data.name)}`,
+    html: `
+      <h2>New Contact Form Submission</h2>
+      <p><strong>Name:</strong> ${escapeHtml(data.name)}</p>
+      <p><strong>Email:</strong> ${escapeHtml(data.email)}</p>
+      <p><strong>Message:</strong></p>
+      <p>${formatMessageForEmail(data.message)}</p>
+      <hr>
+      <p><em>This message was sent from your portfolio contact form.</em></p>
+    `,
+  });
+};
+
+const sendConfirmationEmail = async (resend: Resend, data: ContactEmailRequest) => {
+  await resend.emails.send({
+    from: "Tonderai <onboarding@resend.dev>",
+    to: [data.email],
+    subject: "Thank you for reaching out!",
+    html: `
+      <h2>Thank you for your message, ${escapeHtml(data.name)}!</h2>
+      <p>I've received your message and will get back to you as soon as possible.</p>
+      <p><strong>Your message:</strong></p>
+      <blockquote style="border-left: 4px solid #e2e8f0; padding-left: 16px; margin: 16px 0; color: #64748b;">
+        ${formatMessageForEmail(data.message)}
+      </blockquote>
+      <p>Best regards,<br>Tonderai</p>
+      <hr>
+      <p style="font-size: 12px; color: #94a3b8;">This is an automated response from hello@iamtonde.co.za</p>
+    `,
+  });
+};
+
+const getEmailDeliveryStatus = (result: PromiseSettledResult<unknown>): EmailDeliveryStatus => {
+  return result.status === 'fulfilled' ? 'sent' : 'failed';
+};
+
+const getFailureReason = (result: PromiseSettledResult<unknown>): string => {
+  if (result.status === 'fulfilled') {
+    return '';
+  }
+
+  return result.reason instanceof Error ? result.reason.message : String(result.reason);
+};
+
+const buildSuccessMessage = (
+  notificationStatus: EmailDeliveryStatus,
+  confirmationStatus: EmailDeliveryStatus,
+) => {
+  if (notificationStatus === 'sent' && confirmationStatus === 'sent') {
+    return "Thank you for your message! I'll get back to you soon.";
+  }
+
+  return "Thank you for your message! It was received successfully, and I'll review it soon.";
 };
 
 const handler = async (req: Request): Promise<Response> => {
@@ -96,125 +243,114 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  // Get client IP for rate limiting
-  const clientIP = req.headers.get('x-forwarded-for') || 
-                   req.headers.get('x-real-ip') || 
-                   'unknown';
-
   try {
-    const rawData: ContactEmailRequest = await req.json();
-    
-    // Validate input
-    const { isValid, errors } = validateInput(rawData);
-    if (!isValid) {
-      return new Response(
-        JSON.stringify({ 
-          success: false, 
-          error: "VALIDATION_ERROR",
-          message: "Invalid input data",
-          details: errors 
-        }),
+    let rawData: unknown;
+    try {
+      rawData = await req.json();
+    } catch {
+      return jsonResponse(
         {
-          status: 400,
-          headers: { "Content-Type": "application/json", ...corsHeaders },
-        }
+          success: false,
+          error: "VALIDATION_ERROR",
+          message: "Request body must be valid JSON.",
+          details: ["Request body must be valid JSON."],
+        },
+        400,
       );
     }
-    
-    // Sanitize inputs
-    const name = sanitizeInput(rawData.name);
-    const email = sanitizeInput(rawData.email);
-    const message = sanitizeInput(rawData.message);
+
+    const { data, errors } = validateInput(rawData);
+    if (!data) {
+      return jsonResponse(
+        {
+          success: false,
+          error: "VALIDATION_ERROR",
+          message: "Invalid input data.",
+          details: errors,
+        },
+        400,
+      );
+    }
+
+    const clientIp = getClientIp(req);
+    const ipHash = clientIp ? await hashValue(clientIp) : null;
 
     // Check rate limits
     const [ipRateOk, emailRateOk] = await Promise.all([
-      checkRateLimit(clientIP, 'ip'),
-      checkRateLimit(email, 'email')
+      checkRateLimit(ipHash, 'ip'),
+      checkRateLimit(data.email, 'email')
     ]);
 
     if (!ipRateOk || !emailRateOk) {
       console.warn("Rate limit exceeded for contact form submission");
-      return new Response(
-        JSON.stringify({
+      return jsonResponse(
+        {
           success: false,
           error: "RATE_LIMIT_EXCEEDED",
           message: "Too many requests. Please wait before trying again.",
           retryAfter: 3600000 // 1 hour
-        }),
+        },
+        429,
         {
-          status: 429,
-          headers: { 
-            "Content-Type": "application/json", 
-            "Retry-After": "3600",
-            ...corsHeaders 
-          },
-        }
+          "Retry-After": "3600",
+        },
       );
     }
 
-    // Log submission (minimal data for monitoring)
-    await logSubmission({ name, email, message, ip_address: clientIP });
-
-    console.log("Processing contact form submission");
-
-    // Send notification email to yourself
-    const notificationEmail = await resend.emails.send({
-      from: "Portfolio Contact <onboarding@resend.dev>",
-      to: ["hello@iamtonde.co.za"], // Your email
-      subject: `New Contact Form Message from ${name}`,
-      html: `
-        <h2>New Contact Form Submission</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Message:</strong></p>
-        <p>${message.replace(/\n/g, '<br>')}</p>
-        <hr>
-        <p><em>This message was sent from your portfolio contact form.</em></p>
-      `,
+    const submissionId = await createSubmission({
+      ...data,
+      ip_hash: ipHash,
     });
 
-    // Send confirmation email to the sender
-    const confirmationEmail = await resend.emails.send({
-      from: "Tonderai <onboarding@resend.dev>",
-      to: [email],
-      subject: "Thank you for reaching out!",
-      html: `
-        <h2>Thank you for your message, ${name}!</h2>
-        <p>I've received your message and will get back to you as soon as possible.</p>
-        <p><strong>Your message:</strong></p>
-        <blockquote style="border-left: 4px solid #e2e8f0; padding-left: 16px; margin: 16px 0; color: #64748b;">
-          ${message.replace(/\n/g, '<br>')}
-        </blockquote>
-        <p>Best regards,<br>Tonderai</p>
-        <hr>
-        <p style="font-size: 12px; color: #94a3b8;">This is an automated response from hello@iamtonde.co.za</p>
-      `,
-    });
+    console.log("Stored contact form submission", { submissionId });
 
-    console.log("Emails sent successfully:", { 
-      notification: notificationEmail.data?.id, 
-      confirmation: confirmationEmail.data?.id 
-    });
+    const resend = getResendClient();
+    let notificationStatus: EmailDeliveryStatus = 'skipped';
+    let confirmationStatus: EmailDeliveryStatus = 'skipped';
 
-    return new Response(
-      JSON.stringify({ 
-        success: true, 
-        message: "Thank you for your message! I'll get back to you soon.",
-        emailIds: {
-          notification: notificationEmail.data?.id,
-          confirmation: confirmationEmail.data?.id
-        }
-      }),
-      {
-        status: 200,
-        headers: {
-          "Content-Type": "application/json",
-          ...corsHeaders,
-        },
+    if (!resend) {
+      console.warn("RESEND_API_KEY is not configured; contact emails were skipped", { submissionId });
+    } else {
+      const [notificationResult, confirmationResult] = await Promise.allSettled([
+        sendNotificationEmail(resend, data),
+        sendConfirmationEmail(resend, data),
+      ]);
+
+      notificationStatus = getEmailDeliveryStatus(notificationResult);
+      confirmationStatus = getEmailDeliveryStatus(confirmationResult);
+
+      if (notificationResult.status === 'rejected') {
+        console.error("Failed to send contact notification email", {
+          submissionId,
+          reason: getFailureReason(notificationResult),
+        });
       }
+
+      if (confirmationResult.status === 'rejected') {
+        console.error("Failed to send contact confirmation email", {
+          submissionId,
+          reason: getFailureReason(confirmationResult),
+        });
+      }
+    }
+
+    return jsonResponse(
+      {
+        success: true,
+        message: buildSuccessMessage(notificationStatus, confirmationStatus),
+        submissionId,
+        emailDelivery: {
+          notification: notificationStatus,
+          confirmation: confirmationStatus,
+        },
+      },
+      200,
     );
-  } catch (error: any) {
-    console.error("Error in send-contact-email function:", error.message || "Unknown error");
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    const normalizedErrorMessage = errorMessage.toLowerCase();
+
+    console.error("Error in send-contact-email function:", errorMessage);
     
     // Standardized error response
     const errorResponse = {
@@ -226,28 +362,25 @@ const handler = async (req: Request): Promise<Response> => {
     };
     
     // Handle specific error types
-    if (error.message?.includes('rate limit')) {
+    if (normalizedErrorMessage.includes('rate limit')) {
       errorResponse.error = "RATE_LIMIT_EXCEEDED";
       errorResponse.message = "Too many requests. Please wait a moment before trying again.";
       errorResponse.code = "E002";
       errorResponse.retryAfter = 60000; // 1 minute
-    } else if (error.message?.includes('network') || error.message?.includes('fetch')) {
+    } else if (normalizedErrorMessage.includes('network') || normalizedErrorMessage.includes('fetch')) {
       errorResponse.error = "NETWORK_ERROR";
       errorResponse.message = "Network connection issue. Please check your internet and try again.";
       errorResponse.code = "E003";
-    } else if (error.message?.includes('validation')) {
+    } else if (normalizedErrorMessage.includes('validation')) {
       errorResponse.error = "VALIDATION_ERROR";
       errorResponse.message = "Please check your input and try again.";
       errorResponse.code = "E004";
       errorResponse.retryAfter = 0;
     }
     
-    return new Response(
-      JSON.stringify(errorResponse),
-      {
-        status: error.message?.includes('validation') ? 400 : 500,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
-      }
+    return jsonResponse(
+      errorResponse,
+      normalizedErrorMessage.includes('validation') ? 400 : 500,
     );
   }
 };

@@ -181,6 +181,26 @@
   .gradient-rainbow {
     background: var(--gradient-rainbow);
   }
+
+  .section-shell {
+    padding-block: clamp(4.5rem, 8vw, 6.5rem);
+  }
+
+  .section-anchor {
+    scroll-margin-top: 6.5rem;
+  }
+
+  .interactive-icon-button {
+    @apply inline-flex items-center justify-center rounded-full transition-[background-color,box-shadow,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:translate-y-0.5;
+  }
+
+  .card-action-stack {
+    @apply mt-auto flex flex-col gap-3;
+  }
+
+  .card-action-button {
+    @apply h-auto min-h-11 w-full justify-center px-4 py-3 text-center leading-snug whitespace-normal;
+  }
   
   /* Enhanced animations */
   .transition-smooth {

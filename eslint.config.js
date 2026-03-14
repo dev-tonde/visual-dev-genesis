@@ -8,23 +8,24 @@ import security from "eslint-plugin-security";
 
 export default tseslint.config(
   { ignores: ["dist", "*.config.js", "*.config.ts"] },
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
+  jsxA11y.flatConfigs.recommended,
+  security.configs.recommended,
   {
-    extends: [
-      js.configs.recommended, 
-      ...tseslint.configs.recommended,
-      jsxA11y.configs.recommended,
-      security.configs.recommended
-    ],
     files: ["**/*.{ts,tsx}"],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
     },
     plugins: {
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
-      "jsx-a11y": jsxA11y,
-      "security": security,
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
@@ -63,6 +64,48 @@ export default tseslint.config(
       "security/detect-non-literal-require": "error",
       "security/detect-possible-timing-attacks": "error",
       "security/detect-pseudoRandomBytes": "error"
+    },
+  },
+  {
+    files: ["**/*.js"],
+    rules: {
+      "@typescript-eslint/no-empty-object-type": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+    },
+  },
+  {
+    files: ["public/sw.js"],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.serviceworker,
+      },
+    },
+  },
+  {
+    files: ["src/components/ui/**/*.{ts,tsx}"],
+    rules: {
+      "jsx-a11y/anchor-has-content": "off",
+      "jsx-a11y/heading-has-content": "off",
+      "security/detect-object-injection": "off",
+      "react-refresh/only-export-components": "off",
+    },
+  },
+  {
+    files: [
+      "src/components/Analytics.tsx",
+      "src/components/AuthProvider.tsx",
+      "src/components/SafeThemeProvider.tsx",
+    ],
+    rules: {
+      "react-refresh/only-export-components": "off",
+    },
+  },
+  {
+    files: ["src/components/games/**/*.{ts,tsx}", "src/config/**/*.{ts,tsx}"],
+    rules: {
+      "security/detect-object-injection": "off",
     },
   }
 );
