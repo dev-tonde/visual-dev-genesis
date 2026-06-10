@@ -113,9 +113,7 @@ describe('Projects', () => {
     expect(screen.queryByText(/Add verified metric/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/add recruiter reply rate/i)).not.toBeInTheDocument();
     // Verified proof outcomes still render.
-    expect(
-      screen.getByText(/present the portfolio as a maintained product/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/present the portfolio as a maintained product/i)).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /live repository feed/i })).toBeInTheDocument();
   });
 

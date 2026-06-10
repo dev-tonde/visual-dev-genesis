@@ -1,5 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ArrowLeft, CarFront, Gauge, Pause, Play, RotateCcw, Save, ShieldAlert, Wrench, Zap } from 'lucide-react';
+import {
+  ArrowLeft,
+  CarFront,
+  Gauge,
+  Pause,
+  Play,
+  RotateCcw,
+  Save,
+  ShieldAlert,
+  Wrench,
+  Zap,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -256,8 +267,14 @@ const URBAN_RUN_SAVE_KEY = 'urban-run-save-v2';
 const TRAFFIC_COLORS = ['#7ed0ff', '#ff8ea1', '#ffe16d', '#72f0bb', '#8fc2ff', '#ffad5f'];
 const PEDESTRIAN_TONES = ['#ffddc1', '#f7c59f', '#d9a273', '#9f6b53', '#7e4c39'];
 
-const ROADS_X = Array.from({ length: WORLD_WIDTH / BLOCK_SIZE - 1 }, (_value, index) => (index + 1) * BLOCK_SIZE);
-const ROADS_Y = Array.from({ length: WORLD_HEIGHT / BLOCK_SIZE - 1 }, (_value, index) => (index + 1) * BLOCK_SIZE);
+const ROADS_X = Array.from(
+  { length: WORLD_WIDTH / BLOCK_SIZE - 1 },
+  (_value, index) => (index + 1) * BLOCK_SIZE
+);
+const ROADS_Y = Array.from(
+  { length: WORLD_HEIGHT / BLOCK_SIZE - 1 },
+  (_value, index) => (index + 1) * BLOCK_SIZE
+);
 
 const AREAS: Area[] = [
   { name: 'Downtown Grid', x: 0, y: 0, w: 1440, h: 1440 },
@@ -282,7 +299,8 @@ const angleLerp = (start: number, end: number, amount: number) => {
 };
 
 const getArea = (x: number, y: number) =>
-  AREAS.find((area) => x >= area.x && x < area.x + area.w && y >= area.y && y < area.y + area.h) ?? AREAS[0];
+  AREAS.find((area) => x >= area.x && x < area.x + area.w && y >= area.y && y < area.y + area.h) ??
+  AREAS[0];
 
 const nearestRoadX = (x: number) => {
   let best = ROADS_X[0];
@@ -612,10 +630,16 @@ const buildHudSnapshot = (runtime: UrbanRunRuntime): HudSnapshot => {
     : Math.hypot(runtime.player.vx, runtime.player.vy);
   const vehicleHp = runtime.player.inCar ? runtime.player.inCar.hp : 0;
   const target = getMissionTarget(runtime);
-  const objectiveDistance = target ? Math.round(dist(runtime.player.x, runtime.player.y, target.x, target.y)) : null;
+  const objectiveDistance = target
+    ? Math.round(dist(runtime.player.x, runtime.player.y, target.x, target.y))
+    : null;
   const missionCopy = buildMissionCopy(runtime);
   const heatLabel =
-    runtime.wanted >= 70 ? 'Full pursuit' : runtime.wanted >= 35 ? 'On police radar' : 'Low profile';
+    runtime.wanted >= 70
+      ? 'Full pursuit'
+      : runtime.wanted >= 35
+        ? 'On police radar'
+        : 'Low profile';
 
   return {
     areaName: getArea(runtime.player.x, runtime.player.y).name,
@@ -647,8 +671,14 @@ const drawBackground = (
   const daylight = (Math.sin((phase / DAY_LENGTH) * Math.PI * 2 - Math.PI / 2) + 1) / 2;
   const sky = ctx.createLinearGradient(0, 0, 0, canvasHeight);
 
-  sky.addColorStop(0, `rgba(${Math.floor(8 + daylight * 26)}, ${Math.floor(16 + daylight * 32)}, ${Math.floor(34 + daylight * 46)}, 1)`);
-  sky.addColorStop(1, `rgba(${Math.floor(18 + daylight * 42)}, ${Math.floor(24 + daylight * 38)}, ${Math.floor(34 + daylight * 50)}, 1)`);
+  sky.addColorStop(
+    0,
+    `rgba(${Math.floor(8 + daylight * 26)}, ${Math.floor(16 + daylight * 32)}, ${Math.floor(34 + daylight * 46)}, 1)`
+  );
+  sky.addColorStop(
+    1,
+    `rgba(${Math.floor(18 + daylight * 42)}, ${Math.floor(24 + daylight * 38)}, ${Math.floor(34 + daylight * 50)}, 1)`
+  );
 
   ctx.fillStyle = sky;
   ctx.fillRect(0, 0, canvasWidth, canvasHeight);
@@ -948,13 +978,21 @@ const drawUrbanRun = (
   drawBackground(ctx, runtime.phase, canvasWidth, canvasHeight);
 
   ctx.save();
-  ctx.translate(-runtime.camera.x + canvasWidth / 2 + shakeX, -runtime.camera.y + canvasHeight / 2 + shakeY);
+  ctx.translate(
+    -runtime.camera.x + canvasWidth / 2 + shakeX,
+    -runtime.camera.y + canvasHeight / 2 + shakeY
+  );
 
   ctx.fillStyle = '#132318';
   ctx.fillRect(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
 
   for (const decor of runtime.decor) {
-    if (decor.x + decor.w < view.left || decor.x > view.right || decor.y + decor.h < view.top || decor.y > view.bottom) {
+    if (
+      decor.x + decor.w < view.left ||
+      decor.x > view.right ||
+      decor.y + decor.h < view.top ||
+      decor.y > view.bottom
+    ) {
       continue;
     }
 
@@ -965,7 +1003,7 @@ const drawUrbanRun = (
         ctx.fillStyle = `rgba(62, ${120 + index * 7}, 76, 0.55)`;
         ctx.beginPath();
         ctx.arc(
-          decor.x + 18 + (index * 31) % (decor.w - 30),
+          decor.x + 18 + ((index * 31) % (decor.w - 30)),
           decor.y + 20 + ((index * 47) % (decor.h - 30)),
           10 + (index % 3) * 4,
           0,
@@ -985,7 +1023,7 @@ const drawUrbanRun = (
       const rows = Math.max(2, Math.floor(decor.h / 34));
       for (let row = 0; row < rows; row += 1) {
         for (let column = 0; column < columns; column += 1) {
-          const lit = ((column * 17 + row * 19 + Math.floor(runtime.phase * 9)) % 7) < 3;
+          const lit = (column * 17 + row * 19 + Math.floor(runtime.phase * 9)) % 7 < 3;
           ctx.fillStyle = lit ? 'rgba(255, 232, 146, 0.18)' : 'rgba(115, 135, 170, 0.12)';
           ctx.fillRect(
             decor.x + 12 + column * ((decor.w - 24) / columns),
@@ -1121,15 +1159,7 @@ const drawUrbanRun = (
   drawOverlay(ctx, runtime, canvasWidth, canvasHeight);
 };
 
-const StatBar = ({
-  label,
-  value,
-  tint,
-}: {
-  label: string;
-  value: string;
-  tint: string;
-}) => (
+const StatBar = ({ label, value, tint }: { label: string; value: string; tint: string }) => (
   <div className="space-y-2">
     <div className="flex items-center justify-between text-sm">
       <span className="text-muted-foreground">{label}</span>
@@ -1260,7 +1290,10 @@ const UrbanRunGame = ({ onBack }: UrbanRunGameProps) => {
       runtime.wanted = clamp(runtime.wanted + amount, 0, 100);
       runtime.wantedCooldown = 10;
 
-      if (Math.floor(previousWanted / 25) < Math.floor(runtime.wanted / 25) && runtime.wanted >= 25) {
+      if (
+        Math.floor(previousWanted / 25) < Math.floor(runtime.wanted / 25) &&
+        runtime.wanted >= 25
+      ) {
         addToast('Heat rising', note ?? 'More police units are triangulating your route.', 'warn');
       }
 
@@ -1489,14 +1522,22 @@ const UrbanRunGame = ({ onBack }: UrbanRunGameProps) => {
       car.occupied = false;
       car.speed *= 0.72;
 
-      addToast('On foot', 'Jog to another vehicle or cut across the block for a tighter line.', 'neutral');
+      addToast(
+        'On foot',
+        'Jog to another vehicle or cut across the block for a tighter line.',
+        'neutral'
+      );
     };
 
     const repairVehicle = (runtime: UrbanRunRuntime) => {
       const car = runtime.player.inCar;
 
       if (!car) {
-        addToast('No vehicle active', 'Jump into a ride first. The repair kit only works from inside the car.', 'warn');
+        addToast(
+          'No vehicle active',
+          'Jump into a ride first. The repair kit only works from inside the car.',
+          'warn'
+        );
         return;
       }
 
@@ -1506,7 +1547,11 @@ const UrbanRunGame = ({ onBack }: UrbanRunGameProps) => {
       }
 
       if (runtime.player.money < 90) {
-        addToast('Not enough cash', 'Repairs cost $90. Chain a mission or a few near misses first.', 'warn');
+        addToast(
+          'Not enough cash',
+          'Repairs cost $90. Chain a mission or a few near misses first.',
+          'warn'
+        );
         return;
       }
 
@@ -1527,7 +1572,11 @@ const UrbanRunGame = ({ onBack }: UrbanRunGameProps) => {
         ) {
           mission.stage = 'dropoff';
           runtime.boostMeter = clamp(runtime.boostMeter + 12, 0, 100);
-          addToast('Package loaded', 'The drop zone is green. Punch it and keep the streak alive.', 'good');
+          addToast(
+            'Package loaded',
+            'The drop zone is green. Punch it and keep the streak alive.',
+            'good'
+          );
           return;
         }
 
@@ -1543,7 +1592,9 @@ const UrbanRunGame = ({ onBack }: UrbanRunGameProps) => {
     const saveGame = (runtime: UrbanRunRuntime, manual: boolean) => {
       if (typeof window === 'undefined') return;
 
-      const mission = runtime.activeMission ? JSON.parse(JSON.stringify(runtime.activeMission)) : null;
+      const mission = runtime.activeMission
+        ? JSON.parse(JSON.stringify(runtime.activeMission))
+        : null;
       const payload: SavedGame = {
         player: {
           x: runtime.player.x,
@@ -1581,7 +1632,11 @@ const UrbanRunGame = ({ onBack }: UrbanRunGameProps) => {
         syncSaveAvailability();
         setSaveStatus(`${manual ? 'Saved' : 'Autosaved'} ${formatTimestamp()}`);
         if (manual) {
-          addToast('Run saved', 'Your current city state is in local storage and ready to continue.', 'good');
+          addToast(
+            'Run saved',
+            'Your current city state is in local storage and ready to continue.',
+            'good'
+          );
         }
       } catch {
         addToast('Save failed', 'Local storage is unavailable in this browser session.', 'bad');
@@ -1622,7 +1677,10 @@ const UrbanRunGame = ({ onBack }: UrbanRunGameProps) => {
         clearMissionMarkers(runtime);
         if (runtime.activeMission) {
           if (runtime.activeMission.type === 'courier') {
-            runtime.missionMarkers.push(runtime.activeMission.pickup, runtime.activeMission.dropoff);
+            runtime.missionMarkers.push(
+              runtime.activeMission.pickup,
+              runtime.activeMission.dropoff
+            );
           } else if (runtime.activeMission.type === 'race') {
             runtime.missionMarkers.push(...runtime.activeMission.checkpoints);
           }
@@ -1667,7 +1725,11 @@ const UrbanRunGame = ({ onBack }: UrbanRunGameProps) => {
         syncSaveAvailability();
 
         if (announce) {
-          addToast('Save loaded', 'Your last run is live again. Keep the combo from slipping.', 'good');
+          addToast(
+            'Save loaded',
+            'Your last run is live again. Keep the combo from slipping.',
+            'good'
+          );
         }
 
         return true;
@@ -1693,7 +1755,11 @@ const UrbanRunGame = ({ onBack }: UrbanRunGameProps) => {
       runtimeRef.current = runtime;
       setSaveStatus('Fresh run started. Autosaves every 18 seconds.');
       syncHud();
-      addToast('City live', 'Boost with Shift, drift with Space, and keep the objective arrow in view.', 'good');
+      addToast(
+        'City live',
+        'Boost with Shift, drift with Space, and keep the objective arrow in view.',
+        'good'
+      );
     };
 
     const continueSavedRun = () => {
@@ -1738,7 +1804,18 @@ const UrbanRunGame = ({ onBack }: UrbanRunGameProps) => {
     };
 
     const normalizeKey = (key: string) => key.toLowerCase();
-    const movementKeys = new Set(['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'shift', ' ']);
+    const movementKeys = new Set([
+      'w',
+      'a',
+      's',
+      'd',
+      'arrowup',
+      'arrowdown',
+      'arrowleft',
+      'arrowright',
+      'shift',
+      ' ',
+    ]);
 
     const handleKeyDown = (event: KeyboardEvent) => {
       const key = normalizeKey(event.key);
@@ -1761,7 +1838,12 @@ const UrbanRunGame = ({ onBack }: UrbanRunGameProps) => {
         } else {
           const car = nearestFreeCar(runtime);
           if (car) enterCar(runtime, car);
-          else addToast('No ride nearby', 'Move closer to a parked or stalled vehicle to hop in.', 'warn');
+          else
+            addToast(
+              'No ride nearby',
+              'Move closer to a parked or stalled vehicle to hop in.',
+              'warn'
+            );
         }
         syncHud();
         return;
@@ -1904,7 +1986,11 @@ const UrbanRunGame = ({ onBack }: UrbanRunGameProps) => {
         }
 
         if (car.hp <= 0) {
-          addToast('Ride totaled', 'A recovery vehicle is inbound so the run does not lose momentum.', 'bad');
+          addToast(
+            'Ride totaled',
+            'A recovery vehicle is inbound so the run does not lose momentum.',
+            'bad'
+          );
           respawnPlayer(runtime, 'your car getting totaled');
         }
       } else {
@@ -1983,7 +2069,10 @@ const UrbanRunGame = ({ onBack }: UrbanRunGameProps) => {
           }
         }
 
-        if (dist(aheadX, aheadY, runtime.player.x, runtime.player.y) < (runtime.player.inCar ? 34 : 24)) {
+        if (
+          dist(aheadX, aheadY, runtime.player.x, runtime.player.y) <
+          (runtime.player.inCar ? 34 : 24)
+        ) {
           blocked = true;
         }
 
@@ -2216,7 +2305,10 @@ const UrbanRunGame = ({ onBack }: UrbanRunGameProps) => {
 
       if (runtime.activeMission.type === 'race') {
         const checkpoint = runtime.activeMission.checkpoints[runtime.activeMission.index];
-        if (checkpoint && dist(runtime.player.x, runtime.player.y, checkpoint.x, checkpoint.y) < 50) {
+        if (
+          checkpoint &&
+          dist(runtime.player.x, runtime.player.y, checkpoint.x, checkpoint.y) < 50
+        ) {
           runtime.activeMission.index += 1;
           addCombo(runtime, 1, 'Checkpoint stitched into the line');
           runtime.boostMeter = clamp(runtime.boostMeter + 10, 0, 100);
@@ -2291,7 +2383,9 @@ const UrbanRunGame = ({ onBack }: UrbanRunGameProps) => {
         return;
       }
 
-      const delta = runtime.lastTime ? Math.min((timestamp - runtime.lastTime) / 1000, 0.033) : 0.016;
+      const delta = runtime.lastTime
+        ? Math.min((timestamp - runtime.lastTime) / 1000, 0.033)
+        : 0.016;
       runtime.lastTime = timestamp;
 
       if (runtime.gameStarted && !runtime.paused) {
@@ -2355,7 +2449,12 @@ const UrbanRunGame = ({ onBack }: UrbanRunGameProps) => {
       <div className="container mx-auto max-w-7xl space-y-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex flex-wrap items-center gap-3">
-            <Button onClick={onBack} variant="outline" size="lg" className="border-white/10 bg-white/5 hover:bg-white/10">
+            <Button
+              onClick={onBack}
+              variant="outline"
+              size="lg"
+              className="border-white/10 bg-white/5 hover:bg-white/10"
+            >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Demos
             </Button>
@@ -2420,7 +2519,9 @@ const UrbanRunGame = ({ onBack }: UrbanRunGameProps) => {
                             {isStarted ? 'Run Paused' : 'Urban Run'}
                           </h1>
                           <p className="mt-4 max-w-2xl text-base leading-7 text-slate-300">
-                            This React port keeps the city grid, courier and checkpoint loops, and police heat from the prototype, then adds a faster start, boost, drift chaining, near-miss combos, and a cleaner save flow.
+                            This React port keeps the city grid, courier and checkpoint loops, and
+                            police heat from the prototype, then adds a faster start, boost, drift
+                            chaining, near-miss combos, and a cleaner save flow.
                           </p>
                         </div>
 
@@ -2430,7 +2531,8 @@ const UrbanRunGame = ({ onBack }: UrbanRunGameProps) => {
                               Boost
                             </div>
                             <p className="mt-2 text-sm leading-6 text-slate-200">
-                              Hold Shift in a car to burn boost. Drift long enough and the tank refills faster.
+                              Hold Shift in a car to burn boost. Drift long enough and the tank
+                              refills faster.
                             </p>
                           </div>
                           <div className="rounded-2xl border border-white/8 bg-white/5 p-4">
@@ -2438,7 +2540,8 @@ const UrbanRunGame = ({ onBack }: UrbanRunGameProps) => {
                               Combo
                             </div>
                             <p className="mt-2 text-sm leading-6 text-slate-200">
-                              Near misses, drifts, and checkpoints build a streak that pays bonus cash on the fly.
+                              Near misses, drifts, and checkpoints build a streak that pays bonus
+                              cash on the fly.
                             </p>
                           </div>
                           <div className="rounded-2xl border border-white/8 bg-white/5 p-4">
@@ -2446,7 +2549,8 @@ const UrbanRunGame = ({ onBack }: UrbanRunGameProps) => {
                               Persistence
                             </div>
                             <p className="mt-2 text-sm leading-6 text-slate-200">
-                              Autosaves keep the city state warm, and recovery rides stop hard crashes from killing the pace.
+                              Autosaves keep the city state warm, and recovery rides stop hard
+                              crashes from killing the pace.
                             </p>
                           </div>
                         </div>
@@ -2506,7 +2610,8 @@ const UrbanRunGame = ({ onBack }: UrbanRunGameProps) => {
                         </div>
 
                         <div className="text-sm text-slate-400">
-                          Controls: `WASD` or arrows drive, `Shift` boosts or sprints, `Space` drifts, `E` swaps vehicles, `F` interacts, `R` repairs, `P` pauses.
+                          Controls: `WASD` or arrows drive, `Shift` boosts or sprints, `Space`
+                          drifts, `E` swaps vehicles, `F` interacts, `R` repairs, `P` pauses.
                         </div>
                       </div>
                     </div>
@@ -2542,7 +2647,9 @@ const UrbanRunGame = ({ onBack }: UrbanRunGameProps) => {
                     <div className="text-3xl font-black text-white">{hud.speedKmh} km/h</div>
                   </div>
                   <div className="space-y-1">
-                    <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Objective</div>
+                    <div className="text-xs uppercase tracking-[0.2em] text-slate-400">
+                      Objective
+                    </div>
                     <div className="text-3xl font-black text-white">
                       {hud.objectiveDistance ? `${hud.objectiveDistance}m` : 'Heat break'}
                     </div>
@@ -2550,14 +2657,26 @@ const UrbanRunGame = ({ onBack }: UrbanRunGameProps) => {
                 </div>
 
                 <div className="grid gap-4">
-                  <StatBar label="Health" value={`${hud.health}%`} tint="bg-gradient-to-r from-rose-400 to-rose-500" />
+                  <StatBar
+                    label="Health"
+                    value={`${hud.health}%`}
+                    tint="bg-gradient-to-r from-rose-400 to-rose-500"
+                  />
                   <StatBar
                     label="Vehicle integrity"
                     value={`${hud.hasVehicle ? hud.vehicleHp : 0}%`}
                     tint="bg-gradient-to-r from-cyan-400 to-sky-500"
                   />
-                  <StatBar label="Police heat" value={`${hud.wanted}%`} tint="bg-gradient-to-r from-amber-300 to-amber-500" />
-                  <StatBar label="Boost reserve" value={`${hud.boost}%`} tint="bg-gradient-to-r from-emerald-300 to-emerald-500" />
+                  <StatBar
+                    label="Police heat"
+                    value={`${hud.wanted}%`}
+                    tint="bg-gradient-to-r from-amber-300 to-amber-500"
+                  />
+                  <StatBar
+                    label="Boost reserve"
+                    value={`${hud.boost}%`}
+                    tint="bg-gradient-to-r from-emerald-300 to-emerald-500"
+                  />
                   <StatBar
                     label="Combo timer"
                     value={`${Math.round(hud.comboTimerRatio * 100)}%`}
@@ -2567,19 +2686,29 @@ const UrbanRunGame = ({ onBack }: UrbanRunGameProps) => {
 
                 <div className="grid gap-3 rounded-2xl border border-white/8 bg-white/5 p-4 sm:grid-cols-2">
                   <div>
-                    <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Current combo</div>
+                    <div className="text-xs uppercase tracking-[0.2em] text-slate-400">
+                      Current combo
+                    </div>
                     <div className="mt-2 text-2xl font-black text-white">x{hud.combo}</div>
                   </div>
                   <div>
-                    <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Heat state</div>
+                    <div className="text-xs uppercase tracking-[0.2em] text-slate-400">
+                      Heat state
+                    </div>
                     <div className="mt-2 text-lg font-semibold text-slate-100">{hud.heatLabel}</div>
                   </div>
                   <div>
-                    <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Missions cleared</div>
-                    <div className="mt-2 text-2xl font-black text-white">{hud.missionsCompleted}</div>
+                    <div className="text-xs uppercase tracking-[0.2em] text-slate-400">
+                      Missions cleared
+                    </div>
+                    <div className="mt-2 text-2xl font-black text-white">
+                      {hud.missionsCompleted}
+                    </div>
                   </div>
                   <div>
-                    <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Mission timer</div>
+                    <div className="text-xs uppercase tracking-[0.2em] text-slate-400">
+                      Mission timer
+                    </div>
                     <div className="mt-2 text-2xl font-black text-white">
                       {hud.missionTimer ? `${hud.missionTimer}s` : 'Waiting'}
                     </div>
@@ -2666,22 +2795,26 @@ const UrbanRunGame = ({ onBack }: UrbanRunGameProps) => {
                       <span className="font-medium">Boost and drift</span>
                     </div>
                     <p className="mt-2 leading-6">
-                      Hold <span className="font-semibold text-white">Shift</span> to boost. Tap into
-                      <span className="font-semibold text-white"> Space</span> on corners to drift, build the combo, and recharge boost faster.
+                      Hold <span className="font-semibold text-white">Shift</span> to boost. Tap
+                      into
+                      <span className="font-semibold text-white"> Space</span> on corners to drift,
+                      build the combo, and recharge boost faster.
                     </p>
                   </div>
 
                   <div className="rounded-2xl border border-white/8 bg-white/5 p-4">
                     <div className="font-medium text-white">Keys</div>
                     <p className="mt-2 leading-6">
-                      `WASD` or arrows move, `E` swaps vehicles, `F` interacts with courier rings, `R` repairs, and `P` pauses instantly.
+                      `WASD` or arrows move, `E` swaps vehicles, `F` interacts with courier rings,
+                      `R` repairs, and `P` pauses instantly.
                     </p>
                   </div>
 
                   <div className="rounded-2xl border border-white/8 bg-white/5 p-4">
                     <div className="font-medium text-white">Flow</div>
                     <p className="mt-2 leading-6">
-                      Open with the starter car, keep the objective arrow in sight, and treat near misses as cash and combo fuel instead of pure risk.
+                      Open with the starter car, keep the objective arrow in sight, and treat near
+                      misses as cash and combo fuel instead of pure risk.
                     </p>
                   </div>
                 </div>

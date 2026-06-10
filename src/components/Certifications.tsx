@@ -70,8 +70,7 @@ const Certifications = () => {
         id: 'edu-coursework',
         title: 'Additional Coursework',
         issuer: 'LinkedIn Learning',
-        description:
-          'Ongoing professional development across modern front-end engineering topics.',
+        description: 'Ongoing professional development across modern front-end engineering topics.',
         skills: ['React', 'Next.js', 'TypeScript', 'Accessibility', 'Performance', 'CI/CD'],
       },
     ],

@@ -64,10 +64,10 @@ const AboutMe = () => {
             <CardContent className="p-8">
               <div className="space-y-4 text-foreground/90 leading-relaxed">
                 <p>
-                  Hey there! I'm Tonderai, a senior front-end developer with 8+ years of
-                  experience creating performant, accessible web experiences. I've honed my craft
-                  across modern frameworks like React and Next.js as well as CMS platforms like
-                  WordPress and Drupal, building interfaces that users love.
+                  Hey there! I'm Tonderai, a senior front-end developer with 8+ years of experience
+                  creating performant, accessible web experiences. I've honed my craft across modern
+                  frameworks like React and Next.js as well as CMS platforms like WordPress and
+                  Drupal, building interfaces that users love.
                 </p>
                 <p>
                   My journey in tech started with a curiosity about how things work on the web. That

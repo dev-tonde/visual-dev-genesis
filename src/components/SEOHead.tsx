@@ -137,7 +137,10 @@ const SEOHead = ({
       <meta property="og:image:secure_url" content={`${url}${image}`} />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
-      <meta property="og:image:alt" content="Tonderai Matanga - Senior Front-End Developer Portfolio" />
+      <meta
+        property="og:image:alt"
+        content="Tonderai Matanga - Senior Front-End Developer Portfolio"
+      />
       <meta property="og:image:type" content="image/jpeg" />
       <meta property="og:site_name" content="Tonderai Matanga Portfolio" />
       <meta property="og:locale" content="en_US" />
@@ -148,7 +151,10 @@ const SEOHead = ({
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={`${url}${image}`} />
-      <meta name="twitter:image:alt" content="Tonderai Matanga - Senior Front-End Developer Portfolio" />
+      <meta
+        name="twitter:image:alt"
+        content="Tonderai Matanga - Senior Front-End Developer Portfolio"
+      />
 
       {/* App and Performance Meta Tags */}
       <meta name="theme-color" content="#8B5CF6" />
