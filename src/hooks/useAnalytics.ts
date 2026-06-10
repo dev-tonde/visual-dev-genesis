@@ -21,7 +21,9 @@ export const useAnalytics = () => {
     setIsDNTEnabled(dntEnabled);
 
     if (dntEnabled) {
-      console.log('Analytics disabled: Do Not Track is enabled');
+      if (import.meta.env.DEV) {
+        console.debug('Analytics disabled: Do Not Track is enabled');
+      }
       return;
     }
 

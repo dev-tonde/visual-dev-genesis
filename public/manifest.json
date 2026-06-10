@@ -1,7 +1,7 @@
 {
-  "name": "Tonderai Matanga - Full Stack Developer",
+  "name": "Tonderai Matanga - Senior Front-End Developer",
   "short_name": "Tonderai Portfolio",
-  "description": "Professional portfolio showcasing full-stack development skills and projects",
+  "description": "Portfolio of Tonderai Matanga, senior front-end developer working with React, TypeScript, Next.js, WordPress, and Drupal.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
@@ -14,9 +14,9 @@
       "type": "image/x-icon"
     },
     {
-      "src": "/og-image.jpg",
+      "src": "/icon-512.png",
       "sizes": "512x512",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ],

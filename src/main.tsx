@@ -5,18 +5,9 @@ import './index.css';
 // Register the service worker in one place for a minimal offline fallback.
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker
-      .register('/sw.js')
-      .then((registration) => {
-        if (import.meta.env.DEV) {
-          console.log('SW registered: ', registration);
-        }
-      })
-      .catch((registrationError) => {
-        if (import.meta.env.DEV) {
-          console.log('SW registration failed: ', registrationError);
-        }
-      });
+    navigator.serviceWorker.register('/sw.js').catch(() => {
+      // Non-fatal: the site works without the offline fallback.
+    });
   });
 }
 

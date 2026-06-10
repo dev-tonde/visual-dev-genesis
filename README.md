@@ -1,6 +1,8 @@
 # Tonderai Matanga Portfolio
 
-Portfolio site built with React, TypeScript, Vite, Tailwind, Supabase, and the GitHub API.
+Portfolio of Tonderai Matanga — senior front-end developer (React, TypeScript, Next.js, WordPress, Drupal). Live at [iamtonde.co.za](https://iamtonde.co.za).
+
+Built with React, TypeScript, Vite, Tailwind, Supabase, and the GitHub API.
 
 ## Requirements
 

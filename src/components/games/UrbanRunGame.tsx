@@ -2120,7 +2120,7 @@ const UrbanRunGame = ({ onBack }: UrbanRunGameProps) => {
       }
     };
 
-    const solveCollisions = (runtime: UrbanRunRuntime, dt: number) => {
+    const solveCollisions = (runtime: UrbanRunRuntime) => {
       const movers = [...runtime.cars, ...runtime.police];
 
       for (let first = 0; first < movers.length; first += 1) {
@@ -2304,7 +2304,7 @@ const UrbanRunGame = ({ onBack }: UrbanRunGameProps) => {
         updatePedestrians(runtime, delta);
         updatePolice(runtime, delta);
         checkNearMisses(runtime);
-        solveCollisions(runtime, delta);
+        solveCollisions(runtime);
         updateMission(runtime, delta);
         updateWanted(runtime, delta);
         updateParticles(runtime, delta);
@@ -2332,6 +2332,8 @@ const UrbanRunGame = ({ onBack }: UrbanRunGameProps) => {
     window.addEventListener('keyup', handleKeyUp);
     window.addEventListener('blur', handleBlur);
 
+    const toastTimers = toastTimerRef.current;
+
     return () => {
       if (frameRef.current !== null) {
         cancelAnimationFrame(frameRef.current);
@@ -2342,7 +2344,7 @@ const UrbanRunGame = ({ onBack }: UrbanRunGameProps) => {
       window.removeEventListener('keyup', handleKeyUp);
       window.removeEventListener('blur', handleBlur);
 
-      for (const timeout of toastTimerRef.current) {
+      for (const timeout of toastTimers) {
         window.clearTimeout(timeout);
       }
     };

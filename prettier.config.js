@@ -11,7 +11,6 @@ export default {
   bracketSameLine: false,
   quoteProps: 'as-needed',
   jsxSingleQuote: false,
-  plugins: ['@tailwindcss/typography'],
   overrides: [
     {
       files: '*.{js,jsx,ts,tsx}',

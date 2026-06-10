@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { Card, CardContent } from '@/components/ui/card';
-import { Code2, Palette, Gamepad2, Music, Coffee, Plane } from 'lucide-react';
+import { Briefcase, Code2, Palette, Gamepad2, Music, Coffee, Plane } from 'lucide-react';
 import SectionHeading from '@/components/SectionHeading';
+import { EXPERIENCE } from '@/config/experience';
 
 const AboutMe = () => {
   const [ref, inView] = useInView({
@@ -63,10 +64,10 @@ const AboutMe = () => {
             <CardContent className="p-8">
               <div className="space-y-4 text-foreground/90 leading-relaxed">
                 <p>
-                  Hey there! I'm Tonderai, a passionate senior front-end developer with a love for
-                  creating beautiful, performant, and accessible web experiences. With years of
-                  experience in the industry, I've honed my craft in building scalable applications
-                  that users love.
+                  Hey there! I'm Tonderai, a senior front-end developer with 8+ years of
+                  experience creating performant, accessible web experiences. I've honed my craft
+                  across modern frameworks like React and Next.js as well as CMS platforms like
+                  WordPress and Drupal, building interfaces that users love.
                 </p>
                 <p>
                   My journey in tech started with a curiosity about how things work on the web. That
@@ -87,6 +88,43 @@ const AboutMe = () => {
         </motion.div>
 
         <motion.div variants={itemVariants}>
+          <h3 className="text-2xl font-bold mb-6 text-center">Experience</h3>
+          <div className="space-y-4 mb-12">
+            {EXPERIENCE.map((role) => (
+              <Card
+                key={role.company}
+                className="glass-vibrant border-0 shadow-sm hover:shadow-md transition-shadow"
+              >
+                <CardContent className="p-6">
+                  <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
+                    <div className="flex items-center gap-2">
+                      <Briefcase className="w-4 h-4 text-primary" aria-hidden="true" />
+                      <p className="font-semibold">
+                        {role.title} · <span className="text-foreground/80">{role.company}</span>
+                      </p>
+                    </div>
+                    <p className="text-sm text-muted-foreground whitespace-nowrap">{role.period}</p>
+                  </div>
+                  <p className="mt-3 text-sm leading-6 text-foreground/80">{role.summary}</p>
+                  <ul className="mt-3 space-y-1.5">
+                    {role.highlights.map((highlight) => (
+                      <li
+                        key={highlight}
+                        className="flex items-start text-sm leading-6 text-muted-foreground"
+                      >
+                        <span
+                          className="mt-2.5 mr-3 h-1.5 w-1.5 shrink-0 rounded-full bg-primary"
+                          aria-hidden="true"
+                        />
+                        {highlight}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
           <h3 className="text-2xl font-bold mb-6 text-center">My Hobbies & Interests</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {hobbies.map((hobby) => (

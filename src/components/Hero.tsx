@@ -58,7 +58,8 @@ const Hero = () => {
             <DynamicGreeting />, I'm {PROFILE.firstName}
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto">
-            Full-stack developer building React, TypeScript, and product-focused web applications.
+            Senior front-end developer building accessible, high-performance web experiences with
+            React, TypeScript, and Next.js.
           </p>
         </motion.div>
 

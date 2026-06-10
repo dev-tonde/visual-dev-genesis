@@ -1,4 +1,4 @@
-const OFFLINE_CACHE = 'offline-v1';
+const OFFLINE_CACHE = 'offline-v2';
 const OFFLINE_URLS = ['/offline.html', '/manifest.json', '/favicon.ico', '/og-image.jpg'];
 
 self.addEventListener('install', (event) => {

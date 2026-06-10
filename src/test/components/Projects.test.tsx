@@ -99,7 +99,7 @@ describe('Projects', () => {
     refetchMock.mockReset();
   });
 
-  it('shows curated case studies with honest metric placeholders alongside the live feed', () => {
+  it('shows curated case studies with only verified outcomes alongside the live feed', () => {
     mockHookState({
       status: 'error',
       error: buildError('GitHub API error: 503 Service Unavailable'),
@@ -109,11 +109,12 @@ describe('Projects', () => {
 
     expect(screen.getByRole('heading', { name: /selected case studies/i })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /visual dev genesis/i })).toBeInTheDocument();
-    expect(screen.getAllByText(/Add verified metric/i).length).toBeGreaterThan(1);
+    // Placeholder/editor-note outcomes must never render publicly.
+    expect(screen.queryByText(/Add verified metric/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/add recruiter reply rate/i)).not.toBeInTheDocument();
+    // Verified proof outcomes still render.
     expect(
-      screen.getByText(
-        /Add recruiter reply rate, interview conversion, or qualified inbound lead count/i
-      )
+      screen.getByText(/present the portfolio as a maintained product/i)
     ).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /live repository feed/i })).toBeInTheDocument();
   });

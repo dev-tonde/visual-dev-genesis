@@ -12,12 +12,12 @@ interface SEOHeadProps {
 }
 
 const SEOHead = ({
-  title = 'Tonderai Matanga | Full-Stack Developer',
-  description = 'Full-stack developer building React, TypeScript, and product-focused web applications. Case studies, live GitHub work, and contact details.',
+  title = 'Tonderai Matanga | Senior Front-End Developer',
+  description = 'Senior front-end developer with 8+ years of experience building accessible, high-performance web experiences with React, TypeScript, Next.js, WordPress, and Drupal. Case studies, live GitHub work, and contact details.',
   url = 'https://iamtonde.co.za',
   image = '/og-image.jpg',
   type = 'website',
-  keywords = 'full-stack developer, React developer, TypeScript developer, web application developer, developer portfolio, case studies',
+  keywords = 'senior front-end developer, front-end engineer, React developer, TypeScript developer, Next.js developer, WordPress developer, Drupal theming, web accessibility, developer portfolio, case studies',
   noIndex = false,
 }: SEOHeadProps) => {
   const robotsContent = noIndex
@@ -31,7 +31,7 @@ const SEOHead = ({
     name: 'Tonderai Matanga',
     givenName: 'Tonderai',
     familyName: 'Matanga',
-    jobTitle: 'Full Stack Developer & UI/UX Designer',
+    jobTitle: 'Senior Front-End Developer',
     description: description,
     url: url,
     image: {
@@ -50,54 +50,47 @@ const SEOHead = ({
     sameAs: [...PROFILE_SAME_AS_URLS],
     worksFor: {
       '@type': 'Organization',
-      name: 'Freelance Developer',
+      name: 'Retail Capital (TymeBank)',
     },
     hasOccupation: {
       '@type': 'Occupation',
-      name: 'Full Stack Developer',
+      name: 'Senior Front-End Developer',
       occupationalCategory: 'Software Development',
       skills: [
         'React',
         'TypeScript',
-        'JavaScript',
-        'Node.js',
-        'Python',
+        'JavaScript (ES6+)',
         'Next.js',
-        'Vue.js',
-        'Express.js',
-        'PostgreSQL',
-        'MongoDB',
-        'UI/UX Design',
+        'Vue',
+        'Svelte',
+        'HTML5',
+        'CSS3/SASS',
         'Tailwind CSS',
-        'GraphQL',
+        'WordPress',
+        'Drupal (Twig theming)',
+        'PHP',
         'REST APIs',
+        'GraphQL',
+        'Accessibility (WCAG 2.1)',
+        'Performance Optimisation',
+        'CI/CD',
       ],
     },
     knowsAbout: [
+      'Front-End Development',
       'React Development',
       'TypeScript Programming',
-      'Node.js Backend Development',
-      'Python Programming',
-      'Full Stack Development',
-      'UI/UX Design',
-      'Frontend Development',
-      'Backend Development',
-      'Web Application Development',
-      'Database Design',
-      'API Development',
+      'Next.js and Server-Side Rendering',
+      'WordPress Theme Development',
+      'Drupal Twig Theming',
+      'Web Accessibility (WCAG 2.1)',
+      'Performance Optimisation and Core Web Vitals',
+      'Component Systems and Design Systems',
+      'REST and GraphQL API Integration',
+      'Automated Testing (Jest, React Testing Library, Cypress, Playwright)',
+      'CI/CD Pipelines',
       'Responsive Web Design',
     ],
-    offers: {
-      '@type': 'Offer',
-      itemOffered: {
-        '@type': 'Service',
-        name: 'Full Stack Development Services',
-        description:
-          'Custom web application development, UI/UX design, and technical consulting services',
-      },
-      areaServed: ['South Africa', 'Global Remote Work'],
-      availability: 'Available for freelance projects',
-    },
   };
 
   // Website Schema for better understanding
@@ -118,38 +111,6 @@ const SEOHead = ({
       target: `${url}/#projects?q={search_term_string}`,
       'query-input': 'required name=search_term_string',
     },
-  };
-
-  // FAQ Schema for AEO optimization
-  const faqSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: [
-      {
-        '@type': 'Question',
-        name: 'What programming languages does Tonderai specialize in?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Tonderai specializes in TypeScript, JavaScript, Python, and modern web development technologies including React, Node.js, and Next.js.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'Is Tonderai available for freelance development projects?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Yes, Tonderai is available for freelance full-stack development projects, both locally in South Africa and remotely worldwide.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'What types of web applications can Tonderai develop?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Tonderai can develop modern web applications, e-commerce platforms, progressive web apps, custom dashboards, and enterprise solutions using React, TypeScript, and Node.js.',
-        },
-      },
-    ],
   };
 
   return (
@@ -176,7 +137,7 @@ const SEOHead = ({
       <meta property="og:image:secure_url" content={`${url}${image}`} />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
-      <meta property="og:image:alt" content="Tonderai Matanga - Full Stack Developer Portfolio" />
+      <meta property="og:image:alt" content="Tonderai Matanga - Senior Front-End Developer Portfolio" />
       <meta property="og:image:type" content="image/jpeg" />
       <meta property="og:site_name" content="Tonderai Matanga Portfolio" />
       <meta property="og:locale" content="en_US" />
@@ -187,7 +148,7 @@ const SEOHead = ({
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={`${url}${image}`} />
-      <meta name="twitter:image:alt" content="Tonderai Matanga - Full Stack Developer Portfolio" />
+      <meta name="twitter:image:alt" content="Tonderai Matanga - Senior Front-End Developer Portfolio" />
 
       {/* App and Performance Meta Tags */}
       <meta name="theme-color" content="#8B5CF6" />
@@ -204,7 +165,6 @@ const SEOHead = ({
         <>
           <script type="application/ld+json">{JSON.stringify(personSchema)}</script>
           <script type="application/ld+json">{JSON.stringify(websiteSchema)}</script>
-          <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
         </>
       )}
     </Helmet>

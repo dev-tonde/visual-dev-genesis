@@ -53,7 +53,7 @@ const Footer = () => {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-3xl font-bold text-center mb-8 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-            Current Stack
+            This Site's Stack
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">

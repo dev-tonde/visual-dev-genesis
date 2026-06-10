@@ -99,19 +99,18 @@ const CaseStudyCard = ({
           Outcomes and impact
         </p>
         <ul className="mt-3 space-y-3 text-sm leading-6 text-foreground/80">
-          {caseStudy.outcomes.map((outcome) => (
-            <li
-              key={outcome.text}
-              className="flex flex-col gap-2 rounded-xl border border-border/50 bg-background/50 p-4"
-            >
-              {outcome.type === 'metric_placeholder' && (
-                <Badge variant="outline" className="w-fit">
-                  Add verified metric
-                </Badge>
-              )}
-              <span>{outcome.text}</span>
-            </li>
-          ))}
+          {/* Only verified outcomes are shown publicly; metric_placeholder entries
+              stay in config as internal reminders until real numbers exist. */}
+          {caseStudy.outcomes
+            .filter((outcome) => outcome.type === 'proof')
+            .map((outcome) => (
+              <li
+                key={outcome.text}
+                className="flex flex-col gap-2 rounded-xl border border-border/50 bg-background/50 p-4"
+              >
+                <span>{outcome.text}</span>
+              </li>
+            ))}
         </ul>
       </div>
     </CardContent>

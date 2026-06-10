@@ -17,13 +17,12 @@ import SectionHeading from '@/components/SectionHeading';
 interface Certification {
   id: string;
   title: string;
-  issuer: string;
-  date: string;
+  issuer?: string;
+  date?: string;
   description: string;
   skills: string[];
-  modules: string[];
+  modules?: string[];
   credentialUrl?: string;
-  level: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert';
 }
 
 const Certifications = () => {
@@ -33,129 +32,47 @@ const Certifications = () => {
   });
 
   const certifications = {
-    ai: [
+    certificates: [
       {
-        id: 'ai-1',
-        title: 'Machine Learning Specialist',
-        issuer: 'Google Cloud',
-        date: '2024',
-        description:
-          'Comprehensive certification covering advanced machine learning techniques, neural networks, and AI model deployment.',
-        skills: ['TensorFlow', 'PyTorch', 'Neural Networks', 'Deep Learning', 'Computer Vision'],
-        modules: [
-          'Introduction to Machine Learning',
-          'Supervised Learning Algorithms',
-          'Unsupervised Learning Techniques',
-          'Deep Learning with Neural Networks',
-          'Computer Vision Applications',
-          'Natural Language Processing',
-          'Model Deployment and MLOps',
-        ],
-        credentialUrl: 'https://cloud.google.com/certification',
-        level: 'Expert' as const,
-      },
-      {
-        id: 'ai-2',
-        title: 'AI Ethics and Responsible AI',
-        issuer: 'Stanford University',
-        date: '2024',
-        description:
-          'Focus on ethical AI development, bias mitigation, and responsible deployment of AI systems.',
-        skills: ['AI Ethics', 'Bias Detection', 'Fairness', 'Transparency', 'Accountability'],
-        modules: [
-          'Foundations of AI Ethics',
-          'Bias in AI Systems',
-          'Fairness and Accountability',
-          'Transparency in AI',
-          'Privacy and Security',
-          'Regulatory Compliance',
-        ],
-        level: 'Advanced' as const,
-      },
-    ],
-    development: [
-      {
-        id: 'dev-1',
-        title: 'Full Stack Developer Professional',
+        id: 'cert-meta-fe',
+        title: 'Meta Front-End Developer Certificate',
         issuer: 'Meta',
-        date: '2023',
         description:
-          'Comprehensive full-stack development certification covering modern web technologies and best practices.',
-        skills: ['React', 'Node.js', 'MongoDB', 'GraphQL', 'TypeScript', 'AWS'],
-        modules: [
-          'Frontend Development with React',
-          'Backend Development with Node.js',
-          'Database Design and Management',
-          'API Development and GraphQL',
-          'Authentication and Security',
-          'Cloud Deployment and DevOps',
-          'Testing and Quality Assurance',
-        ],
-        credentialUrl: 'https://developers.facebook.com/programs/',
-        level: 'Expert' as const,
+          'Professional certificate covering front-end development with React, JavaScript, HTML/CSS, and UI testing practices.',
+        skills: ['React', 'JavaScript', 'HTML/CSS', 'UI Testing'],
       },
       {
-        id: 'dev-2',
-        title: 'Cloud Native Developer',
-        issuer: 'AWS',
-        date: '2023',
+        id: 'cert-google-ux',
+        title: 'Google UX Design Professional Certificate',
+        issuer: 'Google',
         description:
-          'Specialized in cloud-native application development using containerization and microservices.',
-        skills: ['Docker', 'Kubernetes', 'AWS Lambda', 'Microservices', 'DevOps'],
-        modules: [
-          'Containerization with Docker',
-          'Orchestration with Kubernetes',
-          'Serverless Architecture',
-          'Microservices Design Patterns',
-          'CI/CD Pipelines',
-          'Monitoring and Observability',
-        ],
-        level: 'Advanced' as const,
+          'Professional certificate covering the UX design process: research, wireframing, prototyping, and usability testing.',
+        skills: ['UX Research', 'Wireframing', 'Prototyping', 'Usability Testing'],
+      },
+      {
+        id: 'cert-scrum',
+        title: 'Scrum Master Certification',
+        description:
+          'Certified in Scrum practices: sprint planning, facilitation, and iterative agile delivery.',
+        skills: ['Scrum', 'Agile Delivery', 'Sprint Planning'],
       },
     ],
-    frontend: [
+    education: [
       {
-        id: 'fe-1',
-        title: 'React Expert Certification',
-        issuer: 'React Training',
-        date: '2023',
+        id: 'edu-bcomm',
+        title: 'BComm Honours in Business Administration',
+        issuer: 'Midlands State University, Zimbabwe',
         description:
-          'Advanced React development certification covering hooks, context, performance optimization, and testing.',
-        skills: ['React', 'TypeScript', 'Testing', 'Performance', 'State Management'],
-        modules: [
-          'Advanced React Patterns',
-          'Performance Optimization',
-          'Testing Strategies',
-          'State Management Solutions',
-          'Server-Side Rendering',
-          'React Native Development',
-        ],
-        credentialUrl: 'https://reacttraining.com',
-        level: 'Expert' as const,
+          'Honours degree in Business Administration with a focus on Logistics and Retail Management.',
+        skills: ['Business Administration', 'Logistics', 'Retail Management'],
       },
       {
-        id: 'fe-2',
-        title: 'UI/UX Design Systems',
-        issuer: 'Design Systems University',
-        date: '2024',
+        id: 'edu-coursework',
+        title: 'Additional Coursework',
+        issuer: 'LinkedIn Learning',
         description:
-          'Comprehensive training in creating and maintaining scalable design systems for modern applications.',
-        skills: [
-          'Design Systems',
-          'Figma',
-          'Component Libraries',
-          'Accessibility',
-          'Design Tokens',
-        ],
-        modules: [
-          'Design System Fundamentals',
-          'Component Design Principles',
-          'Accessibility Guidelines',
-          'Design Token Management',
-          'Documentation and Governance',
-          'Cross-Platform Consistency',
-        ],
-        level: 'Advanced' as const,
+          'Ongoing professional development across modern front-end engineering topics.',
+        skills: ['React', 'Next.js', 'TypeScript', 'Accessibility', 'Performance', 'CI/CD'],
       },
     ],
   };
@@ -182,21 +99,6 @@ const Certifications = () => {
     },
   };
 
-  const getLevelColor = (level: string) => {
-    switch (level) {
-      case 'Beginner':
-        return 'bg-accent/20 text-accent-foreground';
-      case 'Intermediate':
-        return 'bg-primary/20 text-primary-foreground';
-      case 'Advanced':
-        return 'bg-secondary/20 text-secondary-foreground';
-      case 'Expert':
-        return 'bg-primary/30 text-primary-foreground';
-      default:
-        return 'bg-muted text-muted-foreground';
-    }
-  };
-
   const CertificationCard = ({ cert }: { cert: Certification }) => (
     <motion.div variants={itemVariants} whileHover={{ y: -4 }} className="group">
       <Card className="glass-vibrant border-0 flex h-full flex-col transition-shadow duration-300 hover:shadow-md hover-glow">
@@ -204,17 +106,20 @@ const Certifications = () => {
           <div className="flex items-start justify-between mb-2">
             <div className="flex items-center gap-2">
               <Award className="w-5 h-5 text-primary" aria-hidden="true" />
-              <Badge className={getLevelColor(cert.level)}>{cert.level}</Badge>
             </div>
-            <div className="flex items-center text-muted-foreground text-sm">
-              <Calendar className="w-4 h-4 mr-1" aria-hidden="true" />
-              <time dateTime={cert.date}>{cert.date}</time>
-            </div>
+            {cert.date && (
+              <div className="flex items-center text-muted-foreground text-sm">
+                <Calendar className="w-4 h-4 mr-1" aria-hidden="true" />
+                <time dateTime={cert.date}>{cert.date}</time>
+              </div>
+            )}
           </div>
           <CardTitle className="text-lg group-hover:text-primary transition-colors">
             {cert.title}
           </CardTitle>
-          <p className="text-sm text-muted-foreground font-medium">{cert.issuer}</p>
+          {cert.issuer && (
+            <p className="text-sm text-muted-foreground font-medium">{cert.issuer}</p>
+          )}
         </CardHeader>
 
         <CardContent className="flex flex-1 flex-col space-y-4">
@@ -256,10 +161,7 @@ const Certifications = () => {
 
                 <div className="space-y-6">
                   <div>
-                    <div className="flex justify-between items-center mb-2">
-                      <p className="font-medium">{cert.issuer}</p>
-                      <Badge className={getLevelColor(cert.level)}>{cert.level}</Badge>
-                    </div>
+                    {cert.issuer && <p className="font-medium mb-2">{cert.issuer}</p>}
                     <p className="text-muted-foreground">{cert.description}</p>
                   </div>
 
@@ -274,17 +176,19 @@ const Certifications = () => {
                     </div>
                   </div>
 
-                  <div>
-                    <h4 className="font-semibold mb-3">Course Modules</h4>
-                    <ul className="space-y-2">
-                      {cert.modules.map((module, index) => (
-                        <li key={index} className="flex items-center text-sm">
-                          <span className="w-2 h-2 bg-primary rounded-full mr-3"></span>
-                          {module}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                  {cert.modules && cert.modules.length > 0 && (
+                    <div>
+                      <h4 className="font-semibold mb-3">Course Modules</h4>
+                      <ul className="space-y-2">
+                        {cert.modules.map((module, index) => (
+                          <li key={index} className="flex items-center text-sm">
+                            <span className="w-2 h-2 bg-primary rounded-full mr-3"></span>
+                            {module}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
 
                   {cert.credentialUrl && (
                     <div className="pt-4 border-t">
@@ -336,55 +240,40 @@ const Certifications = () => {
           <motion.div variants={itemVariants} className="mb-16">
             <SectionHeading
               label="Credentials"
-              title="Certifications & Achievements"
-              description="Continuous learning and professional development across product engineering, frontend systems, and adjacent disciplines."
+              title="Certifications & Education"
+              description="Professional certificates and formal education behind the work."
             />
           </motion.div>
 
-          <Tabs defaultValue="ai" className="w-full">
-            <TabsList className="mb-8 grid h-auto w-full grid-cols-1 gap-2 bg-transparent p-0 sm:grid-cols-3">
+          <Tabs defaultValue="certificates" className="w-full">
+            <TabsList className="mb-8 grid h-auto w-full grid-cols-1 gap-2 bg-transparent p-0 sm:grid-cols-2">
               <TabsTrigger
-                value="ai"
-                aria-label="AI and Machine Learning certifications"
+                value="certificates"
+                aria-label="Professional certificates"
                 className="rounded-xl border border-border/60 bg-background/50 px-4 py-3 data-[state=active]:border-primary/60 data-[state=active]:bg-background data-[state=active]:shadow-sm"
               >
-                AI & Machine Learning
+                Professional Certificates
               </TabsTrigger>
               <TabsTrigger
-                value="development"
-                aria-label="App Development certifications"
+                value="education"
+                aria-label="Education and coursework"
                 className="rounded-xl border border-border/60 bg-background/50 px-4 py-3 data-[state=active]:border-primary/60 data-[state=active]:bg-background data-[state=active]:shadow-sm"
               >
-                App Development
-              </TabsTrigger>
-              <TabsTrigger
-                value="frontend"
-                aria-label="Frontend and Design certifications"
-                className="rounded-xl border border-border/60 bg-background/50 px-4 py-3 data-[state=active]:border-primary/60 data-[state=active]:bg-background data-[state=active]:shadow-sm"
-              >
-                Frontend & Design
+                Education & Coursework
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="ai" className="space-y-6">
+            <TabsContent value="certificates" className="space-y-6">
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {certifications.ai.map((cert) => (
+                {certifications.certificates.map((cert) => (
                   <CertificationCard key={cert.id} cert={cert} />
                 ))}
               </div>
             </TabsContent>
 
-            <TabsContent value="development" className="space-y-6">
+            <TabsContent value="education" className="space-y-6">
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {certifications.development.map((cert) => (
-                  <CertificationCard key={cert.id} cert={cert} />
-                ))}
-              </div>
-            </TabsContent>
-
-            <TabsContent value="frontend" className="space-y-6">
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {certifications.frontend.map((cert) => (
+                {certifications.education.map((cert) => (
                   <CertificationCard key={cert.id} cert={cert} />
                 ))}
               </div>

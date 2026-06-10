@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 interface Skill {
   name: string;
   level: number;
-  category: 'frontend' | 'backend' | 'tools';
+  category: 'frontend' | 'cms' | 'quality';
   color: string;
 }
 
@@ -20,23 +20,18 @@ const SkillsVisualization = () => {
     { name: 'React', level: 95, category: 'frontend', color: 'hsl(var(--primary))' },
     { name: 'TypeScript', level: 90, category: 'frontend', color: 'hsl(var(--secondary))' },
     { name: 'Next.js', level: 85, category: 'frontend', color: 'hsl(var(--accent))' },
-    { name: 'Tailwind CSS', level: 92, category: 'frontend', color: 'hsl(var(--primary))' },
-    { name: 'Circle CI', level: 82, category: 'tools', color: 'hsl(var(--secondary))' },
-    { name: 'AdobeXD', level: 88, category: 'tools', color: 'hsl(var(--accent))' },
-    { name: 'Python', level: 78, category: 'backend', color: 'hsl(var(--primary))' },
-    {
-      name: 'Artificial Intelligence',
-      level: 80,
-      category: 'backend',
-      color: 'hsl(var(--secondary))',
-    },
-    { name: 'Git', level: 90, category: 'tools', color: 'hsl(var(--accent))' },
-    { name: 'Docker', level: 70, category: 'tools', color: 'hsl(var(--primary))' },
-    { name: 'AWS', level: 65, category: 'tools', color: 'hsl(var(--secondary))' },
-    { name: 'Figma', level: 85, category: 'tools', color: 'hsl(var(--accent))' },
+    { name: 'Tailwind CSS / SASS', level: 90, category: 'frontend', color: 'hsl(var(--primary))' },
+    { name: 'REST APIs & GraphQL', level: 85, category: 'frontend', color: 'hsl(var(--secondary))' },
+    { name: 'WordPress', level: 90, category: 'cms', color: 'hsl(var(--accent))' },
+    { name: 'Drupal (Twig theming)', level: 85, category: 'cms', color: 'hsl(var(--primary))' },
+    { name: 'PHP', level: 75, category: 'cms', color: 'hsl(var(--secondary))' },
+    { name: 'Accessibility (WCAG 2.1)', level: 88, category: 'quality', color: 'hsl(var(--accent))' },
+    { name: 'Performance / Core Web Vitals', level: 85, category: 'quality', color: 'hsl(var(--primary))' },
+    { name: 'Jest & Testing Library', level: 85, category: 'quality', color: 'hsl(var(--secondary))' },
+    { name: 'CI/CD (GitHub Actions, Circle CI)', level: 82, category: 'quality', color: 'hsl(var(--accent))' },
   ];
 
-  const categories = ['frontend', 'backend', 'tools'] as const;
+  const categories = ['frontend', 'cms', 'quality'] as const;
 
   const containerVariants = {
     hidden: { opacity: 0 },

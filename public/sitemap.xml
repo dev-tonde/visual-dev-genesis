@@ -1,61 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Static sitemap: update <lastmod> values when deploying meaningful content changes. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-  
-  <!-- Homepage -->
+
+  <!-- Homepage (sections #about/#projects/etc. are fragments of this page) -->
   <url>
     <loc>https://iamtonde.co.za/</loc>
-    <lastmod>2025-01-01T00:00:00+00:00</lastmod>
+    <lastmod>2026-06-10T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://iamtonde.co.za/og-image.jpg</image:loc>
-      <image:title>Tonderai Matanga - Full Stack Developer Portfolio</image:title>
-      <image:caption>Professional portfolio showcasing full-stack development expertise</image:caption>
+      <image:title>Tonderai Matanga - Senior Front-End Developer Portfolio</image:title>
+      <image:caption>Portfolio of Tonderai Matanga, senior front-end developer (React, TypeScript, Next.js, WordPress, Drupal)</image:caption>
     </image:image>
   </url>
-  
-  <!-- About Section -->
+
+  <!-- Front-end demos -->
   <url>
-    <loc>https://iamtonde.co.za/#about</loc>
-    <lastmod>2025-01-01T00:00:00+00:00</lastmod>
+    <loc>https://iamtonde.co.za/games</loc>
+    <lastmod>2026-06-10T00:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.6</priority>
   </url>
-  
-  <!-- Projects Section -->
+
+  <!-- Privacy policy -->
   <url>
-    <loc>https://iamtonde.co.za/#projects</loc>
-    <lastmod>2025-01-01T00:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <loc>https://iamtonde.co.za/privacy</loc>
+    <lastmod>2026-06-10T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
   </url>
-  
-  <!-- Certifications Section -->
-  <url>
-    <loc>https://iamtonde.co.za/#certifications</loc>
-    <lastmod>2025-01-01T00:00:00+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <!-- Contact Section -->
-  <url>
-    <loc>https://iamtonde.co.za/#contact</loc>
-    <lastmod>2025-01-01T00:00:00+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <!-- CV/Resume -->
+
+  <!-- CV / Resume -->
   <url>
     <loc>https://iamtonde.co.za/Tonderai_Matanga_CV.pdf</loc>
-    <lastmod>2026-03-13T00:00:00+00:00</lastmod>
+    <lastmod>2026-06-10T00:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  
+
 </urlset>

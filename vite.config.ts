@@ -7,7 +7,6 @@ const manualChunkGroups = {
   vendor: ['react', 'react-dom', 'react-router-dom'],
   ui: [
     '@radix-ui/react-dialog',
-    '@radix-ui/react-popover',
     '@radix-ui/react-toast',
     '@radix-ui/react-dropdown-menu',
     '@radix-ui/react-select',
@@ -15,7 +14,7 @@ const manualChunkGroups = {
   icons: ['lucide-react'],
   animations: ['framer-motion'],
   forms: ['react-hook-form', '@hookform/resolvers', 'zod'],
-  supabase: ['@supabase/supabase-js', '@tanstack/react-query'],
+  supabase: ['@supabase/supabase-js'],
 } as const;
 
 function getManualChunk(id: string) {

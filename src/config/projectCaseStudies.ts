@@ -53,14 +53,8 @@ export const PROJECT_CASE_STUDIES: readonly ProjectCaseStudy[] = [
         type: 'proof',
         text: 'The public repository and live site now present the portfolio as a maintained product, not a static personal page.',
       },
-      {
-        type: 'metric_placeholder',
-        text: 'Add recruiter reply rate, interview conversion, or qualified inbound lead count.',
-      },
-      {
-        type: 'metric_placeholder',
-        text: 'Add lighthouse, accessibility, or task-completion benchmarks after final launch review.',
-      },
+      // TODO (internal): add verified metrics when available, e.g. recruiter reply rate,
+      // Lighthouse/accessibility benchmarks after final launch review.
     ],
     stack: ['React', 'TypeScript', 'Vite', 'Supabase'],
     repoUrl: PROFILE.portfolioRepoUrl,
@@ -95,14 +89,8 @@ export const PROJECT_CASE_STUDIES: readonly ProjectCaseStudy[] = [
         type: 'proof',
         text: 'Working prototype demonstrates a full quote-to-payment instruction flow for crypto checkout.',
       },
-      {
-        type: 'metric_placeholder',
-        text: 'Add quote-to-payment conversion rate or drop-off reduction.',
-      },
-      {
-        type: 'metric_placeholder',
-        text: 'Add average checkout completion time or expired-payment recovery rate.',
-      },
+      // TODO (internal): add verified metrics when available, e.g. quote-to-payment
+      // conversion rate or checkout completion time.
     ],
     stack: ['Next.js', 'TypeScript', 'Tailwind CSS', 'QR payments'],
     repoUrl: 'https://github.com/dev-tonde/hosted-payment-page',
@@ -136,14 +124,8 @@ export const PROJECT_CASE_STUDIES: readonly ProjectCaseStudy[] = [
         type: 'proof',
         text: 'Live deployment and public repository show this moved beyond static mockups.',
       },
-      {
-        type: 'metric_placeholder',
-        text: 'Add enquiry, donation, or volunteer conversion numbers.',
-      },
-      {
-        type: 'metric_placeholder',
-        text: 'Add page-speed, accessibility, or content update turnaround targets.',
-      },
+      // TODO (internal): add verified metrics when available, e.g. enquiry/volunteer
+      // conversion numbers or page-speed targets.
     ],
     stack: ['React', 'Vite', 'TypeScript', 'Vercel'],
     repoUrl: 'https://github.com/dev-tonde/waumbe-community-connect',
