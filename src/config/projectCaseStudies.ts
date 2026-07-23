@@ -45,7 +45,7 @@ export const PROJECT_CASE_STUDIES: readonly ProjectCaseStudy[] = [
     ],
     implementationHighlights: [
       'Case studies, demos, and live repositories now communicate different kinds of evidence instead of overlapping.',
-      'The contact flow, admin inbox, theme boot path, section navigation, and command palette were all hardened through end-to-end fixes.',
+      'The contact flow, theme boot path, section navigation, and command palette were all hardened through end-to-end fixes.',
       'Demos and 404 states were reframed as polished front-end proof points rather than leftover novelty pages.',
     ],
     outcomes: [
@@ -56,7 +56,7 @@ export const PROJECT_CASE_STUDIES: readonly ProjectCaseStudy[] = [
       // TODO (internal): add verified metrics when available, e.g. recruiter reply rate,
       // Lighthouse/accessibility benchmarks after final launch review.
     ],
-    stack: ['React', 'TypeScript', 'Vite', 'Supabase'],
+    stack: ['React', 'TypeScript', 'Vite', 'Vercel Serverless'],
     repoUrl: PROFILE.portfolioRepoUrl,
     liveUrl: 'https://iamtonde.co.za',
   },

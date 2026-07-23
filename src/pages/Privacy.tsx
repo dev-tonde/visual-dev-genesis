@@ -7,7 +7,7 @@ import SEOHead from '@/components/SEOHead';
 import { Link } from 'react-router-dom';
 
 const Privacy = () => {
-  const lastUpdated = 'December 2024';
+  const lastUpdated = 'July 2026';
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
@@ -64,8 +64,9 @@ const Privacy = () => {
                 </p>
                 <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
                   <p className="text-sm font-medium text-primary">
-                    <strong>Do Not Track:</strong> We respect the "Do Not Track" browser setting. If
-                    you have enabled DNT, we will not collect any analytics data about your visit.
+                    <strong>No tracking:</strong> This site uses no analytics, no tracking cookies,
+                    and no advertising. The only personal data we ever receive is what you choose to
+                    send through the contact form.
                   </p>
                 </div>
               </CardContent>
@@ -89,34 +90,10 @@ const Privacy = () => {
                     <li>Your name</li>
                     <li>Email address</li>
                     <li>Message content</li>
-                    <li>Submission timestamp</li>
-                    <li>
-                      A one-way hash of your IP address when available, used only for abuse
-                      prevention and rate limiting
-                    </li>
                   </ul>
                   <p className="text-sm text-muted-foreground mt-2">
-                    This information is stored securely and used solely to respond to your inquiry.
-                    Raw IP addresses are not stored with contact submissions.
-                  </p>
-                </div>
-
-                <Separator />
-
-                <div>
-                  <h3 className="font-semibold mb-2">Analytics Data (Optional)</h3>
-                  <p className="text-muted-foreground mb-2">
-                    With your consent, we may collect basic analytics information:
-                  </p>
-                  <ul className="list-disc list-inside text-muted-foreground space-y-1">
-                    <li>Pages visited and time spent</li>
-                    <li>Browser type and version</li>
-                    <li>Device type and screen resolution</li>
-                    <li>General geographic location (country/region)</li>
-                    <li>Referral source</li>
-                  </ul>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    This data is anonymized and used to improve the website experience.
+                    Your message is delivered directly to my inbox by an email delivery service. It
+                    is not stored in any database and is used solely to respond to your inquiry.
                   </p>
                 </div>
 
@@ -154,17 +131,8 @@ const Privacy = () => {
                     <h3 className="font-semibold mb-2">Contact Form Submissions</h3>
                     <p className="text-muted-foreground">
                       Information from contact forms is used exclusively to respond to your
-                      inquiries and maintain a record of our communication. We do not share this
-                      information with third parties or use it for marketing purposes.
-                    </p>
-                  </div>
-
-                  <div>
-                    <h3 className="font-semibold mb-2">Analytics Data</h3>
-                    <p className="text-muted-foreground">
-                      Analytics data helps us understand how visitors use our website, which pages
-                      are most popular, and how we can improve the user experience. This data is
-                      aggregated and anonymized.
+                      inquiries. We do not share this information with third parties or use it for
+                      marketing purposes.
                     </p>
                   </div>
 
@@ -191,14 +159,6 @@ const Privacy = () => {
                     Contact form submissions are processed through Resend to send email
                     notifications. Resend processes your email data according to their privacy
                     policy.
-                  </p>
-                </div>
-
-                <div>
-                  <h3 className="font-semibold mb-2">Database (Supabase)</h3>
-                  <p className="text-muted-foreground">
-                    Contact form data and analytics are stored in a Supabase database with
-                    industry-standard encryption and security measures.
                   </p>
                 </div>
 
@@ -231,18 +191,10 @@ const Privacy = () => {
                 </div>
 
                 <div>
-                  <h3 className="font-semibold mb-2">Analytics Opt-Out</h3>
+                  <h3 className="font-semibold mb-2">Cookies and Local Storage</h3>
                   <p className="text-muted-foreground">
-                    You can opt out of analytics tracking at any time using the privacy preferences
-                    banner or by enabling "Do Not Track" in your browser settings.
-                  </p>
-                </div>
-
-                <div>
-                  <h3 className="font-semibold mb-2">Cookie Management</h3>
-                  <p className="text-muted-foreground">
-                    We use minimal cookies for essential functionality. You can manage cookies
-                    through your browser settings, though this may affect website functionality.
+                    We set no tracking cookies. The site stores only your theme preference (light or
+                    dark) in your browser's local storage; it never leaves your device.
                   </p>
                 </div>
               </CardContent>

@@ -15,7 +15,6 @@ import {
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import {
   contactFormSchema,
@@ -59,16 +58,17 @@ const ContactForm = ({ variants }: ContactFormProps) => {
     setIsSubmitting(true);
 
     try {
-      // ONLY call edge function - it handles database insert and email sending
-      const { data: responseData, error: functionError } = await supabase.functions.invoke(
-        'send-contact-email',
-        {
-          body: data,
-        }
-      );
+      // The /api/contact serverless function validates input and sends the email.
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
 
-      const errorData = functionError
-        ? parseContactFunctionError(functionError)
+      const responseData: unknown = await response.json().catch(() => null);
+
+      const errorData = !response.ok
+        ? parseContactFunctionError(responseData)
         : isContactFunctionErrorPayload(responseData)
           ? responseData
           : null;

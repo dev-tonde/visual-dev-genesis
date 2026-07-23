@@ -1,21 +1,14 @@
 import { createElement, type ReactNode } from 'react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import type { Variants } from 'framer-motion';
 import ContactForm from '@/components/ContactForm';
 
-const { invokeMock, toastMock } = vi.hoisted(() => ({
-  invokeMock: vi.fn(),
+const { toastMock } = vi.hoisted(() => ({
   toastMock: vi.fn(),
 }));
 
-vi.mock('@/integrations/supabase/client', () => ({
-  supabase: {
-    functions: {
-      invoke: invokeMock,
-    },
-  },
-}));
+const fetchMock = vi.fn();
 
 vi.mock('@/hooks/use-toast', () => ({
   useToast: () => ({
@@ -59,6 +52,11 @@ vi.mock('framer-motion', () => {
   return { motion };
 });
 
+const jsonResponse = (ok: boolean, payload: unknown) => ({
+  ok,
+  json: async () => payload,
+});
+
 const fillAndSubmitForm = async () => {
   fireEvent.change(screen.getByLabelText(/name/i), {
     target: { value: 'Tonderai Matanga' },
@@ -77,36 +75,42 @@ describe('ContactForm', () => {
   const variants: Variants = {};
 
   beforeEach(() => {
-    invokeMock.mockReset();
+    fetchMock.mockReset();
     toastMock.mockReset();
+    vi.stubGlobal('fetch', fetchMock);
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
   it('submits successfully and resets the form', async () => {
-    invokeMock.mockResolvedValue({
-      data: {
+    fetchMock.mockResolvedValue(
+      jsonResponse(true, {
         success: true,
         message:
           'Thank you for your message! It was received successfully, and I will review it soon.',
         submissionId: 'submission-123',
         emailDelivery: {
           notification: 'sent',
-          confirmation: 'sent',
+          confirmation: 'skipped',
         },
-      },
-      error: null,
-    });
+      })
+    );
 
     render(<ContactForm variants={variants} />);
 
     await fillAndSubmitForm();
 
     await waitFor(() => {
-      expect(invokeMock).toHaveBeenCalledWith('send-contact-email', {
-        body: {
+      expect(fetchMock).toHaveBeenCalledWith('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           name: 'Tonderai Matanga',
           email: 'tonde@example.com',
           message: 'I would like help building a product website.',
-        },
+        }),
       });
     });
 
@@ -127,17 +131,14 @@ describe('ContactForm', () => {
     });
   });
 
-  it('shows the function validation error without falling back to a duplicate generic toast', async () => {
-    invokeMock.mockResolvedValue({
-      data: null,
-      error: {
-        message: JSON.stringify({
-          error: 'VALIDATION_ERROR',
-          message: 'Please check your input and try again.',
-          details: ['Message must be between 10 and 1000 characters.'],
-        }),
-      },
-    });
+  it('shows the API validation error without falling back to a duplicate generic toast', async () => {
+    fetchMock.mockResolvedValue(
+      jsonResponse(false, {
+        error: 'VALIDATION_ERROR',
+        message: 'Please check your input and try again.',
+        details: ['Message must be between 10 and 1000 characters.'],
+      })
+    );
 
     render(<ContactForm variants={variants} />);
 
@@ -155,10 +156,10 @@ describe('ContactForm', () => {
     });
   });
 
-  it('shows a generic error toast when the edge function call throws', async () => {
+  it('shows a generic error toast when the request throws', async () => {
     const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     try {
-      invokeMock.mockRejectedValue(new Error('Network request failed'));
+      fetchMock.mockRejectedValue(new Error('Network request failed'));
 
       render(<ContactForm variants={variants} />);
 
