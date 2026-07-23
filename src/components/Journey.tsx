@@ -5,10 +5,11 @@ import { Briefcase, Code2, Palette, Gamepad2, Music, Coffee, Plane } from 'lucid
 import SectionHeading from '@/components/SectionHeading';
 import { EXPERIENCE } from '@/config/experience';
 
-const AboutMe = () => {
+const Journey = () => {
   const [ref, inView] = useInView({
     triggerOnce: true,
-    threshold: 0.1,
+    threshold: 0,
+    rootMargin: '0px 0px -80px 0px',
   });
 
   const hobbies = [
@@ -156,4 +157,4 @@ const AboutMe = () => {
   );
 };
 
-export default AboutMe;
+export default Journey;

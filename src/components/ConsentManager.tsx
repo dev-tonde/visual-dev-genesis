@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { X, Shield, BarChart, Cookie } from 'lucide-react';
 
 interface ConsentManagerProps {
-  onConsentChange: (consent: ConsentPreferences) => void;
+  onConsentChange?: (consent: ConsentPreferences) => void;
 }
 
 export interface ConsentPreferences {
@@ -43,7 +43,7 @@ export const ConsentManager = ({ onConsentChange }: ConsentManagerProps) => {
         const consent = JSON.parse(savedConsent);
 
         if (isConsentPreferences(consent)) {
-          onConsentChange(consent);
+          onConsentChange?.(consent);
           return;
         }
 
@@ -61,7 +61,7 @@ export const ConsentManager = ({ onConsentChange }: ConsentManagerProps) => {
   const saveConsent = (newPreferences: ConsentPreferences) => {
     localStorage.setItem(CONSENT_KEY, JSON.stringify(newPreferences));
     localStorage.setItem(CONSENT_SHOWN_KEY, 'true');
-    onConsentChange(newPreferences);
+    onConsentChange?.(newPreferences);
     setShowBanner(false);
   };
 

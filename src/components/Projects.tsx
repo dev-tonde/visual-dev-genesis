@@ -17,7 +17,8 @@ import SectionHeading from '@/components/SectionHeading';
 const Projects = () => {
   const [ref, inView] = useInView({
     triggerOnce: true,
-    threshold: 0.1,
+    threshold: 0,
+    rootMargin: '0px 0px -80px 0px',
   });
 
   const { repos, loading, status, error, refetch, profileUrl, username } = useGitHubRepos();

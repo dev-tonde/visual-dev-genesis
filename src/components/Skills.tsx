@@ -5,10 +5,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import SkillsVisualization from '@/components/SkillsVisualization';
 import SectionHeading from '@/components/SectionHeading';
 
-const About = () => {
+const Skills = () => {
   const [ref, inView] = useInView({
     triggerOnce: true,
-    threshold: 0.1,
+    threshold: 0,
+    rootMargin: '0px 0px -80px 0px',
   });
 
   const containerVariants = {
@@ -117,4 +118,4 @@ const About = () => {
   );
 };
 
-export default About;
+export default Skills;

@@ -1,7 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 
-const AboutSkeleton = () => {
+const SkillsSkeleton = () => {
   return (
     <section className="py-20 px-4" style={{ minHeight: '700px' }}>
       <div className="container mx-auto">
@@ -55,4 +55,4 @@ const AboutSkeleton = () => {
   );
 };
 
-export default AboutSkeleton;
+export default SkillsSkeleton;

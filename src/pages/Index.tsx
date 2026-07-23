@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import Hero from '@/components/Hero';
-import About from '@/components/About';
-import AboutMe from '@/components/AboutMe';
+import Skills from '@/components/Skills';
+import Journey from '@/components/Journey';
 import Contact from '@/components/Contact';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
@@ -9,8 +9,8 @@ import SEOHead from '@/components/SEOHead';
 import heroBg from '@/assets/programmer-hero-bg.jpg';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import BackToTop from '@/components/BackToTop';
-import AboutSkeleton from '@/components/AboutSkeleton';
-import AboutMeSkeleton from '@/components/AboutMeSkeleton';
+import SkillsSkeleton from '@/components/SkillsSkeleton';
+import JourneySkeleton from '@/components/JourneySkeleton';
 import CertificationsSkeleton from '@/components/CertificationsSkeleton';
 import { useSectionHashScroll } from '@/hooks/useSectionNavigation';
 
@@ -45,11 +45,11 @@ const Index = () => {
         <Navigation />
         <main role="main" aria-label="Main content" id="main-content">
           <Hero />
-          <Suspense fallback={<AboutSkeleton />}>
-            <About />
+          <Suspense fallback={<SkillsSkeleton />}>
+            <Skills />
           </Suspense>
-          <Suspense fallback={<AboutMeSkeleton />}>
-            <AboutMe />
+          <Suspense fallback={<JourneySkeleton />}>
+            <Journey />
           </Suspense>
           <Suspense fallback={<LoadingSpinner />}>
             <ProjectsLazy />

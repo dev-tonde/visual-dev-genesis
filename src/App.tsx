@@ -9,7 +9,7 @@ import { CommandPaletteProvider } from '@/components/CommandPalette';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import AccessibilityEnhancer from '@/components/AccessibilityEnhancer';
 import Analytics from '@/components/Analytics';
-import ConsentManager, { ConsentPreferences } from '@/components/ConsentManager';
+import ConsentManager from '@/components/ConsentManager';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { AuthProvider } from '@/components/AuthProvider';
 import LoadingSpinner from '@/components/LoadingSpinner';
@@ -28,16 +28,11 @@ const AccountWorkspacePage = lazy(() => import('./pages/Profile'));
 const AppContent = () => {
   useAnalytics();
 
-  const handleConsentChange = (_consent: ConsentPreferences) => {
-    // Store consent in localStorage (already handled by ConsentManager)
-    // You can also send this to your analytics service if needed
-  };
-
   return (
     <>
       <AccessibilityEnhancer />
       <Analytics />
-      <ConsentManager onConsentChange={handleConsentChange} />
+      <ConsentManager />
       <Suspense fallback={<LoadingSpinner />}>
         <Routes>
           <Route path="/" element={<Index />} />

@@ -14,8 +14,8 @@ const Hero = () => {
     visible: {
       opacity: 1,
       transition: {
-        delayChildren: 0.3,
-        staggerChildren: 0.2,
+        delayChildren: 0.1,
+        staggerChildren: 0.08,
       },
     },
   };
@@ -26,7 +26,7 @@ const Hero = () => {
       y: 0,
       opacity: 1,
       transition: {
-        duration: 0.6,
+        duration: 0.4,
       },
     },
   };
