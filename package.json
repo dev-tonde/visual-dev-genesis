@@ -1,6 +1,6 @@
 {
   "name": "iamtonde-portfolio",
-  "description": "Personal developer portfolio of Tonderai Matanga — iamtonde.co.za",
+  "description": "Personal developer portfolio of Tonderai Matanga \u2014 iamtonde.co.za",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -12,7 +12,8 @@
     "type-check": "tsc --noEmit",
     "lint": "eslint .",
     "test": "vitest run",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "type-check:api": "tsc -p tsconfig.api.json"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",

@@ -103,15 +103,18 @@ describe('ContactForm', () => {
     await fillAndSubmitForm();
 
     await waitFor(() => {
-      expect(fetchMock).toHaveBeenCalledWith('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: 'Tonderai Matanga',
-          email: 'tonde@example.com',
-          message: 'I would like help building a product website.',
-        }),
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      const [url, init] = fetchMock.mock.calls[0] as [string, { method: string; body: string }];
+      expect(url).toBe('/api/contact');
+      expect(init.method).toBe('POST');
+      const body = JSON.parse(init.body) as Record<string, unknown>;
+      expect(body).toMatchObject({
+        name: 'Tonderai Matanga',
+        email: 'tonde@example.com',
+        message: 'I would like help building a product website.',
+        website: '', // honeypot stays empty for real users
       });
+      expect(typeof body.startedAt).toBe('number'); // timing evidence included
     });
 
     await waitFor(() => {
