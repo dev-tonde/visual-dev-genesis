@@ -14,8 +14,9 @@ import {
 } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { PROFILE } from '@/config/profile';
 import {
   contactFormSchema,
   CONTACT_MESSAGE_MAX_LENGTH,
@@ -37,8 +38,13 @@ interface ContactFormProps {
 
 const ContactForm = ({ variants }: ContactFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [retryTimeout, setRetryTimeout] = useState<number | null>(null);
+  const [statusMessage, setStatusMessage] = useState('');
   const { toast } = useToast();
+
+  // Anti-abuse evidence: when the form was first rendered (server enforces a
+  // minimum completion time), plus a honeypot field bots tend to fill in.
+  const formStartedAt = useRef(Date.now());
+  const honeypotRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema),
@@ -62,7 +68,11 @@ const ContactForm = ({ variants }: ContactFormProps) => {
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          startedAt: formStartedAt.current,
+          website: honeypotRef.current?.value ?? '',
+        }),
       });
 
       const responseData: unknown = await response.json().catch(() => null);
@@ -74,29 +84,23 @@ const ContactForm = ({ variants }: ContactFormProps) => {
           : null;
 
       if (errorData) {
-        // Handle specific error types with retry logic
-        if (errorData.error === 'RATE_LIMIT_EXCEEDED' && retryCount < 2) {
-          const retryAfter = errorData.retryAfter || 60000;
+        // Rate limited: tell the person when to retry instead of retrying automatically.
+        if (errorData.error === 'RATE_LIMIT_EXCEEDED') {
+          const retryAfterMs = errorData.retryAfter || 60000;
+          const minutes = Math.max(1, Math.ceil(retryAfterMs / 60000));
+          const description = `Please try again in about ${minutes} minute${minutes === 1 ? '' : 's'}, or email me directly at ${PROFILE.email}.`;
 
+          setStatusMessage(description);
           toast({
-            title: 'Rate limit exceeded',
-            description: `Too many requests. Retrying in ${Math.ceil(retryAfter / 1000)} seconds...`,
+            title: 'Too many messages',
+            description,
             variant: 'destructive',
           });
-
-          setRetryTimeout(retryAfter);
-          setTimeout(() => {
-            setRetryTimeout(null);
-            submitWithRetry(data, retryCount + 1);
-          }, retryAfter);
 
           return;
         }
 
-        if (
-          (errorData.error === 'NETWORK_ERROR' || errorData.error === 'CONTACT_SEND_FAILED') &&
-          retryCount < 3
-        ) {
+        if (errorData.error === 'NETWORK_ERROR' && retryCount < 3) {
           const delay = Math.pow(2, retryCount) * 1000; // Exponential backoff
 
           toast({
@@ -109,10 +113,12 @@ const ContactForm = ({ variants }: ContactFormProps) => {
           return;
         }
 
+        const description = errorData.details?.[0] || errorData.message;
+        setStatusMessage(description);
         toast({
           title:
             errorData.error === 'VALIDATION_ERROR' ? 'Invalid input' : 'Failed to send message',
-          description: errorData.details?.[0] || errorData.message,
+          description,
           variant: 'destructive',
         });
 
@@ -123,13 +129,14 @@ const ContactForm = ({ variants }: ContactFormProps) => {
         ? responseData.message
         : "Thank you for your message. I'll get back to you soon.";
 
-      setRetryTimeout(null);
+      setStatusMessage(successMessage);
       toast({
         title: 'Message sent successfully!',
         description: successMessage,
       });
 
       form.reset();
+      formStartedAt.current = Date.now(); // restart timing evidence for a follow-up message
     } catch (error) {
       // Only log errors in development
       if (import.meta.env.DEV) {
@@ -137,9 +144,11 @@ const ContactForm = ({ variants }: ContactFormProps) => {
       }
 
       if (retryCount === 0) {
+        const description = 'Please try again or contact me directly via email.';
+        setStatusMessage(description);
         toast({
           title: 'Failed to send message',
-          description: 'Please try again or contact me directly via email.',
+          description,
           variant: 'destructive',
         });
       }
@@ -159,6 +168,37 @@ const ContactForm = ({ variants }: ContactFormProps) => {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              {/*
+                Honeypot: invisible to people (aria-hidden removes it from the
+                accessibility tree, tabIndex -1 removes it from keyboard order,
+                inert styling hides it visually). Bots that fill it are
+                rejected server-side.
+              */}
+              <div
+                aria-hidden="true"
+                style={{
+                  position: 'absolute',
+                  width: '1px',
+                  height: '1px',
+                  padding: 0,
+                  margin: '-1px',
+                  overflow: 'hidden',
+                  clip: 'rect(0 0 0 0)',
+                  whiteSpace: 'nowrap',
+                  border: 0,
+                }}
+              >
+                <label htmlFor="contact-website-field">Leave this field empty</label>
+                <input
+                  id="contact-website-field"
+                  ref={honeypotRef}
+                  type="text"
+                  name="website"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  defaultValue=""
+                />
+              </div>
               <FormField
                 control={form.control}
                 name="name"
@@ -267,24 +307,13 @@ const ContactForm = ({ variants }: ContactFormProps) => {
                 type="submit"
                 className="w-full gradient-primary focus:ring-2 focus:ring-primary focus:ring-offset-2"
                 size="lg"
-                disabled={isSubmitting || !!retryTimeout}
-                aria-label={
-                  isSubmitting
-                    ? 'Sending message...'
-                    : retryTimeout
-                      ? `Retrying in ${Math.ceil(retryTimeout / 1000)} seconds...`
-                      : 'Send message'
-                }
+                disabled={isSubmitting}
+                aria-label={isSubmitting ? 'Sending message...' : 'Send message'}
               >
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin icon-primary" />
                     Sending...
-                  </>
-                ) : retryTimeout ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin icon-primary" />
-                    Retrying in {Math.ceil(retryTimeout / 1000)}s...
                   </>
                 ) : (
                   <>
@@ -293,6 +322,19 @@ const ContactForm = ({ variants }: ContactFormProps) => {
                   </>
                 )}
               </Button>
+
+              {/* Screen-reader announcement of the latest submission outcome. */}
+              <p role="status" aria-live="polite" className="sr-only">
+                {statusMessage}
+              </p>
+
+              <p className="text-xs text-muted-foreground text-center">
+                Prefer email? Reach me directly at{' '}
+                <a href={PROFILE.emailHref} className="underline hover:text-foreground">
+                  {PROFILE.email}
+                </a>
+                .
+              </p>
             </form>
           </Form>
         </CardContent>
