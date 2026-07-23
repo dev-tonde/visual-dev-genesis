@@ -1,370 +1,79 @@
-# Portfolio Architecture Documentation
+# Portfolio Architecture
+
+Last updated: 2026-07-23 (post-Supabase removal)
 
 ## Overview
 
-This is a production-ready, enterprise-grade full-stack portfolio application built with modern web technologies and best practices.
+A Vercel-hosted, client-rendered React SPA with exactly one piece of server-side code: a Vercel serverless function that forwards contact-form submissions via Resend. There is no database, no authentication, no private administration surface, and no custom analytics. Contact submissions are **not stored** in any application datastore — they exist only as delivered email.
 
-## Tech Stack
+## Tech stack
 
 ### Frontend
 
-- **React 18** - Latest React with Concurrent Features
-- **TypeScript** - Type-safe development
-- **Vite** - Next-generation frontend tooling
-- **Tailwind CSS** - Utility-first CSS framework
-- **Framer Motion** - Production-ready animation library
-- **Shadcn/ui** - High-quality, accessible component library
-- **Radix UI** - Unstyled, accessible component primitives
+- React 18 + TypeScript, built with Vite
+- Tailwind CSS + shadcn/ui (Radix primitives)
+- framer-motion for entrance/reveal animation
+- react-router-dom v6 (routes: `/`, `/games`, `/privacy`, `*` NotFound)
+- react-hook-form + zod for the contact form
+- GitHub REST API (public, client-side) for the live repository feed
 
-### Backend & Infrastructure
+### Server
 
-- **Supabase** - Open-source Firebase alternative
-  - PostgreSQL database
-  - Row Level Security (RLS)
-  - Edge Functions (serverless)
-  - Real-time subscriptions
-  - Authentication & Authorization
-  - File storage with CDN
+- `api/contact.ts` — a single Vercel Node serverless function
+- Resend REST API for email delivery (called server-side with an 8 s timeout)
+- Optional Upstash Redis (REST, via `fetch`, no SDK) for cross-instance rate limiting
 
-### Development & Quality
+### Delivery & quality
 
-- **Vitest** - Unit testing framework
-- **Testing Library** - React component testing
-- **Axe Core** - Accessibility testing
-- **Lighthouse** - Performance auditing
-- **GitHub Actions** - CI/CD pipeline
-- **ESLint** - Code linting
-- **Prettier** - Code formatting
+- Vercel hosting: static SPA + `/api/*` functions; SPA rewrite in `vercel.json` (filesystem and functions match before the rewrite applies)
+- Security headers in `vercel.json` (CSP, HSTS, X-Frame-Options, COOP, Permissions-Policy)
+- CI (GitHub Actions): lint (zero-warning), Prettier check, app type-check, API type-check (`tsconfig.api.json`), Vitest, build; Lighthouse + accessibility job on `main`
+- Tests: Vitest + Testing Library, including a direct test suite for the contact function
 
-### Performance Optimizations
-
-- Code splitting with React.lazy()
-- Image lazy loading
-- Service Worker for PWA
-- Preconnect to external domains
-- DNS prefetch
-- Responsive images with proper sizing
-- Debounced search inputs
-- Memoized expensive computations
-
-### Security Features
-
-- Row Level Security (RLS) on all database tables
-- Environment variable management
-- HTTPS enforcement
-- CORS configuration
-- Input validation & sanitization
-- SQL injection prevention
-- XSS protection
-- Authentication with JWT tokens
-
-## Architecture Patterns
-
-### Component Structure
+## Contact pipeline
 
 ```
-src/
-├── components/        # Reusable UI components
-│   ├── ui/           # Shadcn/ui components
-│   └── games/        # Interactive game components
-├── pages/            # Route-level page components
-├── hooks/            # Custom React hooks
-├── lib/              # Utility functions
-├── integrations/     # Third-party integrations
-└── assets/           # Static assets
+ContactForm.tsx ──POST /api/contact──▶ api/contact.ts ──▶ Resend ──▶ inbox
+   (zod validation,                     (hardening, see below)
+    honeypot + timing evidence)
 ```
 
-### State Management
+### Server environment variables (never `VITE_`-prefixed, never in the browser bundle)
 
-- **Local State**: React useState for component-level state
-- **Server State**: TanStack Query for API data fetching and caching
-- **Theme State**: Context API with localStorage persistence
-- **Form State**: React Hook Form with Zod validation
+| Variable                                              | Required           | Purpose                                                           |
+| ----------------------------------------------------- | ------------------ | ----------------------------------------------------------------- |
+| `RESEND_API_KEY`                                      | Yes (for delivery) | Resend API key                                                    |
+| `CONTACT_EMAIL`                                       | Yes (for delivery) | Destination inbox                                                 |
+| `CONTACT_FROM`                                        | No                 | Verified sender; defaults to Resend's onboarding sender           |
+| `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` | No                 | Enables cross-instance rate limiting (Upstash free tier suffices) |
+| `CONTACT_ALLOWED_ORIGINS`                             | No                 | Extra comma-separated allowed origins                             |
 
-### Routing Strategy
+Client-side variables remain limited to the optional `VITE_GITHUB_USERNAME` / `VITE_GITHUB_TOKEN` for the repo feed.
 
-- Client-side routing with React Router v6
-- Lazy-loaded route components
-- Protected routes with authentication
-- 404 error handling
-- Smooth scroll navigation
+### Anti-abuse controls
 
-### Data Flow
+- **Rate limits per source** (source = SHA-256-hashed first `x-forwarded-for` hop; raw IPs are never stored or logged): **10 attempts / 60 min** and **3 accepted submissions / 15 min**. Enforced across serverless instances when Upstash is configured; otherwise best-effort per warm instance (documented limitation). Exceeding a limit returns **HTTP 429 with a `Retry-After` header**. Limiter outages fail **open** so legitimate mail is never dropped by infrastructure errors. IP identification is imperfect (shared offices, CGNAT, rotating IPv6) — an accepted trade-off for a portfolio-scale form.
+- **Bot controls**: a honeypot field (`website`) hidden visually, removed from the accessibility tree (`aria-hidden`) and from keyboard order (`tabIndex="-1"`), plus a form-start timestamp with a 3-second minimum-completion check validated server-side. Rejections are generic and do not reveal which control triggered. No CAPTCHA, no fingerprinting, no tracking cookies.
+- **Request hardening**: POST-only (405 + `Allow`), `application/json` required (415), 10 KB body cap (413), origin allow-list — production domains, `localhost`, and `*.vercel.app` Previews (403 otherwise; requests without an `Origin` header are allowed, since non-browser clients can forge one anyway, and remain rate-limited).
+- **Delivery safety**: recipient and sender are server-controlled; the only user-influenced address is `reply_to`, validated against a whitespace-free email pattern (no CRLF injection); user content is HTML-escaped, and both `text` and `html` parts are sent; Resend calls are wrapped in an `AbortController` 8-second timeout.
 
-1. User interaction triggers action
-2. React Hook Form validates input
-3. API call via Supabase client
-4. Row Level Security checks permissions
-5. Database operation executes
-6. Response updates UI via TanStack Query
-7. Toast notification for user feedback
+### Degraded behaviour
 
-## Performance Metrics
+| Condition                                  | Behaviour                                                                     |
+| ------------------------------------------ | ----------------------------------------------------------------------------- |
+| `RESEND_API_KEY` / `CONTACT_EMAIL` missing | Form fails with an "email me directly" message; the site itself is unaffected |
+| Resend down or timing out                  | Generic 502; client offers retry + direct email fallback                      |
+| Limiter (Upstash) down                     | Fail-open; per-instance limiter still applies                                 |
+| JavaScript disabled                        | The SPA does not render (known limitation, tracked in the overhaul plan)      |
 
-### Lighthouse Scores (Target)
+## Rendering & performance model
 
-- Performance: 95+
-- Accessibility: 100
-- Best Practices: 100
-- SEO: 100
+Client-rendered SPA. Route-level code splitting (Games, Privacy, NotFound) and component-level splitting (Projects, Certifications) with skeleton fallbacks; manual vendor chunking in `vite.config.ts` (ui / animations / forms / icons groups); reveal-on-scroll via IntersectionObserver with an early-trigger root margin. A service worker provides a minimal offline fallback page. Prerendering the index route is planned overhaul work, not current behaviour.
 
-### Key Performance Indicators
+## Privacy posture
 
-- First Contentful Paint (FCP): < 1.2s
-- Largest Contentful Paint (LCP): < 2.5s
-- Time to Interactive (TTI): < 3.8s
-- Cumulative Layout Shift (CLS): < 0.1
-- First Input Delay (FID): < 100ms
+No analytics of any kind, no tracking cookies, no consent banner needed. The only browser storage is the theme preference in `localStorage`. Contact submissions are delivered as email and not persisted by the application. See `/privacy` for the visitor-facing statement.
 
-## Security Measures
+## Historical note
 
-### Database Security
-
-- All tables have RLS enabled
-- User-specific data isolated by auth.uid()
-- Admin-only operations restricted
-- Prepared statements prevent SQL injection
-
-### Authentication Flow
-
-1. User submits credentials
-2. Supabase Auth validates
-3. JWT token issued
-4. Token stored in httpOnly cookie
-5. Token validated on each request
-6. Automatic token refresh
-
-### File Upload Security
-
-- File type validation
-- Size restrictions
-- Virus scanning (planned)
-- CDN delivery with signed URLs
-- Storage buckets with RLS policies
-
-## Scalability Considerations
-
-### Frontend Scalability
-
-- Code splitting reduces initial bundle size
-- Lazy loading defers non-critical resources
-- CDN delivery for static assets
-- Image optimization and compression
-- Service Worker caching strategy
-
-### Backend Scalability
-
-- Serverless edge functions auto-scale
-- Database connection pooling
-- Indexed database queries
-- Cached frequently-accessed data
-- Rate limiting on API endpoints
-
-### Database Schema Design
-
-- Normalized data structure
-- Proper foreign key relationships
-- Indexed columns for common queries
-- Timestamp tracking (created_at, updated_at)
-- Soft delete support
-
-## Monitoring & Observability
-
-### Error Tracking
-
-- ErrorBoundary components catch React errors
-- Console error monitoring
-- Network request logging
-- User action tracking
-
-### Analytics
-
-- Google Analytics integration
-- Custom event tracking
-- User journey mapping
-- Conversion funnel analysis
-
-### Performance Monitoring
-
-- Real User Monitoring (RUM)
-- Synthetic monitoring
-- Core Web Vitals tracking
-- Resource timing API
-
-## Deployment Strategy
-
-### Build Process
-
-1. Run type checking (TypeScript)
-2. Run linting (ESLint)
-3. Run tests (Vitest)
-4. Run accessibility checks (Axe)
-5. Build production bundle (Vite)
-6. Optimize assets
-7. Generate sitemap
-8. Deploy to Vercel
-
-### Environment Management
-
-- Development: Local with hot reload
-- Staging: Preview deployments
-- Production: Main branch auto-deploy
-
-### CI/CD Pipeline
-
-- GitHub Actions workflow
-- Automated testing on PR
-- Security scanning
-- Lighthouse CI checks
-- Automatic deployment on merge
-
-## Accessibility Standards
-
-### WCAG 2.1 Level AA Compliance
-
-- Semantic HTML structure
-- ARIA labels and roles
-- Keyboard navigation support
-- Focus management
-- Screen reader optimization
-- Color contrast ratios > 4.5:1
-- Reduced motion support
-- Skip to main content link
-
-### Focus Trap
-
-- Modal dialogs trap focus
-- Escape key closes modals
-- Return focus to trigger element
-- Tab cycles through focusable elements
-
-## SEO Optimization
-
-### Technical SEO
-
-- Server-side rendering (SSR) ready
-- Semantic HTML5 tags
-- Meta tags (title, description, keywords)
-- Open Graph protocol
-- Twitter Card markup
-- Canonical URLs
-- XML sitemap
-- robots.txt
-- Structured data (JSON-LD)
-
-### Content SEO
-
-- Unique page titles
-- Descriptive meta descriptions
-- Header hierarchy (H1-H6)
-- Alt text on images
-- Internal linking
-- Mobile-friendly design
-- Fast page load times
-
-## Testing Strategy
-
-### Unit Tests
-
-- Component logic testing
-- Utility function testing
-- Hook testing
-- Mocking external dependencies
-
-### Integration Tests
-
-- User flow testing
-- API integration testing
-- Database operation testing
-- Authentication flow testing
-
-### E2E Tests (Planned)
-
-- Critical user journeys
-- Cross-browser testing
-- Mobile device testing
-- Performance testing
-
-### Accessibility Tests
-
-- Manual keyboard navigation
-- Screen reader testing
-- Color contrast validation
-
-## Future Enhancements
-
-### Planned Features
-
-1. **Advanced Analytics Dashboard**
-   - Real-time visitor tracking
-   - Conversion rate optimization
-   - A/B testing framework
-
-2. **Content Management System**
-   - Admin panel for content updates
-   - Version control for content
-   - Draft/publish workflow
-
-3. **Internationalization (i18n)**
-   - Multi-language support
-   - RTL language support
-   - Locale-specific formatting
-
-4. **Progressive Web App**
-   - Offline functionality
-   - Push notifications
-   - Install prompt
-   - App shell architecture
-
-5. **Advanced Caching**
-   - Redis for session storage
-   - CDN edge caching
-   - Service Worker strategies
-   - Database query caching
-
-6. **AI-Powered Features**
-   - Chatbot for visitor engagement
-   - Content recommendations
-   - Smart search with NLP
-   - Automated accessibility checks
-
-## Best Practices Implemented
-
-### Code Quality
-
-- TypeScript strict mode enabled
-- ESLint with strict rules
-- Prettier for consistent formatting
-- Husky pre-commit hooks
-- Conventional commit messages
-
-### Git Workflow
-
-- Feature branch workflow
-- Pull request reviews
-- Protected main branch
-- Semantic versioning
-- Changelog maintenance
-
-### Documentation
-
-- Inline code comments
-- JSDoc for functions
-- README with setup instructions
-- Architecture documentation
-- API documentation
-
-## Conclusion
-
-This portfolio application demonstrates senior-level full-stack development skills through:
-
-1. **Technical Excellence**: Modern stack with TypeScript, React 18, and Supabase
-2. **Performance**: Optimized bundle size, lazy loading, and caching strategies
-3. **Security**: RLS policies, authentication, input validation
-4. **Scalability**: Serverless architecture, code splitting, optimized queries
-5. **Accessibility**: WCAG 2.1 AA compliance, keyboard navigation, screen reader support
-6. **SEO**: Structured data, semantic HTML, meta tags
-7. **Quality**: Comprehensive testing, CI/CD pipeline, error boundaries
-8. **UX**: Smooth animations, responsive design, loading states, error handling
-
-The application is production-ready, maintainable, and built to scale.
+Earlier revisions used Supabase (PostgreSQL, Auth, Edge Functions) for contact storage, an admin inbox, and first-party analytics. All of it was removed on the `feat/senior-portfolio-overhaul` branch (commit `c3615dc`); evidence of the pre-removal state lives in `docs/audits/baseline/`.

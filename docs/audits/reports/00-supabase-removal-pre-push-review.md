@@ -10,35 +10,35 @@ Reviewer note: static review + full validation on a `git archive` of the exact c
 
 ## 2. Diff summary
 
-| Item | Value |
-| --- | --- |
-| Current branch | `feat/senior-portfolio-overhaul` |
-| Working tree | Clean (`git status --short` empty before this report) |
-| `c3615dc` is HEAD | Yes |
-| Exists on remote | **Yes** — `origin/feat/senior-portfolio-overhaul` = `c3615dc` |
-| Files changed | 61 (24 added, 25 deleted, 12 modified, 0 renamed) |
-| Additions / deletions | +60,397 / −5,865 (bulk of additions = 14 generated Lighthouse evidence files) |
-| `git diff --check` | Trailing-whitespace warnings **only** inside generated `docs/audits/baseline/lighthouse/*.html` evidence files; no source-file whitespace errors |
+| Item                  | Value                                                                                                                                            |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Current branch        | `feat/senior-portfolio-overhaul`                                                                                                                 |
+| Working tree          | Clean (`git status --short` empty before this report)                                                                                            |
+| `c3615dc` is HEAD     | Yes                                                                                                                                              |
+| Exists on remote      | **Yes** — `origin/feat/senior-portfolio-overhaul` = `c3615dc`                                                                                    |
+| Files changed         | 61 (24 added, 25 deleted, 12 modified, 0 renamed)                                                                                                |
+| Additions / deletions | +60,397 / −5,865 (bulk of additions = 14 generated Lighthouse evidence files)                                                                    |
+| `git diff --check`    | Trailing-whitespace warnings **only** inside generated `docs/audits/baseline/lighthouse/*.html` evidence files; no source-file whitespace errors |
 
 ## 3. Required and unrelated changes
 
-| File(s) | Type | Purpose | Required for removal | Runtime risk | Rollback impact | Belongs here |
-| --- | --- | --- | --- | --- | --- | --- |
-| `src/integrations/supabase/*` (2 D) | D | Delete client/types | Yes | Low (nothing imports them) | Revert restores | Yes |
-| `src/components/{AuthProvider,ProtectedRoute,UserMenu,Analytics,ConsentManager}.tsx` (5 D) | D | Remove auth/analytics/consent | Yes | Low | Revert restores | Yes |
-| `src/pages/{Auth,Profile,AdminHub,AdminContacts}.tsx` (4 D) | D | Remove private pages | Yes | Low — routes fall through to NotFound | Revert restores | Yes |
-| `src/hooks/useAnalytics.ts` (D) | D | Remove analytics | Yes | Low | Revert restores | Yes |
-| `supabase/**` (12 D) | D | Remove migrations/edge function/config | Yes | None (never shipped to client) | Revert restores | Yes |
-| `src/App.tsx` (M) | M | Drop providers + routes | Yes | Medium (core routing) — covered by tests | Single-file revert | Yes |
-| `src/components/ContactForm.tsx` (M) | M | Transport → `fetch('/api/contact')` | Yes | Medium — covered by 3 rewritten tests | Single-file revert | Yes |
-| `api/contact.ts` (A) | A | New serverless email endpoint | Yes | Medium — not unit-tested, not tsc-covered (see §4, §5) | Delete file | Yes |
-| `src/test/components/ContactForm.test.tsx` (M), `ConsentManager.test.tsx` (D) | M/D | Test alignment | Yes | Low | Revert | Yes |
-| `src/pages/Privacy.tsx`, `src/components/Footer.tsx`, `src/config/projectCaseStudies.ts`, `README.md` (M) | M | Truthful copy/docs | Yes (accuracy) | Low | Revert | Yes |
-| `vercel.json` (M) | M | Drop `*.supabase.co` from CSP | Yes | Low–Medium (CSP change; `connect-src 'self'` still allows `/api/contact`) | Revert | Yes |
-| `vite.config.ts`, `package.json`, `package-lock.json` (M) | M | Remove dep + manualChunks entry | Yes | Low — build verified | Revert | Yes |
-| `.env.example` (M) | M | New env names | Yes | None | Revert | Yes |
-| `.prettierignore` (A) | A | Keep CI's `prettier --check .` green with evidence files present | Indirectly (unblocks CI) | None | Delete | Borderline — tooling change riding along |
-| `docs/audits/baseline/**` (16 A) | A | Pre-overhaul evidence | **No** — separate workstream | None | Delete directory | Borderline — evidence bundled with implementation (see §12) |
+| File(s)                                                                                                   | Type | Purpose                                                          | Required for removal         | Runtime risk                                                              | Rollback impact    | Belongs here                                                |
+| --------------------------------------------------------------------------------------------------------- | ---- | ---------------------------------------------------------------- | ---------------------------- | ------------------------------------------------------------------------- | ------------------ | ----------------------------------------------------------- |
+| `src/integrations/supabase/*` (2 D)                                                                       | D    | Delete client/types                                              | Yes                          | Low (nothing imports them)                                                | Revert restores    | Yes                                                         |
+| `src/components/{AuthProvider,ProtectedRoute,UserMenu,Analytics,ConsentManager}.tsx` (5 D)                | D    | Remove auth/analytics/consent                                    | Yes                          | Low                                                                       | Revert restores    | Yes                                                         |
+| `src/pages/{Auth,Profile,AdminHub,AdminContacts}.tsx` (4 D)                                               | D    | Remove private pages                                             | Yes                          | Low — routes fall through to NotFound                                     | Revert restores    | Yes                                                         |
+| `src/hooks/useAnalytics.ts` (D)                                                                           | D    | Remove analytics                                                 | Yes                          | Low                                                                       | Revert restores    | Yes                                                         |
+| `supabase/**` (12 D)                                                                                      | D    | Remove migrations/edge function/config                           | Yes                          | None (never shipped to client)                                            | Revert restores    | Yes                                                         |
+| `src/App.tsx` (M)                                                                                         | M    | Drop providers + routes                                          | Yes                          | Medium (core routing) — covered by tests                                  | Single-file revert | Yes                                                         |
+| `src/components/ContactForm.tsx` (M)                                                                      | M    | Transport → `fetch('/api/contact')`                              | Yes                          | Medium — covered by 3 rewritten tests                                     | Single-file revert | Yes                                                         |
+| `api/contact.ts` (A)                                                                                      | A    | New serverless email endpoint                                    | Yes                          | Medium — not unit-tested, not tsc-covered (see §4, §5)                    | Delete file        | Yes                                                         |
+| `src/test/components/ContactForm.test.tsx` (M), `ConsentManager.test.tsx` (D)                             | M/D  | Test alignment                                                   | Yes                          | Low                                                                       | Revert             | Yes                                                         |
+| `src/pages/Privacy.tsx`, `src/components/Footer.tsx`, `src/config/projectCaseStudies.ts`, `README.md` (M) | M    | Truthful copy/docs                                               | Yes (accuracy)               | Low                                                                       | Revert             | Yes                                                         |
+| `vercel.json` (M)                                                                                         | M    | Drop `*.supabase.co` from CSP                                    | Yes                          | Low–Medium (CSP change; `connect-src 'self'` still allows `/api/contact`) | Revert             | Yes                                                         |
+| `vite.config.ts`, `package.json`, `package-lock.json` (M)                                                 | M    | Remove dep + manualChunks entry                                  | Yes                          | Low — build verified                                                      | Revert             | Yes                                                         |
+| `.env.example` (M)                                                                                        | M    | New env names                                                    | Yes                          | None                                                                      | Revert             | Yes                                                         |
+| `.prettierignore` (A)                                                                                     | A    | Keep CI's `prettier --check .` green with evidence files present | Indirectly (unblocks CI)     | None                                                                      | Delete             | Borderline — tooling change riding along                    |
+| `docs/audits/baseline/**` (16 A)                                                                          | A    | Pre-overhaul evidence                                            | **No** — separate workstream | None                                                                      | Delete directory   | Borderline — evidence bundled with implementation (see §12) |
 
 Unexpected changes: none. Every file traces to either the removal or the baseline-evidence workstream.
 
@@ -56,16 +56,16 @@ Verified sound:
 
 Gaps (severity / evidence):
 
-| # | Gap | Severity | Evidence |
-| --- | --- | --- | --- |
-| G1 | No rate limiting — unlimited POSTs will happily relay spam into your inbox and burn Resend quota | **Medium** | `api/contact.ts` has no counter/limiter; client handles a `RATE_LIMIT_EXCEEDED` code the server can never send |
-| G2 | No bot control (no honeypot field, no turnstile/captcha) | **Medium** | Form fields in `ContactForm.tsx` are exactly name/email/message |
-| G3 | No explicit request-size cap before parsing (platform default limits apply) | Low | No length check on raw body; Vercel caps request bodies (~4.5 MB) |
-| G4 | No timeout/AbortController on the Resend fetch; relies on function max duration | Low | `fetch('https://api.resend.com/emails', …)` with no signal |
-| G5 | HTML-only email body; no `text` alternative part | Low | Resend payload has `html` only |
-| G6 | Duplicate/replay submissions accepted (no idempotency) | Low | No token/dedupe; impact limited to inbox noise |
-| G7 | No CORS/origin validation — cross-origin POSTs land server-side (browser can't read the response, but the email still sends); CSRF classic risk n/a (no cookies/auth) | Low (subsumed by G1/G2) | No origin check in handler |
-| G8 | Endpoint has no unit tests and is outside `tsc` coverage | Medium (quality) | `tsconfig.app.json` includes `src` only; no test file for `api/` |
+| #   | Gap                                                                                                                                                                   | Severity                | Evidence                                                                                                       |
+| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- | -------------------------------------------------------------------------------------------------------------- |
+| G1  | No rate limiting — unlimited POSTs will happily relay spam into your inbox and burn Resend quota                                                                      | **Medium**              | `api/contact.ts` has no counter/limiter; client handles a `RATE_LIMIT_EXCEEDED` code the server can never send |
+| G2  | No bot control (no honeypot field, no turnstile/captcha)                                                                                                              | **Medium**              | Form fields in `ContactForm.tsx` are exactly name/email/message                                                |
+| G3  | No explicit request-size cap before parsing (platform default limits apply)                                                                                           | Low                     | No length check on raw body; Vercel caps request bodies (~4.5 MB)                                              |
+| G4  | No timeout/AbortController on the Resend fetch; relies on function max duration                                                                                       | Low                     | `fetch('https://api.resend.com/emails', …)` with no signal                                                     |
+| G5  | HTML-only email body; no `text` alternative part                                                                                                                      | Low                     | Resend payload has `html` only                                                                                 |
+| G6  | Duplicate/replay submissions accepted (no idempotency)                                                                                                                | Low                     | No token/dedupe; impact limited to inbox noise                                                                 |
+| G7  | No CORS/origin validation — cross-origin POSTs land server-side (browser can't read the response, but the email still sends); CSRF classic risk n/a (no cookies/auth) | Low (subsumed by G1/G2) | No origin check in handler                                                                                     |
+| G8  | Endpoint has no unit tests and is outside `tsc` coverage                                                                                                              | Medium (quality)        | `tsconfig.app.json` includes `src` only; no test file for `api/`                                               |
 
 None of G1–G8 blocks a Preview push; G1+G2 should be fixed before the form is promoted to production.
 
@@ -100,14 +100,14 @@ Accurate after this commit: no analytics (all tracking code deleted), no trackin
 
 Remaining inaccurate/stale claims (all in repo docs, not site copy):
 
-| Reference | Classification |
-| --- | --- |
-| `ARCHITECTURE.md` — describes Supabase client, Supabase Auth flows, Supabase in the stack | **Stale reference** — fix before merge |
-| `DEPLOYMENT_AUDIT.md` — "Backend: Supabase (PostgreSQL, Auth, Edge Functions, Storage)", RLS/admin claims | **Stale reference** — fix before merge |
+| Reference                                                                                                               | Classification                                                                    |
+| ----------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `ARCHITECTURE.md` — describes Supabase client, Supabase Auth flows, Supabase in the stack                               | **Stale reference** — fix before merge                                            |
+| `DEPLOYMENT_AUDIT.md` — "Backend: Supabase (PostgreSQL, Auth, Edge Functions, Storage)", RLS/admin claims               | **Stale reference** — fix before merge                                            |
 | `.github/workflows/ci.yml` — injects `secrets.VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` into two build steps | **Stale reference** — harmless (unused env) but misleading; remove in a follow-up |
-| `docs/audits/baseline/**` mentions of Supabase | Intentional historical evidence — keep |
-| `api/contact.ts` header comment ("Replaces the former Supabase edge function") | Required documentation — keep |
-| `public/robots.txt` `Disallow: /admin` | Stale reference — cosmetic |
+| `docs/audits/baseline/**` mentions of Supabase                                                                          | Intentional historical evidence — keep                                            |
+| `api/contact.ts` header comment ("Replaces the former Supabase edge function")                                          | Required documentation — keep                                                     |
+| `public/robots.txt` `Disallow: /admin`                                                                                  | Stale reference — cosmetic                                                        |
 
 Active runtime dependencies on Supabase: **none** (verified by source search and built-output scan).
 
@@ -120,16 +120,16 @@ Active runtime dependencies on Supabase: **none** (verified by source search and
 
 ## 10. Validation results (run on `git archive c3615dc`, Node v22.22.3 / npm 10.9.8)
 
-| Command | Result | Duration | Notes |
-| --- | --- | --- | --- |
-| `npm ci` | PASS — 571 packages | 8.8 s | @supabase/* gone from tree |
-| `npm run format:check` | **script does not exist** | — | CI runs `npx prettier --check .`; that was run instead: PASS ("All matched files use Prettier code style!") |
-| `npm run lint` | PASS, 0 warnings | ~3 s | |
-| `npm run type-check` | PASS | 0.2 s | `api/` not covered (G8) |
-| `npm test` | PASS — 10 files, 28/28 | 2.8 s | ConsentManager suite removed with feature |
-| `npm run build` | PASS — 955 ms | 1.2 s | supabase chunk gone; entry/ui chunks re-balanced |
-| `git diff --check 5070149 c3615dc` | Whitespace warnings only in generated Lighthouse HTML evidence | — | No source-file issues |
-| `git status --short` | Clean before review; after review: only this report (untracked) | — | |
+| Command                            | Result                                                          | Duration | Notes                                                                                                       |
+| ---------------------------------- | --------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------- |
+| `npm ci`                           | PASS — 571 packages                                             | 8.8 s    | @supabase/\* gone from tree                                                                                 |
+| `npm run format:check`             | **script does not exist**                                       | —        | CI runs `npx prettier --check .`; that was run instead: PASS ("All matched files use Prettier code style!") |
+| `npm run lint`                     | PASS, 0 warnings                                                | ~3 s     |                                                                                                             |
+| `npm run type-check`               | PASS                                                            | 0.2 s    | `api/` not covered (G8)                                                                                     |
+| `npm test`                         | PASS — 10 files, 28/28                                          | 2.8 s    | ConsentManager suite removed with feature                                                                   |
+| `npm run build`                    | PASS — 955 ms                                                   | 1.2 s    | supabase chunk gone; entry/ui chunks re-balanced                                                            |
+| `git diff --check 5070149 c3615dc` | Whitespace warnings only in generated Lighthouse HTML evidence  | —        | No source-file issues                                                                                       |
+| `git status --short`               | Clean before review; after review: only this report (untracked) | —        |                                                                                                             |
 
 Built-output inspection: `grep -ri supabase dist/` → no matches. `grep -r "RESEND_API_KEY\|CONTACT_EMAIL\|SERVICE_ROLE" dist/` → no matches.
 

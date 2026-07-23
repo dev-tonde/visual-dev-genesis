@@ -58,6 +58,8 @@ CONTACT_FROM="Portfolio <contact@your-verified-domain>"
 
 If they are missing, the form fails gracefully with a "contact me directly" message — the rest of the site is unaffected. Locally, `vite dev` does not run the function; use `vercel dev` if you need to test the endpoint end-to-end.
 
+The endpoint is protected against abuse (rate limits per source, honeypot + timing bot checks, strict method/content-type/size/origin validation — see `ARCHITECTURE.md`). Optionally set `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` (server-side) to make rate limiting effective across serverless instances; without them it is best-effort per instance.
+
 ## Validation Commands
 
 Run these before shipping changes:
