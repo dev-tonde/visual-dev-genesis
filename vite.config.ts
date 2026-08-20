@@ -14,7 +14,6 @@ const manualChunkGroups = {
   icons: ['lucide-react'],
   animations: ['framer-motion'],
   forms: ['react-hook-form', '@hookform/resolvers', 'zod'],
-  supabase: ['@supabase/supabase-js'],
 } as const;
 
 function getManualChunk(id: string) {

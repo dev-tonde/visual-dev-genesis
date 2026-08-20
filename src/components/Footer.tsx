@@ -27,7 +27,7 @@ const Footer = () => {
     {
       category: 'Backend',
       icon: Database,
-      items: ['Supabase', 'PostgreSQL', 'Edge Functions', 'Row Level Security'],
+      items: ['Vercel Serverless', 'Resend', 'GitHub API'],
     },
     {
       category: 'Quality & Delivery',
@@ -157,7 +157,7 @@ const Footer = () => {
             © {currentYear} Tonderai Matanga. All rights reserved.
           </p>
           <p className="text-xs text-muted-foreground mt-2">
-            Built with React, TypeScript, and Supabase.
+            Built with React, TypeScript, and Vite.
           </p>
         </div>
       </div>
